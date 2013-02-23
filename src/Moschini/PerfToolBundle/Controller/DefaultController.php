@@ -64,7 +64,7 @@ class DefaultController extends Controller
 			);
 	}
 
-	private function getHarFiles($glob = '/Users/gmoschini1016/Sites/*.har')
+	private function getHarFiles($glob = '../harfiles/inline-scripts-block.har')
 	{
 		$files = glob($glob);
 		$harfiles = array();
@@ -81,7 +81,7 @@ class DefaultController extends Controller
      */
 	public function harviewerAction()
     {
-		$har = new HarFile('/Users/gmoschini1016/Sites/file.har');
+		$har = new HarFile('../harfiles/inline-scripts-block.har');
         return array('har' => $har);
     }
 }
