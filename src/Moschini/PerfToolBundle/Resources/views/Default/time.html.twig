@@ -1,0 +1,36 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block content %}
+
+<script src="{{ asset('js/d3.v3.js') }}"></script>
+<script src="{{ asset('js/time-graph.js') }}"></script>
+
+<script type="text/javascript">
+var values={};
+
+{% for har in files %}
+	{% for id, page in har.getPages %}
+		if(!values['{{ page.getUrl }}'])
+		{
+			values['{{ page.getUrl }}'] = [];
+		}
+		values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
+	{% endfor %}
+{% endfor %}
+    
+
+for(page in values)
+{
+    var avgs = [];
+    
+    datas = groupValuesByDate(values[page]);
+    for(time in datas)
+    {
+        avgs.push({'date': parseInt(time), 'value': getHistAvgValue(datas[time])});
+    }
+	
+	showTimesGraph(avgs, page);
+}
+
+</script>
+{% endblock %}

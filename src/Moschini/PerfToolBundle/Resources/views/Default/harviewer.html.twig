@@ -1,0 +1,63 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block content %}
+
+<link href="{{ asset('css/harviewer.css') }}" type="text/css" rel="stylesheet" />
+
+{% for page in har.getPages %}
+	<h1>{{ page.getName }}</h1>
+
+    <table>
+
+	{% for entry in page.getEntries %}
+        <tr>
+        <td>
+        <b>
+		{{ entry.getRequest.getMethod }}
+		{% if entry.getUrl.getFileName %}
+		{{ entry.getUrl.getFileName|slice(0,40) }}
+		{% else %}
+		{{ entry.getUrl.getHost }}
+		{% endif %}
+        </b>
+        </td>
+        <td>
+		{{ entry.getResponse.getStatus }}
+        </td>
+        <td>
+		{{ entry.getUrl.getHost }}
+        </td>
+        <td class="size">
+		{{ entry.getSize|getHumanSize }}
+        </td>
+        <td>
+        <span class="time onload">
+        </span>
+        <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display: inline;">
+		{{ showTimeBars(entry.getTimings, page.getLoadTime) }}
+		<span style="display:none;">{{ page.getElapsed(entry)|getHumanTime('s') }}</span>
+		{{ entry.getTotalTime|getHumanTime }}
+        </div>
+        </td>
+        </tr>
+	{% endfor %}
+    <tr class="total">
+        <td style="width: 10%;">
+			{{ page.getEntries|length }} Requests 
+        </td>
+        <td style="width: 2%;">
+        </td>
+        <td style="width: 10%;">
+        </td>
+        <td class="size" style="width: 2%;">
+			{{ page.getTotalSize|getHumanSize }}<br/>
+        </td>
+        <td class="totaltime">
+        	{{ page.getLoadTime|getHumanTime }}<br/>
+        </td>
+    </tr>
+    </table>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block content %}
+
+<script src="{{ asset('js/d3.v2.js') }}"></script>
+<script src="{{ asset('js/histogram-simple.js') }}"></script>
+<link href="{{ asset('css/graph.css') }}" type="text/css" rel="stylesheet" />
+
+{% for key, times in datas %}
+	<div>
+		<h1>
+		{{ urls[key].getHost }} {{ urls[key].getPath }}
+		</h1>
+	</div>
+    <script type="text/javascript">
+    var data = {{ times|json_encode }};
+    loadHistogramSimple(data);
+    </script>
+
+{% endfor %}
+
+{% endblock %}

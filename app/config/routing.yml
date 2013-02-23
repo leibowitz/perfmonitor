@@ -1,0 +1,5 @@
+_perf:
+    resource: "@MoschiniPerfToolBundle/Controller/DefaultController.php"
+    type:     annotation
+    prefix:   /perf
+

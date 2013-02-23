@@ -1,0 +1,61 @@
+
+body{
+    font-family: Lucida Grande, Tahoma, sans-serif;
+    font-size:13px;
+}
+table{
+    border-spacing:0px;
+    border-collapse:collapse;
+    width: 95%;
+    border: 1px solid black;
+}
+td{
+    font-family: Lucida Grande, Tahoma, sans-serif;
+    font-size:11px;
+    white-space:nowrap;
+    padding:0px;
+    margin:0px;
+}
+td.size{
+    text-align: right;
+}
+td.totaltime{
+    text-align: center;
+}
+tr.total{
+    border: 1px solid black;
+}
+span.time{
+    height: 12px;
+    position: relative;
+    display: inline-block;
+    min-width: 1px;
+}
+span.onload{
+    background-color:red;
+    height: 15px;
+    left: 100%;
+    width:1px;
+    float:left;
+}
+span.blocked{
+    background-color:purple;
+}
+span.send{
+    background-color:green;
+}
+span.wait{
+    background-color:grey;
+}
+span.receive{
+    background-color:blue;
+}
+span.dns{
+    background-color:cyan;
+}
+span.connect{
+    background-color:yellow;
+}
+.rel{
+    position: relative;
+}

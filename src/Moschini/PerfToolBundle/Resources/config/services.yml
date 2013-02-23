@@ -1,0 +1,7 @@
+parameters:
+#    moschini_perf_tool.example.class: Moschini\PerfToolBundle\Example
+
+services:
+#    moschini_perf_tool.example:
+#        class: %moschini_perf_tool.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
