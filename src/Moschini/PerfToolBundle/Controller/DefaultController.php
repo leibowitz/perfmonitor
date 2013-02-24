@@ -1,8 +1,8 @@
 <?php
-
 namespace Moschini\PerfToolBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -13,10 +13,60 @@ use HarUtils\HarFile;
 
 class DefaultController extends Controller
 {
-    public function indexAction($name)
+	/**
+     * @Route("/")
+     * @Route("/index")
+     * @Template()
+     */
+    public function indexAction(Request $request)
     {
-        return $this->render('MoschiniPerfToolBundle:Default:index.html.twig', array('name' => $name));
+        return array('files' => glob('../harfiles/*har'));
     }
+
+	/**
+     * @Route("/send")
+     * @Template()
+     */
+    public function sendAction(Request $request)
+    {
+        $defaultData = array('type' => 'har', 'site' => 'mine', 'url' => 'http://');
+
+        $form = $this->createFormBuilder($defaultData)
+            ->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
+            ->add('site', 'text')
+            ->add('url', 'text')
+            ->getForm();
+
+        if($request->isMethod('POST'))
+        {
+            $form->bind($request);
+            if($form->isValid())
+            {
+                $data = $form->getData();
+                $msg = array(
+                    'url' => $data['url'],
+                    'site' => $data['site'],
+                    'account' => 'me',
+                    'type' => $data['type'],
+                );
+                $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
+                return $this->redirect($this->generateUrl('moschini_perftool_default_done'));
+            }
+        }
+        return array('form' => $form->createView());
+        
+    }
+	
+    /**
+     * @Route("/done")
+     * @Template()
+     */
+    public function doneAction()
+    {
+        return array();
+        
+    }
+	
 	
 	/**
      * @Route("/graph")
@@ -76,12 +126,13 @@ class DefaultController extends Controller
 	}
 	
     /**
-     * @Route("/harviewer")
+     * @Route("/harviewer", defaults={"file" = "inline-scripts-block.har"})
      * @Template()
      */
-	public function harviewerAction()
+	public function harviewerAction($file)
     {
-		$har = new HarFile('../harfiles/inline-scripts-block.har');
+        $file = $this->getRequest()->query->get('file');
+		$har = new HarFile('../harfiles/'.$file);
         return array('har' => $har);
     }
 }

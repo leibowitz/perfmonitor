@@ -1,0 +1,10 @@
+{% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+
+{% block content %}
+
+<form action="{{ path('moschini_perftool_default_send') }}" method="post" {{ form_enctype(form) }}>
+{{ form_widget(form) }}
+<input type="submit" />
+</form>
+
+{% endblock %}
