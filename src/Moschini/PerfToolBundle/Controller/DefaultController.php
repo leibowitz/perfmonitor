@@ -23,7 +23,6 @@ class DefaultController extends Controller
     {
         $m = new \MongoClient();
         $db = $m->selectDB("perfmonitor");  
-        //$cursor = $db->har->find(array(), array('log.pages.pageTimings.onLoad' => true));
         $cursor = $db->har->find();
         $result = new HarResults($cursor);
         $files = $result->getFiles();
@@ -74,9 +73,7 @@ class DefaultController extends Controller
     public function doneAction()
     {
         return array();
-        
     }
-	
 	
 	/**
      * @Route("/graph")
