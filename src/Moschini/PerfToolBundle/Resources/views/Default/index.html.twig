@@ -2,8 +2,13 @@
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
 
 {% block content %}
-{% for file in files %}
-<a href="{{ path('moschini_perftool_default_harviewer', {'file':file|slice(12)}) }}">{{ file|slice(12) }}</a>
+{% for id, file in files %}
+<a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getName }}</a>
 <br />
 {% endfor %}
+
+{% for document in cursor %}
+{{ document['log']['pages'][0]['pageTimings']['onLoad'] }}
+{% endfor %}
+
 {% endblock %}

@@ -22,23 +22,37 @@ class HarFile
     const TYPE_JAVASCRIPT = 'javascripts';
     const TYPE_CSS = 'stylesheets';
 
-    public function __construct($file)
+    public static function fromFile($file)
     {
-        $this->file = $file;
-        $this->parseFile($this->file);
+        $har = new HarFile();
+        $har->setContent(self::parseFile($file));
+        return $har;
     }
 
-    private function parseFile($file)
+    public static function fromJson($string)
+    {
+        $har = new HarFile();
+        $har->setContent($string);
+        return $har;
+    }
+
+    private static function parseFile($file)
     {
         $content = file_get_contents($file);
         
-        $this->content = json_decode($content, true);
-
+        return json_decode($content, true);
     }
 
     public function getContent()
     {
         return $this->content;
+    }
+    
+    public function setContent($content)
+    {
+        if(!$content)
+            throw new \Exception('HarFile exception: Empty content');
+        $this->content = $content;
     }
 
     private function setEntries()
@@ -68,6 +82,16 @@ class HarFile
             $this->pages[ $page['id'] ] = new HarPage($page);
 
         }
+    }
+
+    public function getName()
+    {
+        foreach($this->getPages() as $page)
+        {
+            return $page->getName();
+        }
+
+        return '';
     }
 
     public function getPages()

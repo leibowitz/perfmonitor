@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use HarUtils\HarOutput;
 use HarUtils\HarFile;
+use HarUtils\HarResults;
 
 class DefaultController extends Controller
 {
@@ -20,7 +21,16 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return array('files' => glob('../harfiles/*har'));
+        $m = new \MongoClient();
+        $db = $m->selectDB("perfmonitor");  
+        //$cursor = $db->har->find(array(), array('log.pages.pageTimings.onLoad' => true));
+        $cursor = $db->har->find();
+        $result = new HarResults($cursor);
+        $files = $result->getFiles();
+        return array(
+            'files' => $files,
+            'cursor' => $cursor
+        );
     }
 
 	/**
@@ -120,19 +130,21 @@ class DefaultController extends Controller
 		$harfiles = array();
 		foreach($files as $file)
 		{
-			$harfiles[$file] = new HarFile($file);
+			$harfiles[$file] = HarFile::fromFile($file);
 		}
 		return $harfiles;
 	}
 	
     /**
-     * @Route("/harviewer", defaults={"file" = "inline-scripts-block.har"})
+     * @Route("/harviewer/{id}")
      * @Template()
      */
-	public function harviewerAction($file)
+	public function harviewerAction($id)
     {
-        $file = $this->getRequest()->query->get('file');
-		$har = new HarFile('../harfiles/'.$file);
+        $m = new \MongoClient();
+        $db = $m->selectDB("perfmonitor");  
+        $item = $db->har->findOne(array('_id' => new \MongoId($id)));
+		$har = HarFile::fromJson($item);
         return array('har' => $har);
     }
 }
