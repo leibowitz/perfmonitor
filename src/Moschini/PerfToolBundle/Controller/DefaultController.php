@@ -21,14 +21,9 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $m = new \MongoClient();
-        $db = $m->selectDB("perfmonitor");  
-        $cursor = $db->har->find();
-        $result = new HarResults($cursor);
-        $files = $result->getFiles();
+        $files = $this->getFilesFromDB();
         return array(
-            'files' => $files,
-            'cursor' => $cursor
+            'files' => $files
         );
     }
 
@@ -84,7 +79,7 @@ class DefaultController extends Controller
 		$urls = array();
 		$datas = array();
 
-		$files = $this->getHarFiles();
+        $files = $this->getFilesFromDB();
 
 		foreach($files as $har)
 		{
@@ -116,10 +111,19 @@ class DefaultController extends Controller
      */
     public function timeAction()
 	{
+        $files = $this->getFilesFromDB();
 		return array(
-			'files' => $this->getHarFiles(),
+			'files' => $files,
 			);
 	}
+
+    private function getFilesFromDB()
+    {
+        $db = $this->getDb();  
+        $cursor = $db->har->find();
+        $result = new HarResults($cursor);
+        return $result->getFiles();
+    }
 
 	private function getHarFiles($glob = '../harfiles/inline-scripts-block.har')
 	{
@@ -131,6 +135,12 @@ class DefaultController extends Controller
 		}
 		return $harfiles;
 	}
+
+    private function getDb()
+    {
+        $m = new \MongoClient();
+        return $m->selectDB("perfmonitor");  
+    }
 	
     /**
      * @Route("/harviewer/{id}")
@@ -138,8 +148,7 @@ class DefaultController extends Controller
      */
 	public function harviewerAction($id)
     {
-        $m = new \MongoClient();
-        $db = $m->selectDB("perfmonitor");  
+        $db = $this->getDb();
         $item = $db->har->findOne(array('_id' => new \MongoId($id)));
 		$har = HarFile::fromJson($item);
         return array('har' => $har);
