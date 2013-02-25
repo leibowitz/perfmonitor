@@ -30,5 +30,10 @@ class HarTime
     {
         return $this->value;
     }
+
+    public function format($format)
+    {
+        return $this->date->format($format);
+    }
 }
 

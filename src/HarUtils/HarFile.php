@@ -83,25 +83,35 @@ class HarFile
 
         }
     }
-
-    public function getName()
+    
+    public function getFirstPage()
     {
         foreach($this->getPages() as $page)
         {
-            return $page->getName();
+            return $page;
         }
+        
+        throw new Exception('HarFile: no page found');
+    }
 
-        return '';
+    public function getName()
+    {
+        return $this->getFirstPage()->getName();
     }
     
     public function getId()
     {
-        foreach($this->getPages() as $page)
-        {
-            return $page->getId();
-        }
-
-        return '';
+        return $this->getFirstPage()->getId();
+    }
+    
+    public function getDate()
+    {
+        return $this->getFirstPage()->getStarted();
+    }
+    
+    public function getUrl()
+    {
+        return $this->getFirstPage()->getUrl();
     }
 
     public function getPages()

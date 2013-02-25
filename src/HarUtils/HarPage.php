@@ -52,6 +52,7 @@ class HarPage
         {
             return $this->requests[0]->getUrl();
         }
+        return null;
     }
 
     public function getId()

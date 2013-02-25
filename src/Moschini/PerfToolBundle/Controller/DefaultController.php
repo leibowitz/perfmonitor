@@ -21,7 +21,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $files = $this->getFilesFromDB();
+        $files = $this->getMostRecentFilesFromDB();
         return array(
             'files' => $files
         );
@@ -79,7 +79,7 @@ class DefaultController extends Controller
 		$urls = array();
 		$datas = array();
 
-        $files = $this->getFilesFromDB();
+        $files = $this->getAllFilesFromDB();
 
 		foreach($files as $har)
 		{
@@ -111,18 +111,32 @@ class DefaultController extends Controller
      */
     public function timeAction()
 	{
-        $files = $this->getFilesFromDB();
+        $files = $this->getAllFilesFromDB();
 		return array(
 			'files' => $files,
 			);
 	}
 
-    private function getFilesFromDB()
+    private function getFilesFromDB($find, $sort)
     {
         $db = $this->getDb();  
-        $cursor = $db->har->find();
+        $cursor = $db->har->find($find);
+        if($sort)
+        {
+            $cursor = $cursor->sort($sort);
+        }
         $result = new HarResults($cursor);
         return $result->getFiles();
+    }
+
+    private function getAllFilesFromDB($find = array(), $sort = array())
+    {
+        return $this->getFilesFromDB($find, $sort);
+    }
+
+    private function getMostRecentFilesFromDB($find = array(), $sort = array('log.pages.startedDateTime' => -1))
+    {
+        return $this->getFilesFromDB($find, $sort);
     }
 
 	private function getHarFiles($glob = '../harfiles/inline-scripts-block.har')
