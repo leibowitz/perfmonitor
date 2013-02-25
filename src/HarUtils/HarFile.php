@@ -93,6 +93,16 @@ class HarFile
 
         return '';
     }
+    
+    public function getId()
+    {
+        foreach($this->getPages() as $page)
+        {
+            return $page->getId();
+        }
+
+        return '';
+    }
 
     public function getPages()
     {

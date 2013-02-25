@@ -6,7 +6,7 @@
 <a href="{{ path('moschini_perftool_default_send') }}">Add new</a>
 <br />
 {% for id, file in files %}
-<a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getName }}</a>
+<a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getId }}</a>
 <br />
 {% endfor %}
 
