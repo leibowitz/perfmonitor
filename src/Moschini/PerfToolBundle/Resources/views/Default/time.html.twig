@@ -10,13 +10,13 @@
 var values={};
 
 {% for har in files %}
-	{% for id, page in har.getPages %}
-		if(!values['{{ page.getUrl }}'])
-		{
-			values['{{ page.getUrl }}'] = [];
-		}
-		values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
-	{% endfor %}
+{% for id, page in har.getPages %}
+if(!values['{{ page.getUrl }}'])
+    values['{{ page.getUrl }}'] = [];
+
+values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
+
+{% endfor %}
 {% endfor %}
     
 
@@ -28,9 +28,10 @@ for(page in values)
     for(time in datas)
     {
         avgs.push({'date': parseInt(time), 'value': getHistAvgValue(datas[time])});
+        console.log(parseInt(time), getHistAvgValue(datas[time]));
     }
 	
-	showTimesGraph(avgs, page);
+    showTimesGraph(avgs, page);
 }
 
 </script>

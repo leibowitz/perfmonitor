@@ -1,0 +1,12 @@
+{% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+
+{% block content %}
+
+<a href="{{ path('moschini_perftool_sites_index') }}">Back</a>
+
+<form action="{{ path('moschini_perftool_sites_add') }}" method="post" {{ form_enctype(form) }}>
+{{ form_widget(form) }}
+<input type="submit" />
+</form>
+
+{% endblock %}

@@ -3,3 +3,8 @@ _perf:
     type:     annotation
     prefix:   /perf
 
+_sites:
+    resource: "@MoschiniPerfToolBundle/Controller/SitesController.php"
+    type:     annotation
+    prefix:   /sites
+
