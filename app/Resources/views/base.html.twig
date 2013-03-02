@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link href="{{ asset('css/global.css') }}" rel="stylesheet">
         {% include 'BraincraftedBootstrapBundle::_stylesheets.html.twig' %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
-        {% include 'BraincraftedBootstrapBundle::_stylesheets.html.twig' %}
     </body>
 </html>

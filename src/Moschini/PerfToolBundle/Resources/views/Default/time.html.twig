@@ -1,22 +1,20 @@
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+{% block title 'Monitoring' %}
 
-{% block content %}
-
+{% block javascripts %}
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
 <script src="{{ asset('js/time-graph.js') }}"></script>
-<a href="{{ path('moschini_perftool_default_graph') }}">Graph</a>
-
 <script type="text/javascript">
 var values={};
 
 {% for har in files %}
-{% for id, page in har.getPages %}
-if(!values['{{ page.getUrl }}'])
-    values['{{ page.getUrl }}'] = [];
+    {% for id, page in har.getPages %}
+    if(!values['{{ page.getUrl }}'])
+        values['{{ page.getUrl }}'] = [];
 
-values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
+    values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
 
-{% endfor %}
+    {% endfor %}
 {% endfor %}
     
 
@@ -35,4 +33,10 @@ for(page in values)
 }
 
 </script>
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ path('moschini_perftool_default_graph') }}">Graph</a>
+
 {% endblock %}

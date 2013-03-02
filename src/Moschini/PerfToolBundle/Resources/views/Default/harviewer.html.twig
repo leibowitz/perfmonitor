@@ -1,8 +1,11 @@
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+{% block title 'Waterfall' %}
+
+{% block stylesheets %}
+<link href="{{ asset('css/harviewer.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
 
 {% block content %}
-
-<link href="{{ asset('css/harviewer.css') }}" type="text/css" rel="stylesheet" />
 
 {% for page in har.getPages %}
 	<h1>{{ page.getName }}</h1>

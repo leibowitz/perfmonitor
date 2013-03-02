@@ -1,7 +1,11 @@
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+{% block title 'Monitoring' %}
 
 {% block content %}
 
 <a href="{{ path('moschini_perftool_sites_add') }}">Add</a>
+
+<a href="{{ path('moschini_perftool_default_time') }}">Time</a>
+<a href="{{ path('moschini_perftool_default_graph') }}">Graph</a>
 
 {% endblock %}
