@@ -10,7 +10,7 @@
 {% endfor %}
 
     $(function(){
-        $('#menu-nav a[href="{{ path('moschini_perftool_default_graph') }}"]').parent().addClass('active');
+        $('#menu-nav a[href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
     });
 </script>
 {% endblock %}

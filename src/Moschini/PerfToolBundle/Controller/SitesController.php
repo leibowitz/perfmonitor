@@ -63,7 +63,8 @@ class SitesController extends Controller
      */
     public function addAction(Request $request)
     {
-        $defaultData = array('interval' => 180);
+        $site = $request->get('site');
+        $defaultData = array('interval' => 180, 'site' => $site);
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text')
@@ -90,7 +91,7 @@ class SitesController extends Controller
                 
                 if($this->insertToDb($data))
                 {
-                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done'));
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done', array('site' => $site)));
                 }
                 else
                 {

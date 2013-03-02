@@ -4,10 +4,10 @@
 
 {% block body %}
         <ul class="nav nav-tabs" id="menu-nav">
-            <li><a href="{{ path('moschini_perftool_default_time') }}">Monitoring</a></li>
-            <li><a href="{{ path('moschini_perftool_default_graph') }}">Histograms</a></li>
-            <li><a href="{{ path('moschini_perftool_default_index') }}">Waterfall</a></li>
-            <li class="pull-right"><a href="{{ path('moschini_perftool_sites_index') }}">Manage sites</a></li>
+            <li><a href="{{ path('moschini_perftool_default_time', {'site': app.request.get('site')}) }}">Monitoring</a></li>
+            <li><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}">Histograms</a></li>
+            <li><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}">Waterfall</a></li>
+            <li class="pull-right"><a href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}">Manage sites</a></li>
         </ul>
 
         {% for flashMessage in app.session.flashbag.get('notice') %}

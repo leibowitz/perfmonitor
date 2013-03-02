@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<form action="{{ path('moschini_perftool_sites_add') }}" method="post" {{ form_enctype(form) }}>
+<form action="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}" method="post" {{ form_enctype(form) }}>
 {{ form_widget(form) }}
 <br />
 <button type="submit" class="btn btn-primary">Submit</button>
@@ -14,7 +14,7 @@
 {% block javascripts %}
     <script>
         $(function(){
-            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index') }}"]').parent().addClass('active');
+            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
         });
     </script>
 {% endblock %}

@@ -35,7 +35,8 @@ class DefaultController extends Controller
      */
     public function sendAction(Request $request)
     {
-        $defaultData = array('type' => 'har', 'site' => 'mine', 'url' => 'http://');
+        $site = $request->get('site');
+        $defaultData = array('type' => 'har', 'site' => $site, 'url' => 'http://');
 
         $form = $this->createFormBuilder($defaultData)
             ->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
@@ -56,7 +57,7 @@ class DefaultController extends Controller
                     'type' => $data['type'],
                 );
                 $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
-                return $this->redirect($this->generateUrl('moschini_perftool_default_done'));
+                return $this->redirect($this->generateUrl('moschini_perftool_default_done', array('site' => $site)));
             }
         }
         return array('form' => $form->createView());

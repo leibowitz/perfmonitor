@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<a class="btn pull-right" href="{{ path('moschini_perftool_sites_add') }}">Add site</a>
+<a class="btn pull-right" href="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}">Add site</a>
 
 <table class="table">
     <thead>
