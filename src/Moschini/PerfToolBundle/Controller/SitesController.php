@@ -41,9 +41,21 @@ class SitesController extends Controller
         );
         
         return $db->sites->update($key, 
-            array('$addToSet' => array('urls' => array('$each', $data['urls']))), 
+            array('$addToSet' => array('urls' => array('$each' => $data['urls']))), 
             array('upsert' => true));
     }
+    
+    private function updateToDb($id, $data)
+    {
+        $m = new \MongoClient();
+        $db = $m->selectDB("perfmonitor");  
+        $key = array(
+            '_id' => $id
+        );
+        
+        return $db->sites->update($key, array('$set' => $data)); 
+    }
+
 
     private function getUrls($urls)
     {
@@ -57,6 +69,7 @@ class SitesController extends Controller
             )
         );
     }
+
     /**
      * @Route("/new")
      * @Template()
@@ -102,5 +115,57 @@ class SitesController extends Controller
         return array('form' => $form->createView());
     }
 	
+    /**
+     * @Route("/edit")
+     * @Template()
+     */
+    public function editAction(Request $request)
+    {
+        $site = $request->get('site');
+        $id = new \MongoId($request->get('id'));
+
+        $config = SitesDb::getSitesConfig(array('_id' => $id));
+        
+        $defaultData = array(
+            'interval' => $config['interval'], 
+            'site' => $config['site'],
+            'urls' => implode("\n", $config['urls']),
+        );
+
+        $form = $this->createFormBuilder($defaultData)
+            ->add('site', 'text')
+            ->add('urls', 'textarea')
+            ->add('interval', 'choice', 
+                array('choices' => array(
+                    5 => '5 min', 
+                    10 => '10 min', 
+                    30 => '30 min', 
+                    60 => '1 hour', 
+                    180 => '3 hours', 
+                    360 => '6 hours', 
+                    720 => '12 hours', 
+                    1440 => '24 hours')))
+            ->getForm();
+
+        if($request->isMethod('POST'))
+        {
+            $form->bind($request);
+            if($form->isValid())
+            {
+                $data = $form->getData();
+                $data['urls'] = $this->getUrls($data['urls']);
+                
+                if($this->updateToDb($id, $data))
+                {
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done', array('site' => $site)));
+                }
+                else
+                {
+                    echo 'Error while updating record. Please try-again or contact an administrator if the problem persist.';
+                }   
+            }
+        }
+        return array('form' => $form->createView());
+    }
 	
 }

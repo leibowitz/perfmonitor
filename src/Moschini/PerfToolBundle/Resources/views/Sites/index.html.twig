@@ -17,7 +17,7 @@
     {% for site in sites %}
     <tr>
         <td>
-            <a href="">{{ site['site'] }}</a>
+            <a href="{{ path('moschini_perftool_sites_edit', {'site': app.request.get('site'), 'id': attribute(site['_id'], '$id') }) }}">{{ site['site'] }}</a>
         </td>
         <td>
             {{ site['interval'] }}
@@ -35,7 +35,7 @@
 {% block javascripts %}
     <script>
         $(function(){
-            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index') }}"]').parent().addClass('active');
+            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
         });
     </script>
 {% endblock %}

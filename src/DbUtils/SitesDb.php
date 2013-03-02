@@ -19,17 +19,14 @@ class SitesDb
         return $db->sites->distinct('site');
     }
     
-    static public function getSitesConfig($site = null)
+    static public function getSitesConfig($find = array())
     {
         $db = SitesDb::getDb();  
-        if($site)
+        if($find && array_key_exists('_id', $find))
         {
-            $find = array('site' => $site);
+            return $db->sites->findOne($find);
         }
-        else
-        {
-            $find = array();
-        }
+        
         return $db->sites->find($find);
     }
 
