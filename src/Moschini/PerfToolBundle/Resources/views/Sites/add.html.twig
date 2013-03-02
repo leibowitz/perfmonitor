@@ -10,3 +10,11 @@
 </form>
 
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function(){
+            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index') }}"]').parent().addClass('active');
+        });
+    </script>
+{% endblock %}

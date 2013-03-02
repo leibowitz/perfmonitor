@@ -7,8 +7,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+use DbUtils\SitesDb;
+
 class SitesController extends Controller
 {
+    /**
+     * @Route("/done")
+     * @Template()
+     */
+    public function doneAction()
+    {
+        return array();
+    }
+
 	/**
      * @Route("/")
      * @Template()
@@ -78,7 +89,7 @@ class SitesController extends Controller
                 
                 if($this->insertToDb($data))
                 {
-                    return $this->redirect($this->generateUrl('moschini_perftool_default_done'));
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done'));
                 }
                 else
                 {
@@ -88,4 +99,6 @@ class SitesController extends Controller
         }
         return array('form' => $form->createView());
     }
+	
+	
 }

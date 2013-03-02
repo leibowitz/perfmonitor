@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-use HarUtils\HarOutput;
 use HarUtils\HarFile;
-use HarUtils\HarResults;
+
+use DbUtils\SitesDb;
 
 class DefaultController extends Controller
 {
@@ -25,22 +25,16 @@ class DefaultController extends Controller
         $site = $request->get('site');
         if($site)
         {
-            $find['site'] = $site;
+            $find = array('site' => $site);
             return array(
-                'files' => $this->getMostRecentFilesFromDB($find)
+                'files' => SitesDb::getMostRecentFilesFromDB($find)
             );
         }
         else
         {
-            $sites = $this->getSites();
+            $sites = SitesDb::getSites();
             return array('files' => null, 'sites' => $sites);
         }
-    }
-
-    private function getSites()
-    {
-        $db = $this->getDb();  
-        return $db->har->distinct('site');
     }
 
 	/**
@@ -90,32 +84,44 @@ class DefaultController extends Controller
      * @Route("/graph")
      * @Template()
      */
-    public function graphAction()
+    public function graphAction(Request $request)
 	{
 		$urls = array();
 		$datas = array();
+        $sites = array();
 
-        $files = $this->getAllFilesFromDB();
+        $site = $request->get('site');
+        if($site)
+        {
+            $find = array('site' => $site);
+            $files = SitesDb::getAllFilesFromDB($find);
 
-		foreach($files as $har)
-		{
-			foreach($har->getPages() as $page)
-			{
-				$url = $page->getUrl();
-				$url_key = $url->getUid();
-				if(!array_key_exists($url_key, $urls))
-				{
-					$urls[ $url_key ] = $url;
-				}
+            foreach($files as $har)
+            {
+                foreach($har->getPages() as $page)
+                {
+                    $url = $page->getUrl();
+                    $url_key = $url->getUid();
+                    if(!array_key_exists($url_key, $urls))
+                    {
+                        $urls[ $url_key ] = $url;
+                    }
 
-				if(!array_key_exists($url_key, $datas)){
-					$datas[ $url_key ] = array();
-				}
+                    if(!array_key_exists($url_key, $datas)){
+                        $datas[ $url_key ] = array();
+                    }
 
-				$datas[ $url_key ][ ] = $page->getLoadTime() / 1000;
-			}
-		}
+                    $datas[ $url_key ][ ] = $page->getLoadTime() / 1000;
+                }
+            }
+        }
+        else
+        {
+            $sites = SitesDb::getSites();
+        }
+        
 		return array(
+            'sites' => $sites,
 			'datas' => $datas,
 			'urls' => $urls,
 			);
@@ -125,52 +131,24 @@ class DefaultController extends Controller
      * @Route("/time")
      * @Template()
      */
-    public function timeAction()
+    public function timeAction(Request $request)
 	{
-        $files = $this->getAllFilesFromDB();
-		return array(
-			'files' => $files,
-			);
-	}
-
-    private function getFilesFromDB($find, $sort)
-    {
-        $db = $this->getDb();  
-        $cursor = $db->har->find($find);
-        if($sort)
+        $site = $request->get('site');
+        if($site)
         {
-            $cursor = $cursor->sort($sort);
+            $find = array('site' => $site);
+            return array(
+                'files' => SitesDb::getAllFilesFromDB($find)
+            );
         }
-        $result = new HarResults($cursor);
-        return $result->getFiles();
-    }
+        else
+        {
+            $sites = SitesDb::getSites();
+            return array('files' => null, 'sites' => $sites);
+        }
 
-    private function getAllFilesFromDB($find = array(), $sort = array())
-    {
-        return $this->getFilesFromDB($find, $sort);
-    }
-
-    private function getMostRecentFilesFromDB($find = array(), $sort = array('log.pages.startedDateTime' => -1))
-    {
-        return $this->getFilesFromDB($find, $sort);
-    }
-
-	private function getHarFiles($glob = '../harfiles/inline-scripts-block.har')
-	{
-		$files = glob($glob);
-		$harfiles = array();
-		foreach($files as $file)
-		{
-			$harfiles[$file] = HarFile::fromFile($file);
-		}
-		return $harfiles;
 	}
-
-    private function getDb()
-    {
-        $m = new \MongoClient();
-        return $m->selectDB("perfmonitor");  
-    }
+    
 	
     /**
      * @Route("/harviewer/{id}")
@@ -178,7 +156,7 @@ class DefaultController extends Controller
      */
 	public function harviewerAction($id)
     {
-        $db = $this->getDb();
+        $db = SitesDb::getDb();
         $item = $db->har->findOne(array('_id' => new \MongoId($id)));
 		$har = HarFile::fromJson($item);
         return array('har' => $har);

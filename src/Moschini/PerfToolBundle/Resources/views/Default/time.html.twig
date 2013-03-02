@@ -1,5 +1,5 @@
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
-{% block title 'Monitoring' %}
+{% block title 'Time' %}
 
 {% block javascripts %}
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
@@ -32,11 +32,20 @@ for(page in values)
     showTimesGraph(avgs, page);
 }
 
+    $(function(){
+        $('#menu-nav a[href="{{ path('moschini_perftool_default_time') }}"]').parent().addClass('active');
+    });
 </script>
 {% endblock %}
 
 {% block content %}
 
-<a href="{{ path('moschini_perftool_default_graph') }}">Graph</a>
+{% if sites is defined %}
+<ul>
+{% for site in sites %}
+<li><a href="{{ path('moschini_perftool_default_time', {'site': site}) }}">{{ site }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
 
 {% endblock %}
