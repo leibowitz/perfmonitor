@@ -1,6 +1,60 @@
 {
-    "hash": "d260e487f83997681532ed58e81e1c36",
+    "hash": "dbab439e04d528ee7eeb28be4eb14b06",
     "packages": [
+        {
+            "name": "braincrafted/bootstrap-bundle",
+            "version": "dev-master",
+            "target-dir": "Braincrafted/BootstrapBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/braincrafted/bootstrap-bundle.git",
+                "reference": "v1.2.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/braincrafted/bootstrap-bundle/zipball/v1.2.0",
+                "reference": "v1.2.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "twig/extensions": "dev-master"
+            },
+            "require-dev": {
+                "knplabs/knp-markdown-bundle": "dev-master",
+                "knplabs/knp-menu": "dev-master",
+                "knplabs/knp-menu-bundle": "dev-master",
+                "knplabs/knp-paginator-bundle": "dev-master"
+            },
+            "suggest": {
+                "knplabs/knp-menu": "Required to use KnpMenuBundle.",
+                "knplabs/knp-menu-bundle": "BraincraftedBootstrapBundle styles the menus provided by KnpMenuBundle.",
+                "knplabs/knp-paginator-bundle": "BraincraftedBootstrapBundle styles the pagination provided by KnpPaginatorBundle."
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Braincrafted\\BootstrapBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Eckerstorfer",
+                    "email": "florian@theroadtojoy.at",
+                    "homepage": "http://florianeckerstorfer.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Twitter Bootstrap for Symfony2",
+            "keywords": [
+                "bootstrap"
+            ],
+            "time": "2013-02-24 18:14:21"
+        },
         {
             "name": "doctrine/common",
             "version": "2.3.0",
@@ -770,22 +824,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/RabbitMqBundle.git",
-                "reference": "54eeeb015ea1244e143c4128683939ee4a88add6"
+                "reference": "5083267a3cf53cbbf816af78919c91e18a082e87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/RabbitMqBundle/zipball/54eeeb015ea1244e143c4128683939ee4a88add6",
-                "reference": "54eeeb015ea1244e143c4128683939ee4a88add6",
+                "url": "https://api.github.com/repos/videlalvaro/RabbitMqBundle/zipball/5083267a3cf53cbbf816af78919c91e18a082e87",
+                "reference": "5083267a3cf53cbbf816af78919c91e18a082e87",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "symfony/framework-bundle": ">=2.0",
-                "symfony/yaml": ">=2.0",
-                "videlalvaro/php-amqplib": "dev-master"
+                "symfony/framework-bundle": ">=2.0,<2.3",
+                "symfony/yaml": ">=2.0,<3.0",
+                "videlalvaro/php-amqplib": "2.0.*"
             },
             "require-dev": {
-                "symfony/console": ">=2.1.0,<2.3-dev"
+                "symfony/console": ">=2.0,<3.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -809,7 +863,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2013-02-13 19:59:04"
+            "time": "2013-03-01 10:21:13"
         },
         {
             "name": "phpoption/phpoption",
@@ -900,7 +954,7 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v2.2.0-RC3",
+            "version": "v2.2.0",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
@@ -946,17 +1000,17 @@
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v2.2.0-RC3",
+            "version": "v2.2.0",
             "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensio/SensioFrameworkExtraBundle.git",
-                "reference": "v2.2.0-RC3"
+                "reference": "v2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensio/SensioFrameworkExtraBundle/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
+                "url": "https://api.github.com/repos/sensio/SensioFrameworkExtraBundle/zipball/v2.2.0",
+                "reference": "v2.2.0",
                 "shasum": ""
             },
             "require": {
@@ -989,11 +1043,11 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2013-02-22 06:41:37"
+            "time": "2013-02-28 14:13:52"
         },
         {
             "name": "sensio/generator-bundle",
-            "version": "v2.2.0-RC3",
+            "version": "v2.2.0",
             "target-dir": "Sensio/Bundle/GeneratorBundle",
             "source": {
                 "type": "git",
@@ -1153,17 +1207,17 @@
         },
         {
             "name": "symfony/monolog-bundle",
-            "version": "v2.2.0-RC2",
+            "version": "v2.2.0",
             "target-dir": "Symfony/Bundle/MonologBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/MonologBundle",
-                "reference": "v2.2.0-RC2"
+                "url": "https://github.com/symfony/MonologBundle.git",
+                "reference": "v2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/v2.2.0-RC2",
-                "reference": "v2.2.0-RC2",
+                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/v2.2.0",
+                "reference": "v2.2.0",
                 "shasum": ""
             },
             "require": {
@@ -1207,20 +1261,20 @@
                 "log",
                 "logging"
             ],
-            "time": "2013-02-11 10:49:31"
+            "time": "2013-02-23 17:18:24"
         },
         {
             "name": "symfony/swiftmailer-bundle",
-            "version": "v2.2.0-BETA2",
+            "version": "v2.2.0",
             "target-dir": "Symfony/Bundle/SwiftmailerBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/SwiftmailerBundle",
+                "url": "https://github.com/symfony/SwiftmailerBundle.git",
                 "reference": "v2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/SwiftmailerBundle/archive/v2.2.0-BETA2.zip",
+                "url": "https://api.github.com/repos/symfony/SwiftmailerBundle/zipball/v2.2.0-BETA2",
                 "reference": "v2.2.0-BETA2",
                 "shasum": ""
             },
@@ -1266,16 +1320,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.2.0-RC3",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "v2.2.0-RC3"
+                "reference": "v2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.2.0",
+                "reference": "v2.2.0",
                 "shasum": ""
             },
             "require": {
@@ -1361,20 +1415,20 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-02-24 12:07:19"
+            "time": "2013-03-01 06:52:29"
         },
         {
             "name": "twig/extensions",
-            "version": "v1.0.0-alpha",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig-extensions",
-                "reference": "v1.0.0-alpha"
+                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "reference": "5c2d515d4624bdd588226d688173cf0399a4d8cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig-extensions/zipball/v1.0.0-alpha",
-                "reference": "v1.0.0-alpha",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/5c2d515d4624bdd588226d688173cf0399a4d8cf",
+                "reference": "5c2d515d4624bdd588226d688173cf0399a4d8cf",
                 "shasum": ""
             },
             "require": {
@@ -1408,7 +1462,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2012-08-28 08:04:23"
+            "time": "2013-01-04 16:55:05"
         },
         {
             "name": "twig/twig",
@@ -1460,11 +1514,38 @@
             "time": "2013-02-09 18:21:53"
         },
         {
-            "name": "videlalvaro/php-amqplib",
+            "name": "twitter/bootstrap",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/videlalvaro/php-amqplib.git",
+                "url": "https://github.com/twitter/bootstrap.git",
+                "reference": "v2.3.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twitter/bootstrap/zipball/v2.3.1",
+                "reference": "v2.3.1",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Sleek, intuitive, and powerful front-end framework for faster and easier web development.",
+            "homepage": "http://twitter.github.com/bootstrap/",
+            "keywords": [
+                "bootstrap",
+                "css"
+            ],
+            "time": "2013-03-01 05:24:27"
+        },
+        {
+            "name": "videlalvaro/php-amqplib",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/videlalvaro/php-amqplib.git",
                 "reference": "v2.0.2"
             },
             "dist": {
@@ -1507,7 +1588,8 @@
     ],
     "minimum-stability": "alpha",
     "stability-flags": {
-        "videlalvaro/php-amqplib": 20,
-        "oldsound/rabbitmq-bundle": 20
+        "oldsound/rabbitmq-bundle": 20,
+        "twitter/bootstrap": 20,
+        "braincrafted/bootstrap-bundle": 20
     }
 }

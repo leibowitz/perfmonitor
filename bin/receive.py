@@ -29,6 +29,7 @@ def callback(ch, method, properties, body):
     print ' [x] Executing command phantomjs', content['url']
     harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url']])
     jscontent = json.loads(harcontent)
+    jscontent['site'] = content['site']
     dbcon.perfmonitor.har.insert(jscontent)
 
     ch.basic_ack(delivery_tag = method.delivery_tag)

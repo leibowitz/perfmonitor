@@ -1,12 +1,9 @@
 
 {% extends "MoschiniPerfToolBundle::layout.html.twig" %}
-
 {% block content %}
 
-<a href="{{ path('moschini_perftool_default_send') }}">One shot</a>
-<a href="{{ path('moschini_perftool_sites_add') }}">Create monitoring request</a>
+<a href="{{ path('moschini_perftool_default_send') }}">Create new</a>
 
-<br />
 {% for id, file in files %}
 {{ file.getDate.format('Y-m-d') }}
 <a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getUrl }}</a>

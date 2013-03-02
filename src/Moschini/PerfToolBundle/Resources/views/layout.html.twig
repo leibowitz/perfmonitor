@@ -2,20 +2,31 @@
 
 {% block head %}
     <link rel="icon" sizes="16x16" href="{{ asset('favicon.ico') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/acmedemo/css/demo.css') }}" />
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 {% endblock %}
 
 {% block title 'Demo Bundle' %}
 
 {% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-message">
-            <em>Notice</em>: {{ flashMessage }}
-        </div>
-    {% endfor %}
+    <div class="container">
+        <ul class="nav nav-tabs">
+        <li>
+        <a href="{{ path('moschini_perftool_default_index') }}">Har requests</a>
+        </li>
+        <li>
+        <a href="{{ path('moschini_perftool_sites_index') }}">Sites Monitoring</a>
+        </li>
+        </ul>
 
-    <div class="block">
-        {% block content %}{% endblock %}
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="flash-message">
+                <em>Notice</em>: {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        <div class="block">
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
 {% endblock %}
