@@ -21,10 +21,27 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $files = $this->getMostRecentFilesFromDB();
-        return array(
-            'files' => $files
-        );
+        $find = array();
+        $site = $request->get('site');
+        if($site)
+        {
+            $find['site'] = $site;
+            return array(
+                'files' => $this->getMostRecentFilesFromDB($find)
+            );
+        }
+        else
+        {
+            $sites = $this->getSites();
+            return array('files' => null, 'sites' => $sites);
+        }
+    }
+
+    private function getSites()
+    {
+        $db = $this->getDb();  
+        $find = array();
+        return $db->har->find($find);
     }
 
 	/**
