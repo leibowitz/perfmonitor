@@ -27,6 +27,7 @@ class SitesController extends Controller
     public function indexAction(Request $request)
     {
         return array(
+            'sites' => SitesDb::getSitesConfig()
         );
     }
 

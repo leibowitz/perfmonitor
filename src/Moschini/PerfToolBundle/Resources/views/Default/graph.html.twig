@@ -21,13 +21,7 @@
 
 {% block content %}
 
-{% if sites is defined %}
-<ul>
-{% for site in sites %}
-<li><a href="{{ path('moschini_perftool_default_graph', {'site': site}) }}">{{ site }}</a></li>
-{% endfor %}
-</ul>
-{% endif %}
+{% include "MoschiniPerfToolBundle::sites.html.twig" %}
 
 {% for key, times in datas %}
 	<div>

@@ -12,6 +12,26 @@ class SitesDb
         $db = SitesDb::getDb();  
         return $db->har->distinct('site');
     }
+    
+    static public function getManagedSites()
+    {
+        $db = SitesDb::getDb();  
+        return $db->sites->distinct('site');
+    }
+    
+    static public function getSitesConfig($site = null)
+    {
+        $db = SitesDb::getDb();  
+        if($site)
+        {
+            $find = array('site' => $site);
+        }
+        else
+        {
+            $find = array();
+        }
+        return $db->sites->find($find);
+    }
 
     static public function getFilesFromDB($find, $sort = array())
     {

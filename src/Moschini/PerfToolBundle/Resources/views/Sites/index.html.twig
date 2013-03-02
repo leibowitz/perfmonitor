@@ -3,7 +3,32 @@
 
 {% block content %}
 
-<a class="btn" href="{{ path('moschini_perftool_sites_add') }}">Add site</a>
+<a class="btn pull-right" href="{{ path('moschini_perftool_sites_add') }}">Add site</a>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Site</th>
+        <th>Interval</th>
+        <th># Urls</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for site in sites %}
+    <tr>
+        <td>
+            <a href="">{{ site['site'] }}</a>
+        </td>
+        <td>
+            {{ site['interval'] }}
+        </td>
+        <td>
+            {{ site['urls']|length }}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
 

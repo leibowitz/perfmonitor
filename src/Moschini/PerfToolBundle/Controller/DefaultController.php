@@ -21,20 +21,12 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $find = array();
         $site = $request->get('site');
-        if($site)
-        {
-            $find = array('site' => $site);
-            return array(
-                'files' => SitesDb::getMostRecentFilesFromDB($find)
-            );
-        }
-        else
-        {
-            $sites = SitesDb::getSites();
-            return array('files' => null, 'sites' => $sites);
-        }
+        return array(
+            'files' => $site ? SitesDb::getMostRecentFilesFromDB(array('site' => $site)) : null, 
+            'sites' => SitesDb::getSites(), 
+            'current_site' => $site,
+        );
     }
 
 	/**
@@ -88,7 +80,7 @@ class DefaultController extends Controller
 	{
 		$urls = array();
 		$datas = array();
-        $sites = array();
+        $sites = SitesDb::getSites();
 
         $site = $request->get('site');
         if($site)
@@ -115,13 +107,10 @@ class DefaultController extends Controller
                 }
             }
         }
-        else
-        {
-            $sites = SitesDb::getSites();
-        }
         
 		return array(
             'sites' => $sites,
+            'current_site' => $site,
 			'datas' => $datas,
 			'urls' => $urls,
 			);
@@ -133,20 +122,14 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
 	{
+        $sites = SitesDb::getSites();
         $site = $request->get('site');
-        if($site)
-        {
-            $find = array('site' => $site);
-            return array(
-                'files' => SitesDb::getAllFilesFromDB($find)
-            );
-        }
-        else
-        {
-            $sites = SitesDb::getSites();
-            return array('files' => null, 'sites' => $sites);
-        }
 
+        return array(
+            'files' => $site ? SitesDb::getMostRecentFilesFromDB(array('site' => $site)) : null, 
+            'sites' => $sites,
+            'current_site' => $site,
+        );
 	}
     
 	

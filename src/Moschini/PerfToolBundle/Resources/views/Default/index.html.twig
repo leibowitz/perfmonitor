@@ -3,22 +3,33 @@
 {% block title 'Requests' %}
 {% block content %}
 
-<a class="btn" href="{{ path('moschini_perftool_default_send') }}">Create new</a>
-<br />
+<a class="btn pull-right" href="{{ path('moschini_perftool_default_send') }}">Create new</a>
 
+{% include "MoschiniPerfToolBundle::sites.html.twig" %}
+
+
+{% if files|length > 0 %}
+<table class="table table-condensed" style="width:300px;">
+<thead>
+    <tr>
+        <th>Date</th>
+        <th>Url</th>
+    </tr>
+</thead>
+<tbody>
 {% for id, file in files %}
-{{ file.getDate.format('Y-m-d') }}
-<a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getUrl }}</a>
-<br />
-{% endfor %}
 
-{% if sites is defined %}
-<ul>
-{% for site in sites %}
-<li><a href="{{ path('moschini_perftool_default_index', {'site': site}) }}">{{ site }}</a></li>
+    <tr>
+        <td>{{ file.getDate.format('Y-m-d') }}</td>
+        <td>
+<a href="{{ path('moschini_perftool_default_harviewer', {'id':id}) }}">{{ file.getUrl }}</a>
+        </td>
+    </tr>
 {% endfor %}
-</ul>
+</tbody>
+</table>
 {% endif %}
+
 
 
 {% endblock %}
