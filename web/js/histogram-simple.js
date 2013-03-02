@@ -1,4 +1,4 @@
-function loadHistogramSimple(values)
+function loadHistogramSimple(values, div_id)
 {
 
 // A formatter for counts.
@@ -45,7 +45,7 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var svg = d3.select("div.block").append("svg")
+var svg = d3.select("#"+div_id).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")

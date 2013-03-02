@@ -6,7 +6,7 @@
 <script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script type="text/javascript">
 {% for key, times in datas %}
-    loadHistogramSimple({{ times|json_encode }});
+    loadHistogramSimple({{ times|json_encode }}, 'div-hist-{{ key }}');
 {% endfor %}
 
     $(function(){
@@ -24,7 +24,7 @@
 {% include "MoschiniPerfToolBundle::sites.html.twig" %}
 
 {% for key, times in datas %}
-	<div>
+	<div id="div-hist-{{ key }}">
 		<h1>
 		<a href="">{{ urls[key].getHost }}{{ urls[key].getPath }}</a>
 		</h1>
