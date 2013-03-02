@@ -22,8 +22,9 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         $site = $request->get('site');
+        $files = $this->getFilesFromFilter($site, $request->get('url'));
         return array(
-            'files' => $site ? SitesDb::getMostRecentFilesFromDB(array('site' => $site)) : null, 
+            'files' => $files, 
             'sites' => SitesDb::getSitesAndUrls(), 
             'current_site' => $site,
         );
