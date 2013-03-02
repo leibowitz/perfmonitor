@@ -40,8 +40,7 @@ class DefaultController extends Controller
     private function getSites()
     {
         $db = $this->getDb();  
-        $find = array();
-        return $db->har->find($find);
+        return $db->har->distinct('site');
     }
 
 	/**
