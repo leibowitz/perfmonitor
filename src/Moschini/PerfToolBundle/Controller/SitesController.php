@@ -80,8 +80,17 @@ class SitesController extends Controller
         $defaultData = array('interval' => 180, 'site' => $site);
 
         $form = $this->createFormBuilder($defaultData)
-            ->add('site', 'text')
-            ->add('urls', 'textarea')
+            ->add('site', 'text', array(
+                'attr' => array(
+                    'placeholder' => 'Site name',
+                )
+            ))
+            ->add('urls', 'textarea', array(
+                'attr' => array(
+                    'placeholder' => 'One urls per line',
+                    'rows' => 5
+                   )
+            ))
             ->add('interval', 'choice', 
                 array('choices' => array(
                     5 => '5 min', 
@@ -134,7 +143,11 @@ class SitesController extends Controller
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text')
-            ->add('urls', 'textarea')
+            ->add('urls', 'textarea', array(
+                'attr' => array(
+                    'rows' => 10
+                    )
+            ))
             ->add('interval', 'choice', 
                 array('choices' => array(
                     5 => '5 min', 

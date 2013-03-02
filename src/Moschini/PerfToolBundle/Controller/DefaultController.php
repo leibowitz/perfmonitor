@@ -24,7 +24,7 @@ class DefaultController extends Controller
         $site = $request->get('site');
         return array(
             'files' => $site ? SitesDb::getMostRecentFilesFromDB(array('site' => $site)) : null, 
-            'sites' => SitesDb::getSites(), 
+            'sites' => SitesDb::getSitesAndUrls(), 
             'current_site' => $site,
         );
     }
@@ -36,12 +36,20 @@ class DefaultController extends Controller
     public function sendAction(Request $request)
     {
         $site = $request->get('site');
-        $defaultData = array('type' => 'har', 'site' => $site, 'url' => 'http://');
+        $defaultData = array('type' => 'har', 'site' => $site);
 
         $form = $this->createFormBuilder($defaultData)
-            ->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
-            ->add('site', 'text')
-            ->add('url', 'text')
+            //->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
+            ->add('site', 'text', array(
+                'attr' => array(
+                    'placeholder' => 'Site name',
+                )
+            ))
+            ->add('url', 'text', array(
+                'attr' => array(
+                    'placeholder' => 'http://www.google.com',
+                )
+            ))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -54,7 +62,7 @@ class DefaultController extends Controller
                     'url' => $data['url'],
                     'site' => $data['site'],
                     'account' => 'me',
-                    'type' => $data['type'],
+                    'type' => 'har', //$data['type'],
                 );
                 $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
                 return $this->redirect($this->generateUrl('moschini_perftool_default_done', array('site' => $site)));
@@ -81,14 +89,13 @@ class DefaultController extends Controller
 	{
 		$urls = array();
 		$datas = array();
-        $sites = SitesDb::getSites();
+        $sites = SitesDb::getSitesAndUrls();
 
         $site = $request->get('site');
+        $files = $this->getFilesFromFilter($site, $request->get('url'));
+
         if($site)
         {
-            $find = array('site' => $site);
-            $files = SitesDb::getAllFilesFromDB($find);
-
             foreach($files as $har)
             {
                 foreach($har->getPages() as $page)
@@ -116,18 +123,38 @@ class DefaultController extends Controller
 			'urls' => $urls,
 			);
     }
-	
+
+    public function getFilesFromFilter($site = null, $url = null)
+    {
+        $files = null;
+
+        if($site)
+        {
+            $find = array('site' => $site);
+
+            if($url)
+            {
+                $find['log.entries.request.url'] = $url;
+            }
+
+            $files = SitesDb::getMostRecentFilesFromDB($find);
+        }
+        
+        return $files;
+    }
+
 	/**
      * @Route("/time")
      * @Template()
      */
     public function timeAction(Request $request)
 	{
-        $sites = SitesDb::getSites();
+        $sites = SitesDb::getSitesAndUrls();
         $site = $request->get('site');
+        $files = $this->getFilesFromFilter($site, $request->get('url'));
 
         return array(
-            'files' => $site ? SitesDb::getMostRecentFilesFromDB(array('site' => $site)) : null, 
+            'files' => $files, 
             'sites' => $sites,
             'current_site' => $site,
         );

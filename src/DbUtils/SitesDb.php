@@ -12,6 +12,32 @@ class SitesDb
         $db = SitesDb::getDb();  
         return $db->har->distinct('site');
     }
+
+    static public function getSitesAndUrls()
+    {
+        $sites = SitesDb::getSites();
+        $results = array();
+        foreach($sites as $name)
+        {
+            $results[$name] = SitesDb::getUrls($name);
+        }
+        return $results;
+    }
+
+    static public function getUrls($name)
+    {
+        $db = SitesDb::getDb();
+        $rows = $db->har->find(array('site' => $name), array('log.entries.request.url' => 1));
+        $urls = array();
+        foreach($rows as $row)
+        {
+            $urls[] = $row['log']['entries'][0]['request']['url'];
+        }
+
+        $urls = array_unique($urls);
+
+        return $urls;
+    }
     
     static public function getManagedSites()
     {
