@@ -3,6 +3,7 @@
 namespace Moschini\PerfToolBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -181,4 +182,42 @@ class SitesController extends Controller
         return array('form' => $form->createView());
     }
 	
+	/**
+     * @Route("/sites")
+     * @Template()
+     */
+    public function sitesAction(Request $request)
+    {
+        $context = new RequestContext();
+        $context->fromRequest(Request::createFromGlobals());
+        $route = $this->get('router')->match($context->getPathInfo());
+
+        $site = $request->get('site');
+        $files = SitesDb::getFilesFromFilter($site, $request->get('url'));
+
+        return array(
+            'files' => $files, 
+            'sites' => SitesDb::getSitesAndUrls(), 
+            'current_site' => $site,
+            'route' => $route['_route']
+        );
+    }
+
+	/**
+     * @Route("/js")
+     * @Template()
+     */
+    public function jsAction(Request $request)
+    {
+        $context = new RequestContext();
+        $context->fromRequest(Request::createFromGlobals());
+        $route = $this->get('router')->match($context->getPathInfo());
+        $site = $request->get('site');
+        
+        return array(
+            'current_site' => $site,
+            'route' => $route['_route']
+        );
+    }
+
 }

@@ -3,9 +3,9 @@
 {% block title 'Requests' %}
 {% block content %}
 
-<a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
+{% render url('moschini_perftool_sites_sites') %}
 
-{% include "MoschiniPerfToolBundle::sites.html.twig" %}
+<a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
 
 
 {% if files|length > 0 %}
@@ -39,4 +39,5 @@
             $('#menu-nav a[href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
         });
     </script>
+{% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
 {% endblock %}

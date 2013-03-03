@@ -13,6 +13,7 @@
         $('#menu-nav a[href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
     });
 </script>
+{% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
 {% endblock %}
 
 {% block stylesheets %}
@@ -21,7 +22,7 @@
 
 {% block content %}
 
-{% include "MoschiniPerfToolBundle::sites.html.twig" %}
+{% render url('moschini_perftool_sites_sites') %}
 
 {% for key, times in datas %}
 	<div id="div-hist-{{ key }}">

@@ -21,12 +21,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $site = $request->get('site');
-        $files = $this->getFilesFromFilter($site, $request->get('url'));
         return array(
-            'files' => $files, 
-            'sites' => SitesDb::getSitesAndUrls(), 
-            'current_site' => $site,
+            'files' => $this->getFilesFromDb($request), 
         );
     }
 
@@ -90,12 +86,10 @@ class DefaultController extends Controller
 	{
 		$urls = array();
 		$datas = array();
-        $sites = SitesDb::getSitesAndUrls();
 
-        $site = $request->get('site');
-        $files = $this->getFilesFromFilter($site, $request->get('url'));
+        $files = $this->getFilesFromDb($request);
 
-        if($site)
+        if($files)
         {
             foreach($files as $har)
             {
@@ -118,30 +112,14 @@ class DefaultController extends Controller
         }
         
 		return array(
-            'sites' => $sites,
-            'current_site' => $site,
 			'datas' => $datas,
 			'urls' => $urls,
 			);
     }
 
-    public function getFilesFromFilter($site = null, $url = null)
+    private function getFilesFromDb($request)
     {
-        $files = null;
-
-        if($site)
-        {
-            $find = array('site' => $site);
-
-            if($url)
-            {
-                $find['log.entries.request.url'] = $url;
-            }
-
-            $files = SitesDb::getMostRecentFilesFromDB($find);
-        }
-        
-        return $files;
+        return SitesDb::getFilesFromFilter($request->get('site'), $request->get('url'));
     }
 
 	/**
@@ -150,17 +128,10 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
 	{
-        $sites = SitesDb::getSitesAndUrls();
-        $site = $request->get('site');
-        $files = $this->getFilesFromFilter($site, $request->get('url'));
-
         return array(
-            'files' => $files, 
-            'sites' => $sites,
-            'current_site' => $site,
+            'files' => $this->getFilesFromDb($request), 
         );
 	}
-    
 	
     /**
      * @Route("/harviewer/{id}")

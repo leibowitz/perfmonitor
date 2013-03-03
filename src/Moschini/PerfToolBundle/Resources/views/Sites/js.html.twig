@@ -1,0 +1,5 @@
+<script type="text/javascript">
+$(function(){
+    $('#site-selection ul li a[href="#{{ current_site }}"]').parent().addClass('active').find('ul li a[href="{{ path(route, {'site': current_site, 'url': app.request.get('url')})|raw }}"]').parent().addClass('active');
+});
+</script>

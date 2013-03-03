@@ -1,0 +1,20 @@
+{% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+{% block title 'Edit site' %}
+
+{% block content %}
+
+<form action="{{ path('moschini_perftool_sites_edit', {'site': app.request.get('site'), 'id': app.request.get('id')}) }}" method="post" {{ form_enctype(form) }}>
+{{ form_widget(form) }}
+<br />
+<button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function(){
+            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
+        });
+    </script>
+{% endblock %}

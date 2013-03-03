@@ -95,5 +95,24 @@ class SitesDb
         return $m->selectDB("perfmonitor");  
     }
 
+    static public function getFilesFromFilter($site = null, $url = null)
+    {
+        $files = null;
+
+        if($site)
+        {
+            $find = array('site' => $site);
+
+            if($url)
+            {
+                $find['log.entries.request.url'] = $url;
+            }
+
+            $files = SitesDb::getMostRecentFilesFromDB($find);
+        }
+        
+        return $files;
+    }
+
 };
 

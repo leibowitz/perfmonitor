@@ -36,10 +36,11 @@ for(page in values)
         $('#menu-nav a[href="{{ path('moschini_perftool_default_time', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
     });
 </script>
+{% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
 {% endblock %}
 
 {% block content %}
 
-{% include "MoschiniPerfToolBundle::sites.html.twig" %}
+{% render url('moschini_perftool_sites_sites') %}
 
 {% endblock %}
