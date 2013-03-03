@@ -4,15 +4,16 @@
 
 {% block body %}
     <div class="navbar navbar-static-top">
-        <div class="navbar-inner">
-            <ul class="nav" id="menu-nav">
+        <div class="navbar-inner" id="menu-nav">
+            <ul class="nav">
                 <li><a href="{{ path('moschini_perftool_default_time', {'site': app.request.get('site')}) }}">Monitoring</a></li>
                 <li class="divider-vertical"></li>
                 <li><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}">Histograms</a></li>
                 <li class="divider-vertical"></li>
                 <li><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}">Waterfall</a></li>
-                <li class="divider-vertical"></li>
-                <li class="pull-right"><a href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}">Manage sites</a></li>
+             </ul>
+             <ul class="nav pull-right">
+                <li><a href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}">Manage sites</a></li>
             </ul>
         </div>
     </div>

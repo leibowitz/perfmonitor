@@ -1,13 +1,16 @@
 {% if sites is defined %}
-<div class="well" id="site-selection">
-    <p>Site selection</p>
-    <ul class="nav nav-pills nav-stacked" style="width: 200px;">
+Site: 
+<div class="btn-group" id="site-selection">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        {{ current_site|default('All') }}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
         {% for name, urls in sites %}
-        <li class="dropdown {% if name == current_site %}active{% endif %}">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#{{ name }}">{{ name }}
-                <b class="caret"></b>
+        <li class="dropdown-submenu {% if name == current_site %}active{% endif %}">
+            <a href="{{ path(route, {'site': name}) }}">{{ name }}
             </a>
-            <ul class="dropdown-menu pull-right" id="sites-url">
+            <ul class="dropdown-menu" id="sites-url">
                <li><a href="{{ path(route, {'site': name}) }}">All</a></li> 
                <li class="divider"><li>
                {% for url in urls %}

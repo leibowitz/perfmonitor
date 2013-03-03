@@ -8,9 +8,5 @@ Done
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        $(function(){
-            $('#menu-nav a[href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
-        });
-    </script>
+{% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_sites_index'} %}
 {% endblock %}

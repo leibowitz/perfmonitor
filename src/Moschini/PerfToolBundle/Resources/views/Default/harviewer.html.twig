@@ -65,9 +65,5 @@
 
 {% endblock %}
 {% block javascripts %}
-    <script>
-        $(function(){
-            $('#menu-nav a[href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
-        });
-    </script>
+{% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_index'} %}
 {% endblock %}

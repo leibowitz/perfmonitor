@@ -184,6 +184,7 @@ class SitesController extends Controller
 	
 	/**
      * @Route("/sites")
+     * @Route("/sites/{site}")
      * @Template()
      */
     public function sitesAction(Request $request)

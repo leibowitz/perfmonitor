@@ -9,10 +9,8 @@
     loadHistogramSimple({{ times|json_encode }}, 'div-hist-{{ key }}');
 {% endfor %}
 
-    $(function(){
-        $('#menu-nav a[href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}"]').parent().addClass('active');
-    });
 </script>
+{% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_graph'} %}
 {% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
 {% endblock %}
 
@@ -22,7 +20,7 @@
 
 {% block content %}
 
-{% render url('moschini_perftool_sites_sites') %}
+{% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
 
 {% for key, times in datas %}
 	<div id="div-hist-{{ key }}">
