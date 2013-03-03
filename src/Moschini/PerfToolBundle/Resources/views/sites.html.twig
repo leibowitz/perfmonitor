@@ -1,0 +1,20 @@
+{% if sites is defined %}
+<div id="site-selection">
+    <ul class="nav nav-pills nav-stacked" style="width: 200px;">
+        {% for name, urls in sites %}
+        <li class="dropdown {% if name == current_site %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#{{ name }}">{{ name }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" id="sites-url">
+               <li><a href="{{ path(app.request.get('_route'), {'site': name}) }}">All</a></li> 
+               <li class="divider"><li>
+               {% for url in urls %}
+                   <li><a href="{{ path(app.request.get('_route'), {'site': name, 'url': url}) }}">{{ url }}</a></li>
+               {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

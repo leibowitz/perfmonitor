@@ -40,12 +40,11 @@ function groupValuesByDate(values)
 
         datas[key].push(values[i].value);
     }
-//console.log(datas);
     return datas;
 }
 
 
-function showTimesGraph(values, name)
+function showTimesGraph(values, div_id)
 {
     var height = 200;
     var margin_h = 20;
@@ -54,7 +53,6 @@ function showTimesGraph(values, name)
     var h=100;
     var w=20;
 
-    //console.log(values);
     values.sort(sort_by_time);
 
     values_key = values.map(function(d){return d.date;});
@@ -70,11 +68,9 @@ function showTimesGraph(values, name)
         .domain([d3.max(values_val)+1, Math.max(d3.min(values_val)-2,0)])
         .range([margin_h, height-margin_h]);
 
-    var div = d3.select("div.block")
+    var div = d3.select(div_id)
         .append("div");
     
-    div.append("h2").text(name);
-
     var svg = div
         .append("svg")
         .attr("width", width)

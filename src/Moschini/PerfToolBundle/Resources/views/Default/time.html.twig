@@ -5,34 +5,18 @@
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
 <script src="{{ asset('js/time-graph.js') }}"></script>
 <script type="text/javascript">
-var values={};
-
-{% for har in files %}
-    {% for id, page in har.getPages %}
-    if(!values['{{ page.getUrl }}'])
-        values['{{ page.getUrl }}'] = [];
-
-    values['{{ page.getUrl }}'].push({{ page.getLoadTimeAndDate|json_encode|raw }});
-
-    {% endfor %}
-{% endfor %}
-    
-
-for(page in values)
-{
+{% for key, times in values %}
     var avgs = [];
     
-    datas = groupValuesByDate(values[page]);
+    datas = groupValuesByDate({{ times|json_encode|raw }});
     for(time in datas)
     {
         avgs.push({'date': parseInt(time), 'value': getHistAvgValue(datas[time])});
-        console.log(parseInt(time), getHistAvgValue(datas[time]));
     }
-	
-    showTimesGraph(avgs, page);
-}
-
+    showTimesGraph(avgs, '#div-key-{{ key }}');
+{% endfor %}
 </script>
+
 {% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_time'} %}
 {% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
 {% endblock %}
@@ -40,5 +24,11 @@ for(page in values)
 {% block content %}
 
 {% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
+
+{% for id, url in urls %}
+<div id="div-key-{{ id }}">
+<h3><a href="">{{ url.getHost }}{{ url.getPath }}</a></h3>
+</div>
+{% endfor %}
 
 {% endblock %}

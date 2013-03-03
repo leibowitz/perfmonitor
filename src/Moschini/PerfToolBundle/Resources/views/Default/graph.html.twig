@@ -6,7 +6,7 @@
 <script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script type="text/javascript">
 {% for key, times in datas %}
-    loadHistogramSimple({{ times|json_encode }}, 'div-hist-{{ key }}');
+    loadHistogramSimple({{ times|json_encode }}, '#div-hist-{{ key }}');
 {% endfor %}
 
 </script>
@@ -24,9 +24,9 @@
 
 {% for key, times in datas %}
 	<div id="div-hist-{{ key }}">
-		<h1>
+		<h3>
 		<a href="">{{ urls[key].getHost }}{{ urls[key].getPath }}</a>
-		</h1>
+		</h3>
 	</div>
 
 {% endfor %}

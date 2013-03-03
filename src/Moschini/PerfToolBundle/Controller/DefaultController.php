@@ -128,8 +128,37 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
 	{
+
+        $files = $this->getFilesFromDb($request);
+        $values = array();
+        $urls = array();
+
+        foreach($files as $har)
+        {
+            foreach($har->getPages() as $id => $page)
+            {
+                $url = $page->getUrl();
+                $url_key = $url->getUid();
+
+                if(!array_key_exists($url_key, $values))
+                {
+                    $values[ $url_key ] = array();
+                }
+                
+                $values[$url_key][] = $page->getLoadTimeAndDate();
+                
+                if(!array_key_exists($url_key, $urls))
+                {
+                    $urls[ $url_key ] = $url;
+                }
+
+            }
+        }
+
         return array(
-            'files' => $this->getFilesFromDb($request), 
+            'files' => $files, 
+            'values' => $values, 
+            'urls' => $urls, 
         );
 	}
 	
