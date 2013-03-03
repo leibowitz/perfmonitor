@@ -1,8 +1,4 @@
 
-body {
-  font: 10px sans-serif;
-}
-
 .bar rect {
   fill: steelblue;
   shape-rendering: crispEdges;

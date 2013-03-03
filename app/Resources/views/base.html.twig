@@ -4,10 +4,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
         <link href="{{ asset('css/global.css') }}" rel="stylesheet">
         <link href="{{ asset('css/bootstrap-select.css') }}" rel="stylesheet">
         {% include 'BraincraftedBootstrapBundle::_stylesheets.html.twig' %}
+        {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
