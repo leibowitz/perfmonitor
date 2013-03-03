@@ -27,8 +27,14 @@ class SitesController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $find = array();
+        $site = $request->get('site');
+        if($site)
+        {
+            $find = array('site' => $site);
+        }
         return array(
-            'sites' => SitesDb::getSitesConfig()
+            'sites' => SitesDb::getSitesConfig($find)
         );
     }
 
@@ -182,6 +188,28 @@ class SitesController extends Controller
         return array('form' => $form->createView());
     }
 	
+    /**
+     * @Route("/managedsites")
+     * @Route("/managedsites/{site}")
+     * @Template() 
+     */
+    public function managedsitesAction(Request $request)
+    {
+        $context = new RequestContext();
+        $context->fromRequest(Request::createFromGlobals());
+        $route = $this->get('router')->match($context->getPathInfo());
+
+        $site = $request->get('site');
+
+        $sites = SitesDb::getManagedSites();
+
+        return array(
+            'sites' => $sites, 
+            'current_site' => $site,
+            'route' => $route['_route']
+        );
+    }
+	
 	/**
      * @Route("/sites")
      * @Route("/sites/{site}")
@@ -194,10 +222,8 @@ class SitesController extends Controller
         $route = $this->get('router')->match($context->getPathInfo());
 
         $site = $request->get('site');
-        $files = SitesDb::getFilesFromFilter($site, $request->get('url'));
 
         return array(
-            'files' => $files, 
             'sites' => SitesDb::getSitesAndUrls(), 
             'current_site' => $site,
             'route' => $route['_route']

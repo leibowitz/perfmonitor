@@ -1,0 +1,18 @@
+{% if sites %}
+Site: 
+<div class="btn-group" id="site-selection">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        {{ current_site|default('All') }}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li class=""><a href="{{ path(route) }}">All</a></li>
+        {% for site in sites %}
+        <li class="{% if site == current_site %}active{% endif %}">
+            <a href="{{ path(route, {'site': site}) }}">{{ site }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
