@@ -62,6 +62,10 @@ class DefaultController extends Controller
                     'type' => 'har', //$data['type'],
                 );
                 $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
+                // If no site has been defined, use the one used for this request 
+                if(!$site){
+                    $site = $data['site'];
+                }
                 return $this->redirect($this->generateUrl('moschini_perftool_default_done', array('site' => $site)));
             }
         }

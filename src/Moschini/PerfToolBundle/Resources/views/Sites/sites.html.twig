@@ -1,4 +1,4 @@
-{% if sites is defined %}
+{% if sites %}
 Site: 
 <div class="btn-group" id="site-selection">
     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -7,9 +7,10 @@ Site:
     </a>
     <ul class="dropdown-menu">
         {% for name, urls in sites %}
-        <li class="dropdown-submenu {% if name == current_site %}active{% endif %}">
+        <li class="dropdown{% if urls|length > 1 %}-submenu{% endif %} {% if name == current_site %}active{% endif %}">
             <a href="{{ path(route, {'site': name}) }}">{{ name }}
             </a>
+            {% if urls|length > 1 %}
             <ul class="dropdown-menu" id="sites-url">
                <li><a href="{{ path(route, {'site': name}) }}">All</a></li> 
                <li class="divider"><li>
@@ -17,8 +18,11 @@ Site:
                    <li><a href="{{ path(route, {'site': name, 'url': url}) }}">{{ url }}</a></li>
                {% endfor %}
             </ul>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
 </div>
+{% else %}
+There are no sites created yet. Create a <a href="{{ path('moschini_perftool_default_send') }}">new request</a> to get started.
 {% endif %}

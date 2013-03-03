@@ -3,8 +3,11 @@
 
 {% block content %}
 
+{% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
+
 <a class="btn pull-right" href="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}">Add site</a>
 
+{% if sites.count %}
 <table class="table">
     <thead>
     <tr>
@@ -29,6 +32,9 @@
     {% endfor %}
     </tbody>
 </table>
+{% else %}
+No sites have been added to the monitoring yet. <a href="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}">Add yours</a> to get started.
+{% endif %}
 
 {% endblock %}
 
