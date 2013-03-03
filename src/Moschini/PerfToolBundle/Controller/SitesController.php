@@ -31,13 +31,9 @@ class SitesController extends Controller
         $find = array();
         $site = $request->get('site');
 
-        if($site && in_array($site, $sites))
+        if($site)
         {
             $find = array('site' => $site);
-        }
-        else
-        {
-            $site = null;
         }
 
         $configs = SitesDb::getSitesConfig($find);
@@ -215,7 +211,7 @@ class SitesController extends Controller
 
         return array(
             'sites' => $sites, 
-            'current_site' => in_array($site, $sites) ? $site : null,
+            'current_site' => $site,
             'route' => $route['_route']
         );
     }
