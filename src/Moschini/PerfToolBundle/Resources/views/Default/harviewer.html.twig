@@ -17,11 +17,13 @@
         <td>
         <b>
 		{{ entry.getRequest.getMethod }}
+        <span data-toggle="tooltip" title="{{ entry.getUrl.getUrl }}">
 		{% if entry.getUrl.getFileName %}
 		{{ entry.getUrl.getFileName|slice(0,40) }}
 		{% else %}
 		{{ entry.getUrl.getHost }}
 		{% endif %}
+        </span>
         </b>
         </td>
         <td>
@@ -36,7 +38,7 @@
         <td>
         <span class="time onload">
         </span>
-        <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display: inline;">
+        <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
 		{{ showTimeBars(entry.getTimings, page.getLoadTime) }}
 		<span style="display:none;">{{ page.getElapsed(entry)|getHumanTime('s') }}</span>
 		{{ entry.getTotalTime|getHumanTime }}
@@ -66,4 +68,9 @@
 {% endblock %}
 {% block javascripts %}
 {% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_index'} %}
+<script type="text/javascript">
+$('.container').tooltip({
+      selector: "span[data-toggle=tooltip]"
+})
+</script>
 {% endblock %}

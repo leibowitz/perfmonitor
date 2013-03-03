@@ -29,6 +29,9 @@ span.time{
     display: inline-block;
     min-width: 1px;
 }
+span.time em{
+    display:none;
+}
 span.onload{
     background-color:red;
     height: 15px;
@@ -37,23 +40,26 @@ span.onload{
     float:left;
 }
 span.blocked{
-    background-color:purple;
+    background-color:#DD514C;
 }
 span.send{
     background-color:green;
 }
 span.wait{
-    background-color:grey;
+    background-color:#FAA732;
 }
 span.receive{
-    background-color:blue;
+    background-color:#5EB95E;
 }
 span.dns{
-    background-color:cyan;
+    background-color:#4BB1CF;
 }
 span.connect{
     background-color:yellow;
 }
 .rel{
     position: relative;
+}
+.tooltip-inner{
+    max-width:none;
 }

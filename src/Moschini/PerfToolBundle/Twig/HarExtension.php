@@ -98,9 +98,22 @@ class HarExtension extends \Twig_Extension
     
     public function showTimeBars($timings, $total_time)
     {
-        foreach($timings as $name => $time)
+        $names = array('dns', 'connect', 'blocked', 'send', 'wait', 'receive');
+        foreach($names as $name)
         {
-            echo "<span class='".$name." time' style='width: ".(round($time/$total_time*100, 2))."%'>";
+            if(!array_key_exists($name, $timings))
+            {
+                continue;
+            }
+            $time = $timings[$name];
+            if(!$time)
+            {
+                continue;
+            }
+            $percentage = round($time/$total_time*100, 2);
+            $humantime = self::getHumanTimeFilter($time);
+            echo "<span data-toggle='tooltip' data-original-title='${name} ${humantime}' class='${name} time' style='width: ${percentage}%'>";
+            echo "<em>${timings[$name]}</em>";
             echo "</span>";
         }
     }
