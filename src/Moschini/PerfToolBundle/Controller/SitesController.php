@@ -27,14 +27,24 @@ class SitesController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $sites = SitesDb::getManagedSites();
         $find = array();
         $site = $request->get('site');
-        if($site)
+
+        if($site && in_array($site, $sites))
         {
             $find = array('site' => $site);
         }
+        else
+        {
+            $site = null;
+        }
+
+        $configs = SitesDb::getSitesConfig($find);
+
         return array(
-            'sites' => SitesDb::getSitesConfig($find)
+            'current_site' => $site,
+            'sites' => $configs
         );
     }
 
@@ -205,7 +215,7 @@ class SitesController extends Controller
 
         return array(
             'sites' => $sites, 
-            'current_site' => $site,
+            'current_site' => in_array($site, $sites) ? $site : null,
             'route' => $route['_route']
         );
     }
