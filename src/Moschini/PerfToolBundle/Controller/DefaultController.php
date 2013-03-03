@@ -133,7 +133,7 @@ class DefaultController extends Controller
         $values = array();
         $urls = array();
 
-        foreach($files as $har)
+        foreach((array)$files as $har)
         {
             foreach($har->getPages() as $id => $page)
             {
