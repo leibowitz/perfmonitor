@@ -33,7 +33,8 @@ class DefaultController extends Controller
     public function sendAction(Request $request)
     {
         $site = $request->get('site');
-        $defaultData = array('type' => 'har', 'site' => $site);
+        $url = $request->get('url');
+        $defaultData = array('type' => 'har', 'url' => $url, 'site' => $site);
 
         $form = $this->createFormBuilder($defaultData)
             //->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
@@ -165,16 +166,59 @@ class DefaultController extends Controller
             'urls' => $urls, 
         );
 	}
-	
+
+    private function addOrderByAndDate($query, $field, $value, $sort = 1)
+    {
+        $operator = $sort == 1 ? '$gt' : '$lt';
+        $query[$field] = array($operator => $value);
+	    return array('query' => $query, 'orderby' => array($field => $sort));
+    }
+
+    private function getPreviousNext($item)
+    {
+        $db = SitesDb::getDb();
+        $find = $this->getRelatedFinder($item);
+        $date = $item['log']['pages'][0]['startedDateTime'];
+        $findNext = $this->addOrderByAndDate($find, 'log.pages.startedDateTime', $date, 1);
+        $findPrevious = $this->addOrderByAndDate($find, 'log.pages.startedDateTime', $date, -1);
+        $next = $db->har->findOne($findNext, array('_id' => 1));
+        $previous = $db->har->findOne($findPrevious, array('_id' => 1));
+        return array($previous, $next);
+    }
+
+    private function getRelatedFinder($item)
+    {
+        $site = $item['site'];
+        $url = $item['log']['entries'][0]['request']['url'];
+        return array(
+            '_id' => array('$ne' => $item['_id']),
+            'site' => $site, 
+            'log.entries.request.url' => $url
+        );
+    }
+
+    private function getObjectId($item)
+    {
+        return $item ? $item['_id'] : null;
+    }
+
     /**
      * @Route("/harviewer/{id}")
      * @Template()
      */
-	public function harviewerAction($id)
+	public function harviewerAction(Request $request, $id)
     {
         $db = SitesDb::getDb();
-        $item = $db->har->findOne(array('_id' => new \MongoId($id)));
+        $mongoid = new \MongoId($id);
+        $item = $db->har->findOne(array('_id' => $mongoid));
 		$har = HarFile::fromJson($item);
-        return array('har' => $har);
+        
+        list($previous, $next) = $this->getPreviousNext($item);
+
+        return array(
+            'har' => $har,
+            'previous' => $this->getObjectId($previous),
+            'next' => $this->getObjectId($next),
+        );
     }
 }

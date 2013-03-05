@@ -2,7 +2,10 @@
 body{
     line-height:12px;
 }
-table{
+table.top-table{
+    width: 100%;
+}
+table.har{
     border-spacing:0px;
     border-collapse:collapse;
     border: 1px solid black;
@@ -62,4 +65,8 @@ span.connect{
 }
 .tooltip-inner{
     max-width:none;
+}
+.pointer{
+    cursor: default;
+    border-bottom: 1px dotted #999;
 }

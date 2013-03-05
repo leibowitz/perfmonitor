@@ -7,23 +7,47 @@
 
 {% block content %}
 
+<div>
+<table class="top-table">
+<tr>
+<td width="160">
+{% if previous %}
+<a class="btn" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': previous}) }}">&lt; Older</a>
+{% endif %}
+{% if next %}
+<a class="btn" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': next}) }}">Newer &gt;</a>
+{% endif %}
+</td>
+<td align="left">
+</td>
+<td align="right">
+<a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site'), 'url': har.getUrl.getUrl}) }}">Create new</a>
+
+</td>
+</tr>
+</table>
+</div>
+
 {% for page in har.getPages %}
 	<h1>{{ page.getName }}</h1>
+    <p> 
+    {{ har.getDate.format('Y-m-d@H:i:s') }}
+    </p>
 
-    <table>
+    <table class="har table-hover">
 
 	{% for entry in page.getEntries %}
         <tr>
         <td>
         <b>
 		{{ entry.getRequest.getMethod }}
-        <span data-toggle="tooltip" title="{{ entry.getUrl.getUrl }}">
+        <a title="{{ entry.getUrl.getUrl }}" href="{{ entry.getUrl.getUrl }}">
 		{% if entry.getUrl.getFileName %}
 		{{ entry.getUrl.getFileName|slice(0,40) }}
 		{% else %}
 		{{ entry.getUrl.getHost }}
 		{% endif %}
-        </span>
+        </a>
         </b>
         </td>
         <td>

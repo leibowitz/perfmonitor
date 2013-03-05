@@ -12,7 +12,7 @@
 <table class="table table-condensed">
 <thead>
     <tr>
-        <th width="100">Date</th>
+        <th width="150">Date</th>
         <th>Url</th>
     </tr>
 </thead>
@@ -20,7 +20,7 @@
 {% for id, file in files %}
 
     <tr>
-        <td>{{ file.getDate.format('Y-m-d') }}</td>
+        <td>{{ file.getDate.format('Y-m-d@H:i:s') }}</td>
         <td>
 <a href="{{ path('moschini_perftool_default_harviewer', {'id':id, 'site': app.request.get('site')}) }}">{{ file.getUrl }}</a>
         </td>
