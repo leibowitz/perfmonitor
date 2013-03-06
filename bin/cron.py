@@ -39,12 +39,7 @@ rows = dbcon.perfmonitor.sites.aggregate([
     {
      '$match': {'interval': minutes}
     }, 
-    {'$unwind': "$urls"}, 
-    {'$group': 
-        {'_id': 'one', 
-        'data': {'$addToSet': "$urls"}
-        }
-    }
+    {'$unwind': "$urls"} 
 ])
 
 if not rows['result']:
@@ -56,12 +51,11 @@ channel = connection.channel()
 channel.exchange_declare(exchange='perfmonitor', type='direct')
 channel.queue_declare(queue='perf')
 
-result = rows['result'].pop()
-for url in result['data']:
+for row in rows['result']:
 
     msg = {
-        'url': str(url),
-        'site': 'gtk',
+        'url': str(row['urls']),
+        'site': str(row['site']),
         'account': 'me',
         'type': 'har'
     }
