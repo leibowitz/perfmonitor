@@ -9,17 +9,6 @@ function getHistAvgValue(values)
     quart1 = d3.quantile(values, .25);
     quart3 = d3.quantile(values, .75);
     return (quart1+quart3)/2;
-    /*
-    var total = [];
-    for(i in values)
-    {
-        if(values[i]<=quart3 && values[i]>=quart1)
-        {
-            total.push(values[i]);
-        }
-    }
-    return total;
-    */
 }
 
 function sort_by_time(a, b) {
@@ -58,7 +47,8 @@ function showTimesGraph(values, div_id)
     values_key = values.map(function(d){return d.date;});
     values_val = values.map(function(d){return d.value;});
 
-    var width = 600;//Math.max(values.length * w, 200);
+    var width = 600;
+    
     var x = d3.time.scale()
         .domain([d3.min(values_key), d3.max(values_key)])
         .range([margin_w, width-margin_w]);
@@ -80,21 +70,24 @@ function showTimesGraph(values, div_id)
     var bar = svg.selectAll(".bar")
         .data(values)
       .enter();
-      /*
-      .append("g")
-        .attr("class", "bar")
-        .attr("transform", function(d, i) { return "translate(" + (i*20) + "," + (height-d*bar_scale) + ")"; });
-        */
 
     bar.append("circle")
-        //.attr("transform", function(d, i) { return "translate(" + (i*20) + "," + (height-d*bar_scale) + ")"; })
         .attr("cx", function(d,i){ return x(d.date)})
         .attr("cy", function(d,i){ return y(d.value)})
 		.attr("r", 5)
         .attr("fill", "red");
 
+    var text = svg.selectAll(".text")
+        .data(values)
+        .enter();
+
+    msformat = d3.format('.3f');
+    text.append("text")
+        .attr("x", function(d,i){ return x(d.date); })
+        .attr("y", function(d,i){ return y(d.value)-5; })
+        .text(function(d,i){ return msformat(d.value)+'s'; });
+
     bar.append("line")
-        //.attr("transform", function(d, i) { return "translate(" + (i*20) + "," + (height-d*bar_scale) + ")"; })
         .attr("x1", function(d,i){ return x(d.date)})
         .attr("y1", function(d,i){ return y(d.value)})
         .attr("x2", function(d,i){ return values_key[i+1] ? x(values_key[i+1]) : x(d.date)})
@@ -123,9 +116,5 @@ function showTimesGraph(values, div_id)
 		.attr("opacity", 0.7)
         .attr("transform", "translate(50,0)")
         .call(yAxis);
-    /*
-    bar.append("rect")
-        .attr("width", bar_width)
-        .attr("height", function(d) { return d*bar_scale; });
-        */
+    
 }
