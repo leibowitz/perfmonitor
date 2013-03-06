@@ -59,7 +59,6 @@ function showTimesGraph(values, div_id)
     values_val = values.map(function(d){return d.value;});
 
     var width = 600;//Math.max(values.length * w, 200);
-
     var x = d3.time.scale()
         .domain([d3.min(values_key), d3.max(values_key)])
         .range([margin_w, width-margin_w]);
@@ -104,24 +103,26 @@ function showTimesGraph(values, div_id)
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom")
+        .ticks(d3.time.days, 1);
 
     svg.append("g")
         .attr("class", "x axis")
 		.attr("opacity", 0.7)
         .attr("transform", "translate(0," + (height-20) + ")")
-        .call(xAxis.ticks(values.length));
+        .call(xAxis);
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+        .orient("left")
+        .ticks(5);
 
     svg.append("g")
         .attr("class", "y axis")
         .attr("width", 1)
 		.attr("opacity", 0.7)
         .attr("transform", "translate(50,0)")
-        .call(yAxis.ticks(5));
+        .call(yAxis);
     /*
     bar.append("rect")
         .attr("width", bar_width)
