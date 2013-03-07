@@ -45,7 +45,11 @@ class DefaultController extends Controller
     {
         $site = $request->get('site');
         $url = $request->get('url');
-        $defaultData = array('type' => 'har', 'url' => $url, 'site' => $site);
+        $defaultData = array(
+            'type' => 'har', 
+            'url' => $url, 
+            'site' => $site,
+            'nb' => 1);
 
         $form = $this->createFormBuilder($defaultData)
             //->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
@@ -59,6 +63,7 @@ class DefaultController extends Controller
                     'placeholder' => 'http://www.google.com',
                 )
             ))
+            ->add('nb', 'choice', array('choices' => array(1 => 1, 5 => 5, 10 => 10), 'expanded' => true))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -70,6 +75,7 @@ class DefaultController extends Controller
                 $msg = array(
                     'url' => $data['url'],
                     'site' => $data['site'],
+                    'nb' => $data['nb'],
                     'account' => 'me',
                     'type' => 'har', //$data['type'],
                 );

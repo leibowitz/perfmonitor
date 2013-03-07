@@ -4,7 +4,12 @@
 {% block content %}
 
 <form action="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}" method="post" {{ form_enctype(form) }}>
-{{ form_widget(form) }}
+{{ form_row(form.site) }}
+{{ form_row(form.urls) }}
+{{ form_row(form.interval) }}
+{{ form_label(form.nb, 'Number of requests') }}
+{{ form_widget(form.nb) }}
+{{ form_rest(form) }}
 <br />
 <button type="submit" class="btn btn-primary">Submit</button>
 </form>

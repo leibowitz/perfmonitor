@@ -54,7 +54,7 @@ class SitesController extends Controller
         );
         
         return $db->sites->update($key, 
-            array('$addToSet' => array('urls' => array('$each' => $data['urls']))), 
+            array('$set' => array('nb' => $data['nb']), '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
             array('upsert' => true));
     }
     
@@ -90,7 +90,7 @@ class SitesController extends Controller
     public function addAction(Request $request)
     {
         $site = $request->get('site');
-        $defaultData = array('interval' => 180, 'site' => $site);
+        $defaultData = array('interval' => 180, 'site' => $site, 'nb' => 10);
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text', array(
@@ -114,6 +114,12 @@ class SitesController extends Controller
                     360 => '6 hours', 
                     720 => '12 hours', 
                     1440 => '24 hours')))
+            ->add('nb', 'choice', 
+                array('choices' => array(
+                    1 => 1, 
+                    5 => 5, 
+                    10 => 10), 
+                'expanded' => true))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -126,7 +132,7 @@ class SitesController extends Controller
                 
                 if($this->insertToDb($data))
                 {
-                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done', array('site' => $site)));
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
                 else
                 {
@@ -152,6 +158,7 @@ class SitesController extends Controller
             'interval' => $config['interval'], 
             'site' => $config['site'],
             'urls' => implode("\n", $config['urls']),
+            'nb' => array_key_exists('nb', $config) ? $config['nb'] : 1,
         );
 
         $form = $this->createFormBuilder($defaultData)
@@ -171,6 +178,12 @@ class SitesController extends Controller
                     360 => '6 hours', 
                     720 => '12 hours', 
                     1440 => '24 hours')))
+            ->add('nb', 'choice', 
+                array('choices' => array(
+                    1 => 1, 
+                    5 => 5, 
+                    10 => 10), 
+                'expanded' => true))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -183,7 +196,7 @@ class SitesController extends Controller
                 
                 if($this->updateToDb($id, $data))
                 {
-                    return $this->redirect($this->generateUrl('moschini_perftool_sites_done', array('site' => $site)));
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
                 else
                 {

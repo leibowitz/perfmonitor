@@ -12,7 +12,8 @@
     <thead>
     <tr>
         <th>Site</th>
-        <th>Interval</th>
+        <th>Interval (minutes)</th>
+        <th># Requests</th>
         <th># Urls</th>
     </tr>
     </thead>
@@ -24,6 +25,9 @@
         </td>
         <td>
             {{ site['interval'] }}
+        </td>
+        <td>
+            {{ site['nb'] }}
         </td>
         <td>
             {{ site['urls']|length }}

@@ -22,10 +22,10 @@ channel.queue_bind(exchange='perfmonitor', queue=queue_name, routing_key='perfte
 
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
-
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
     content = json.loads(body)
+     
     print ' [x] Executing command phantomjs', content['url']
     harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url']])
     try:
@@ -36,6 +36,15 @@ def callback(ch, method, properties, body):
         print ' [x] Unable to parse JSON, ignoring request'
 
     ch.basic_ack(delivery_tag = method.delivery_tag)
+    try:
+        if content['nb'] > 1:
+            content['nb'] -= 1
+            channel.basic_publish(exchange='perfmonitor',
+                      routing_key='perftest',
+                      body=json.dumps(content))
+            print ' [x] Message sent back to queue'
+    except:
+        print ' [x] Error while trying to send message back to queue'
     print " [x] Done"
 
 channel.basic_consume(callback,
