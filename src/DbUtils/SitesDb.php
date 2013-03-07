@@ -170,7 +170,7 @@ class SitesDb
         return $db->sites->distinct('site');
     }
     
-    static public function getSitesConfig($find = array())
+    static public function getSitesConfig($find = array(), $sort = array('interval' => 1))
     {
         $db = SitesDb::getDb();  
         if($find && array_key_exists('_id', $find))
@@ -178,7 +178,7 @@ class SitesDb
             return $db->sites->findOne($find);
         }
         
-        return $db->sites->find($find);
+        return $db->sites->find($find)->sort($sort);
     }
 
     static public function getFilesFromDB($find, $fields = array(), $sort = array(), $limit = 0)
