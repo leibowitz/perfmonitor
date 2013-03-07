@@ -5,7 +5,7 @@
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
 <script src="{{ asset('js/time-graph.js') }}"></script>
 <script type="text/javascript">
-{% for key, times in values %}
+{% for url, times in values %}
     var avgs = [];
     
     datas = groupValuesByDate({{ times|json_encode|raw }});
@@ -13,7 +13,7 @@
     {
         avgs.push({'date': new Date(parseInt(time)*1000), 'value': getHistAvgValue(datas[time])});
     }
-    showTimesGraph(avgs, '#div-key-{{ key }}');
+    showTimesGraph(avgs, '#div-key-{{ loop.index }}');
 {% endfor %}
 </script>
 
@@ -25,9 +25,9 @@
 
 {% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
 
-{% for id, url in urls %}
-<div id="div-key-{{ id }}">
-<h3><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site'), 'url': url.getUrl}) }}">{{ url.getHost }}{{ url.getPath }}</a></h3>
+{% for url, times in values %}
+<div id="div-key-{{ loop.index }}">
+<h3><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site'), 'url': url}) }}">{{ url }}</a></h3>
 </div>
 {% endfor %}
 

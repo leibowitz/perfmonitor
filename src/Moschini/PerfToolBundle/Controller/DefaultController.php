@@ -9,6 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use HarUtils\HarFile;
+use HarUtils\HarTime;
+use HarUtils\Url;
 
 use DbUtils\SitesDb;
 
@@ -21,8 +23,17 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $rows = SitesDb::getRecentRequestsList($request->get('site'), $request->get('url'));
+        $requests = array();
+        foreach($rows as $row)
+        {
+            $requests[ (string)$row['_id'] ] = array(
+                'url' => $row['log']['entries'][0]['request']['url'],
+                'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
+                );
+        }
         return array(
-            'files' => $this->getFilesFromDb($request), 
+            'requests' => $requests, 
         );
     }
 
@@ -89,42 +100,10 @@ class DefaultController extends Controller
      */
     public function graphAction(Request $request)
 	{
-		$urls = array();
-		$datas = array();
-
-        $files = $this->getFilesFromDb($request);
-
-        if($files)
-        {
-            foreach($files as $har)
-            {
-                foreach($har->getPages() as $page)
-                {
-                    $url = $page->getUrl();
-                    $url_key = $url->getUid();
-                    if(!array_key_exists($url_key, $urls))
-                    {
-                        $urls[ $url_key ] = $url;
-                    }
-
-                    if(!array_key_exists($url_key, $datas)){
-                        $datas[ $url_key ] = array();
-                    }
-
-                    $datas[ $url_key ][ ] = $page->getLoadTime() / 1000;
-                }
-            }
-        }
-        
+        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'));
 		return array(
 			'datas' => $datas,
-			'urls' => $urls,
 			);
-    }
-
-    private function getFilesFromDb($request)
-    {
-        return SitesDb::getFilesFromFilter($request->get('site'), $request->get('url'));
     }
 
 	/**
@@ -134,36 +113,10 @@ class DefaultController extends Controller
     public function timeAction(Request $request)
 	{
 
-        $files = $this->getFilesFromDb($request);
-        $values = array();
-        $urls = array();
-
-        foreach((array)$files as $har)
-        {
-            foreach($har->getPages() as $id => $page)
-            {
-                $url = $page->getUrl();
-                $url_key = $url->getUid();
-
-                if(!array_key_exists($url_key, $values))
-                {
-                    $values[ $url_key ] = array();
-                }
-                
-                $values[$url_key][] = $page->getLoadTimeAndDate();
-                
-                if(!array_key_exists($url_key, $urls))
-                {
-                    $urls[ $url_key ] = $url;
-                }
-
-            }
-        }
+        $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'));
 
         return array(
-            'files' => $files, 
-            'values' => $values, 
-            'urls' => $urls, 
+            'values' => $datas, 
         );
 	}
 

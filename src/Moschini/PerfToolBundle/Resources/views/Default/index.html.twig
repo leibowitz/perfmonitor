@@ -8,7 +8,7 @@
 <a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
 
 
-{% if files|length > 0 %}
+{% if requests|length > 0 %}
 <table class="table table-condensed">
 <thead>
     <tr>
@@ -17,12 +17,12 @@
     </tr>
 </thead>
 <tbody>
-{% for id, file in files %}
+{% for id, request in requests %}
 
     <tr>
-        <td>{{ file.getDate.format('Y-m-d@H:i:s') }}</td>
+        <td>{{ request['date'].format('Y-m-d@H:i:s') }}</td>
         <td>
-<a href="{{ path('moschini_perftool_default_harviewer', {'id':id, 'site': app.request.get('site')}) }}">{{ file.getUrl }}</a>
+<a href="{{ path('moschini_perftool_default_harviewer', {'id': id, 'site': app.request.get('site')}) }}">{{ request['url'] }}</a>
         </td>
     </tr>
 {% endfor %}

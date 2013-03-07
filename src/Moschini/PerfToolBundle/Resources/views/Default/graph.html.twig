@@ -5,8 +5,8 @@
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
 <script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script type="text/javascript">
-{% for key, times in datas %}
-    loadHistogramSimple({{ times|json_encode }}, '#div-hist-{{ key }}');
+{% for url, times in datas %}
+    loadHistogramSimple({{ times|json_encode }}, '#div-hist-{{ loop.index }}');
 {% endfor %}
 
 </script>
@@ -22,10 +22,9 @@
 
 {% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
 
-{% for key, times in datas %}
-	<div id="div-hist-{{ key }}">
-        <h3><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site'), 'url': urls[key].getUrl}) }}">
-        {{ urls[key].getHost }}{{ urls[key].getPath }}</a>
+{% for url, times in datas %}
+	<div id="div-hist-{{ loop.index }}">
+        <h3><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site'), 'url': url}) }}">{{ url }}</a>
 		</h3>
 	</div>
 
