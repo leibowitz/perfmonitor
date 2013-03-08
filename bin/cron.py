@@ -57,7 +57,9 @@ for row in rows['result']:
         'url': str(row['urls']),
         'site': str(row['site']),
         'account': 'me',
-        'type': 'har'
+        'type': 'har',
+        'nb': 1,
+        'user-agent': 'default'
     }
 
     send_msg(msg)

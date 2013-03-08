@@ -84,53 +84,58 @@ function createHAR(address, title, startTime, resources)
     };
 }
 
-var page = new WebPage();
+var system = require('system');
+var page = require('webpage').create();
 
-if (phantom.args.length === 0) {
+if (system.args.length === 1) {
     console.log('Usage: netsniff.js <some URL>');
     phantom.exit();
-} else {
-
-    page.address = phantom.args[0];
-    page.resources = [];
-
-    page.onLoadStarted = function () {
-        page.startTime = new Date();
-    };
-
-    page.onResourceRequested = function (req) {
-        page.resources[req.id] = {
-            request: req,
-            startReply: null,
-            endReply: null
-        };
-    };
-
-    page.onResourceReceived = function (res) {
-        if (res.stage === 'start') {
-            page.resources[res.id].startReply = res;
-        }
-        if (res.stage === 'end') {
-            page.resources[res.id].endReply = res;
-        }
-    };
-
-    page.onError = function () {
-        // catch uncaught error from the page
-    };
-
-    page.open(page.address, function (status) {
-        var har;
-        if (status !== 'success') {
-            console.log('FAIL to load the address');
-        } else {
-		    page.endTime = new Date();
-            page.title = page.evaluate(function () {
-                return document.title;
-            });
-            har = createHAR(page.address, page.title, page.startTime, page.resources);
-            console.log(JSON.stringify(har, undefined, 4));
-        }
-        phantom.exit();
-    });
 }
+
+page.address = system.args[1];
+
+if (system.args.length > 2 && system.args[2].indexOf('iphone') != -1){
+    page.settings.userAgent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7';
+}
+
+page.resources = [];
+
+page.onLoadStarted = function () {
+    page.startTime = new Date();
+};
+
+page.onResourceRequested = function (req) {
+    page.resources[req.id] = {
+        request: req,
+        startReply: null,
+        endReply: null
+    };
+};
+
+page.onResourceReceived = function (res) {
+    if (res.stage === 'start') {
+        page.resources[res.id].startReply = res;
+    }
+    if (res.stage === 'end') {
+        page.resources[res.id].endReply = res;
+    }
+};
+
+page.onError = function () {
+    // catch uncaught error from the page
+};
+
+page.open(page.address, function (status) {
+    var har;
+    if (status !== 'success') {
+        console.log('FAIL to load the address');
+    } else {
+        page.endTime = new Date();
+        page.title = page.evaluate(function () {
+            return document.title;
+        });
+        har = createHAR(page.address, page.title, page.startTime, page.resources);
+        console.log(JSON.stringify(har, undefined, 4));
+    }
+    phantom.exit();
+});

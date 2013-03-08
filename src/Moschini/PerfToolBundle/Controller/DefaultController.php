@@ -49,6 +49,7 @@ class DefaultController extends Controller
             'type' => 'har', 
             'url' => $url, 
             'site' => $site,
+            'agent' => 'desktop',
             'nb' => 1);
 
         $form = $this->createFormBuilder($defaultData)
@@ -64,6 +65,7 @@ class DefaultController extends Controller
                 )
             ))
             ->add('nb', 'choice', array('choices' => array(1 => 1, 5 => 5, 10 => 10), 'expanded' => true))
+            ->add('agent', 'choice', array('choices' => array('desktop' => 'Desktop', 'iphone' => 'Mobile'), 'expanded' => true))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -78,6 +80,7 @@ class DefaultController extends Controller
                     'nb' => $data['nb'],
                     'account' => 'me',
                     'type' => 'har', //$data['type'],
+                    'user-agent' => $data['agent'],
                 );
                 $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
                 // If no site has been defined, use the one used for this request 

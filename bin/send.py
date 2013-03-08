@@ -6,7 +6,9 @@ msg = {
     'url':'http://www.google.co.uk',
     'site': 'gtk',
     'account': 'me',
-    'type': 'har'
+    'type': 'har',
+    'nb': 1,
+    'user-agent': 'default',
 }
 connection = pika.BlockingConnection(pika.ConnectionParameters(
                'localhost'))

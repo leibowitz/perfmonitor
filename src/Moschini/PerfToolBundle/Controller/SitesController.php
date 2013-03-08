@@ -54,7 +54,12 @@ class SitesController extends Controller
         );
         
         return $db->sites->update($key, 
-            array('$set' => array('nb' => $data['nb']), '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
+            array(
+                '$set' => array(
+                    'nb' => $data['nb'],
+                    'user-agent' => $data['user'],
+                ), 
+                '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
             array('upsert' => true));
     }
     
@@ -90,7 +95,7 @@ class SitesController extends Controller
     public function addAction(Request $request)
     {
         $site = $request->get('site');
-        $defaultData = array('interval' => 180, 'site' => $site, 'nb' => 10);
+        $defaultData = array('interval' => 180, 'site' => $site, 'nb' => 10, 'agent' => 'desktop');
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text', array(
@@ -119,6 +124,11 @@ class SitesController extends Controller
                     1 => 1, 
                     5 => 5, 
                     10 => 10), 
+                'expanded' => true))
+            ->add('agent', 'choice', 
+                array('choices' => array(
+                    'desktop' => 'Desktop', 
+                    'iphone' => 'Mobile'), 
                 'expanded' => true))
             ->getForm();
 
@@ -159,6 +169,7 @@ class SitesController extends Controller
             'site' => $config['site'],
             'urls' => implode("\n", $config['urls']),
             'nb' => array_key_exists('nb', $config) ? $config['nb'] : 1,
+            'agent' => array_key_exists('agent', $config) ? $config['agent'] : 'desktop',
         );
 
         $form = $this->createFormBuilder($defaultData)
@@ -183,6 +194,11 @@ class SitesController extends Controller
                     1 => 1, 
                     5 => 5, 
                     10 => 10), 
+                'expanded' => true))
+            ->add('agent', 'choice', 
+                array('choices' => array(
+                    'desktop' => 'Desktop', 
+                    'iphone' => 'Mobile'), 
                 'expanded' => true))
             ->getForm();
 

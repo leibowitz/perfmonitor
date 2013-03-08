@@ -9,6 +9,8 @@
 {{ form_row(form.interval) }}
 {{ form_label(form.nb, 'Number of requests') }}
 {{ form_widget(form.nb) }}
+{{ form_label(form.agent, 'User-Agent') }}
+{{ form_widget(form.agent) }}
 {{ form_rest(form) }}
 <br />
 <button type="submit" class="btn btn-primary">Update</button>
