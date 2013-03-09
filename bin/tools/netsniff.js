@@ -94,7 +94,7 @@ if (system.args.length === 1) {
 
 page.address = system.args[1];
 
-if (system.args.length > 2 && system.args[2].indexOf('iphone') != -1){
+if (system.args.length > 2 && system.args[2].indexOf('mobile') != -1){
     page.settings.userAgent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7';
 }
 

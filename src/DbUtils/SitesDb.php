@@ -135,7 +135,11 @@ class SitesDb
     static public function getRecentRequestsList($site, $url, $limit = 0)
     {
         $find = self::filterBySiteAndUrl($site, $url);
-        $fields = array('log.pages.startedDateTime' => 1, 'log.entries.request.url' => 1);
+        $fields = array(
+            'log.pages.startedDateTime' => 1, 
+            'log.entries' => array('$slice' => array(0, 1)),
+            'log.entries.request.url' => 1,
+            'agent' => 1);
         $sort['log.pages.startedDateTime'] = -1;
         return self::findSort($find, $fields, $sort, $limit);
     }
@@ -248,7 +252,7 @@ class SitesDb
             array(
                 '$set' => array(
                     'nb' => $data['nb'],
-                    'user-agent' => $data['user'],
+                    'agent' => $data['agent'],
                 ), 
                 '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
             array('upsert' => true));

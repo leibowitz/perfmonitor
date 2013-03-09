@@ -12,6 +12,7 @@
     <thead>
     <tr>
         <th>Site</th>
+        <th>Type</th>
         <th>Interval (minutes)</th>
         <th># Requests</th>
         <th># Urls</th>
@@ -22,6 +23,9 @@
     <tr>
         <td>
             <a href="{{ path('moschini_perftool_sites_edit', {'site': app.request.get('site'), 'id': attribute(site['_id'], '$id') }) }}">{{ site['site'] }}</a>
+        </td>
+        <td>
+            {{ site['agent'] }}
         </td>
         <td>
             {{ site['interval'] }}

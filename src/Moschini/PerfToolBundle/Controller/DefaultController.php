@@ -17,6 +17,11 @@ use DbUtils\SitesDb;
 
 class DefaultController extends Controller
 {
+
+    private function getRowField($row, $field, $default = null)
+    {
+        return array_key_exists($field, $row) ? $row[$field] : $default;
+    }
 	/**
      * @Route("/")
      * @Route("/index")
@@ -31,6 +36,7 @@ class DefaultController extends Controller
             $requests[ (string)$row['_id'] ] = array(
                 'url' => $row['log']['entries'][0]['request']['url'],
                 'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
+                'agent' => $this->getRowField($row, 'agent'),
                 );
         }
         return array(
@@ -66,7 +72,7 @@ class DefaultController extends Controller
                     'class' => 'input-xxlarge',
                 )
             ))
-            ->add('agent', 'choice', array('label' => 'User-Agent', 'choices' => array('desktop' => 'Desktop', 'iphone' => 'Mobile'), 'expanded' => true))
+            ->add('agent', 'choice', array('label' => 'User-Agent', 'choices' => array('desktop' => 'Desktop', 'mobile' => 'Mobile'), 'expanded' => true))
             ->add('nb', 'integer', array(
                 'label' => 'Number of requests',
                 'attr' => array(

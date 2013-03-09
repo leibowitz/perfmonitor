@@ -84,7 +84,7 @@ class SitesController extends Controller
             ->add('agent', 'choice', 
                 array('choices' => array(
                     'desktop' => 'Desktop', 
-                    'iphone' => 'Mobile'), 
+                    'mobile' => 'Mobile'), 
                 'expanded' => true,
                 'label' => 'User-Agent'))
             ->add('nb', 'integer', array(
@@ -162,7 +162,7 @@ class SitesController extends Controller
             ->add('agent', 'choice', 
                 array('choices' => array(
                     'desktop' => 'Desktop', 
-                    'iphone' => 'Mobile'), 
+                    'mobile' => 'Mobile'), 
                 'expanded' => true,
                 'label' => 'User-Agent'))
             ->add('nb', 'integer', array(

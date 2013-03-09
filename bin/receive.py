@@ -27,10 +27,11 @@ def callback(ch, method, properties, body):
     content = json.loads(body)
      
     print ' [x] Executing command phantomjs', content['url']
-    harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['user-agent']])
+    harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
     try:
         jscontent = json.loads(harcontent)
         jscontent['site'] = content['site']
+        jscontent['agent'] = content['agent']
         dbcon.perfmonitor.har.insert(jscontent)
     except:
         print ' [x] Unable to parse JSON, ignoring request'
