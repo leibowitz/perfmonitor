@@ -2,3 +2,9 @@
 div.block{
     padding:20px;
 }
+
+div#form_agent label,
+div#form_nb label{
+    display:inline-block; 
+    margin-right: 20px;
+}

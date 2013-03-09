@@ -62,10 +62,16 @@ class DefaultController extends Controller
             ->add('url', 'text', array(
                 'attr' => array(
                     'placeholder' => 'http://www.google.com',
+                    'class' => 'input-xxlarge',
                 )
             ))
-            ->add('nb', 'choice', array('choices' => array(1 => 1, 5 => 5, 10 => 10), 'expanded' => true))
-            ->add('agent', 'choice', array('choices' => array('desktop' => 'Desktop', 'iphone' => 'Mobile'), 'expanded' => true))
+            ->add('agent', 'choice', array('label' => 'User-Agent', 'choices' => array('desktop' => 'Desktop', 'iphone' => 'Mobile'), 'expanded' => true))
+            ->add('nb', 'integer', array(
+                'label' => 'Number of requests',
+                'attr' => array(
+                    'class' => 'input-mini',
+                ),
+            ))
             ->getForm();
 
         if($request->isMethod('POST'))

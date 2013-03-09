@@ -4,14 +4,7 @@
 {% block content %}
 
 <form action="{{ path('moschini_perftool_sites_edit', {'site': app.request.get('site'), 'id': app.request.get('id')}) }}" method="post" {{ form_enctype(form) }}>
-{{ form_row(form.site) }}
-{{ form_row(form.urls) }}
-{{ form_row(form.interval) }}
-{{ form_label(form.nb, 'Number of requests') }}
-{{ form_widget(form.nb) }}
-{{ form_label(form.agent, 'User-Agent') }}
-{{ form_widget(form.agent) }}
-{{ form_rest(form) }}
+{{ form_widget(form) }}
 <br />
 <button type="submit" class="btn btn-primary">Update</button>
 </form>

@@ -76,30 +76,35 @@ class SitesController extends Controller
             ->add('urls', 'textarea', array(
                 'attr' => array(
                     'placeholder' => 'One urls per line',
-                    'rows' => 5
+                    'rows' => 5,
+                    'class' => 'input-xxlarge',
                    )
+            ))
+            ->add('agent', 'choice', 
+                array('choices' => array(
+                    'desktop' => 'Desktop', 
+                    'iphone' => 'Mobile'), 
+                'expanded' => true,
+                'label' => 'User-Agent'))
+            ->add('nb', 'integer', array(
+                'label' => 'Number of requests',
+                'attr' => array(
+                    'class' => 'input-mini',
+                ),
             ))
             ->add('interval', 'choice', 
                 array('choices' => array(
                     5 => '5 min', 
                     10 => '10 min', 
                     30 => '30 min', 
-                    60 => '1 hour', 
-                    180 => '3 hours', 
-                    360 => '6 hours', 
-                    720 => '12 hours', 
-                    1440 => '24 hours')))
-            ->add('nb', 'choice', 
-                array('choices' => array(
-                    1 => 1, 
-                    5 => 5, 
-                    10 => 10), 
-                'expanded' => true))
-            ->add('agent', 'choice', 
-                array('choices' => array(
-                    'desktop' => 'Desktop', 
-                    'iphone' => 'Mobile'), 
-                'expanded' => true))
+                    60 => '1 h', 
+                    180 => '3 h', 
+                    360 => '6 h', 
+                    720 => '12 h', 
+                    1440 => '24 h'),
+                     'attr' => array(
+                        'class' => 'input-small'
+            )))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -146,30 +151,35 @@ class SitesController extends Controller
             ->add('site', 'text')
             ->add('urls', 'textarea', array(
                 'attr' => array(
-                    'rows' => 10
+                    'rows' => 10,
+                    'class' => 'input-xxlarge',
                     )
+            ))
+            ->add('agent', 'choice', 
+                array('choices' => array(
+                    'desktop' => 'Desktop', 
+                    'iphone' => 'Mobile'), 
+                'expanded' => true,
+                'label' => 'User-Agent'))
+            ->add('nb', 'integer', array(
+                'label' => 'Number of requests',
+                'attr' => array(
+                    'class' => 'input-mini',
+                ),
             ))
             ->add('interval', 'choice', 
                 array('choices' => array(
                     5 => '5 min', 
                     10 => '10 min', 
                     30 => '30 min', 
-                    60 => '1 hour', 
-                    180 => '3 hours', 
-                    360 => '6 hours', 
-                    720 => '12 hours', 
-                    1440 => '24 hours')))
-            ->add('nb', 'choice', 
-                array('choices' => array(
-                    1 => 1, 
-                    5 => 5, 
-                    10 => 10), 
-                'expanded' => true))
-            ->add('agent', 'choice', 
-                array('choices' => array(
-                    'desktop' => 'Desktop', 
-                    'iphone' => 'Mobile'), 
-                'expanded' => true))
+                    60 => '1 h', 
+                    180 => '3 h', 
+                    360 => '6 h', 
+                    720 => '12 h', 
+                    1440 => '24 h'),
+                     'attr' => array(
+                        'class' => 'input-small'
+            )))
             ->getForm();
 
         if($request->isMethod('POST'))
