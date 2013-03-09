@@ -197,7 +197,7 @@ class SitesController extends Controller
                 $data = $form->getData();
                 $data['urls'] = $this->getUrls($data['urls']);
                 
-                if(DbUtils::updateToDb($id, $data))
+                if(SitesDb::updateToDb($id, $data))
                 {
                     return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
