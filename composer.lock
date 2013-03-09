@@ -1,5 +1,5 @@
 {
-    "hash": "dbab439e04d528ee7eeb28be4eb14b06",
+    "hash": "78b1604a60646e7b6d39522445d0f07c",
     "packages": [
         {
             "name": "braincrafted/bootstrap-bundle",
@@ -8,17 +8,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/braincrafted/bootstrap-bundle.git",
-                "reference": "v1.2.0"
+                "reference": "v1.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/braincrafted/bootstrap-bundle/zipball/v1.2.0",
-                "reference": "v1.2.0",
+                "url": "https://api.github.com/repos/braincrafted/bootstrap-bundle/zipball/v1.3.1",
+                "reference": "v1.3.1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
-                "twig/extensions": "dev-master"
+                "php": ">=5.3.3"
             },
             "require-dev": {
                 "knplabs/knp-markdown-bundle": "dev-master",
@@ -29,7 +28,8 @@
             "suggest": {
                 "knplabs/knp-menu": "Required to use KnpMenuBundle.",
                 "knplabs/knp-menu-bundle": "BraincraftedBootstrapBundle styles the menus provided by KnpMenuBundle.",
-                "knplabs/knp-paginator-bundle": "BraincraftedBootstrapBundle styles the pagination provided by KnpPaginatorBundle."
+                "knplabs/knp-paginator-bundle": "BraincraftedBootstrapBundle styles the pagination provided by KnpPaginatorBundle.",
+                "twitter/bootstrap": "Twitter Bootstrap provides the assets (images, CSS and JS)"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -53,7 +53,50 @@
             "keywords": [
                 "bootstrap"
             ],
-            "time": "2013-02-24 18:14:21"
+            "time": "2013-03-08 21:14:47"
+        },
+        {
+            "name": "ccampbell/chromephp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ccampbell/chromephp.git",
+                "reference": "1886dcc61ee03bcdff60247efac9b06576a249d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ccampbell/chromephp/zipball/1886dcc61ee03bcdff60247efac9b06576a249d5",
+                "reference": "1886dcc61ee03bcdff60247efac9b06576a249d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ChromePhp": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Craig Campbell",
+                    "email": "iamcraigcampbell@gmail.com",
+                    "homepage": "http://craig.is",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Log variables to the Chrome console (via ChromePhp Google Chrome extension).",
+            "homepage": "http://chromephp.com/",
+            "keywords": [
+                "log",
+                "logging"
+            ],
+            "time": "2013-01-22 00:46:26"
         },
         {
             "name": "doctrine/common",
@@ -1590,6 +1633,7 @@
     "stability-flags": {
         "oldsound/rabbitmq-bundle": 20,
         "twitter/bootstrap": 20,
-        "braincrafted/bootstrap-bundle": 20
+        "braincrafted/bootstrap-bundle": 20,
+        "ccampbell/chromephp": 20
     }
 }

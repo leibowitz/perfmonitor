@@ -21,7 +21,8 @@
         "videlalvaro/php-amqplib": "2.0.*",
         "oldsound/rabbitmq-bundle": "dev-master",
         "twitter/bootstrap": "dev-master",
-        "braincrafted/bootstrap-bundle": "dev-master"
+        "braincrafted/bootstrap-bundle": "dev-master",
+        "ccampbell/chromephp": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
