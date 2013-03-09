@@ -31,6 +31,20 @@ class SitesDb
         return $cursor;
     }
 
+    static public function aggregate($query, $fields = array(), $unwind = null, $groupby = null)
+    {
+
+        $db = SitesDb::getDb();  
+        return $db->har->aggregate(
+            array(
+                '$project' => $fields,
+                '$match' => $query,
+            ), 
+            array('$unwind' => '$'.$unwind), 
+            array('$group' => array('_id' => '$'.$unwind, 'times' => array('$push' => '$'.$groupby)))
+            );
+    }
+
     static public function filterBySiteAndUrl($site, $url)
     {
         $find = array();
@@ -48,20 +62,6 @@ class SitesDb
     }
 
 
-    static public function aggregate($query, $fields = array(), $unwind = null, $groupby = null)
-    {
-
-        $db = SitesDb::getDb();  
-        return $db->har->aggregate(
-            array(
-                '$project' => $fields,
-                '$match' => $query,
-            ), 
-            array('$unwind' => '$'.$unwind), 
-            array('$group' => array('_id' => '$'.$unwind, 'times' => array('$push' => '$'.$groupby)))
-            );
-    }
-
     static public function getLoadTimes($site, $url)
     {
         $find = array('site' => $site); 
@@ -71,6 +71,8 @@ class SitesDb
         }
 
         $db = SitesDb::getDb();  
+
+        $db->har->ensureIndex(array('log.pages.startedDateTime'=>1), array('background' => true));
 
         return $db->har
             ->find(
@@ -209,17 +211,6 @@ class SitesDb
         return SitesDb::getFilesFromDB($find, $sort, $limit);
     }
 
-	static public function getHarFiles($glob = '../harfiles/inline-scripts-block.har')
-	{
-		$files = glob($glob);
-		$harfiles = array();
-		foreach($files as $file)
-		{
-			$harfiles[$file] = HarFile::fromFile($file);
-		}
-		return $harfiles;
-	}
-
     static public function getDb()
     {
         $m = new \MongoClient();
@@ -244,6 +235,35 @@ class SitesDb
         
         return $files;
     }
+    
+    static public function insertToDb($data)
+    {
+        $db = self::getDb();
+        $key = array(
+            'site' => $data['site'],
+            'interval' => $data['interval'],
+        );
+        
+        return $db->sites->update($key, 
+            array(
+                '$set' => array(
+                    'nb' => $data['nb'],
+                    'user-agent' => $data['user'],
+                ), 
+                '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
+            array('upsert' => true));
+    }
+    
+    static public function updateToDb($id, $data)
+    {
+        $db = self::getDb();
+        $key = array(
+            '_id' => $id
+        );
+        
+        return $db->sites->update($key, array('$set' => $data)); 
+    }
+
 
 };
 

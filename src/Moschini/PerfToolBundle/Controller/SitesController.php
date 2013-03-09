@@ -44,36 +44,6 @@ class SitesController extends Controller
         );
     }
 
-    private function insertToDb($data)
-    {
-        $m = new \MongoClient();
-        $db = $m->selectDB("perfmonitor");  
-        $key = array(
-            'site' => $data['site'],
-            'interval' => $data['interval'],
-        );
-        
-        return $db->sites->update($key, 
-            array(
-                '$set' => array(
-                    'nb' => $data['nb'],
-                    'user-agent' => $data['user'],
-                ), 
-                '$addToSet' => array('urls' => array('$each' => $data['urls']))), 
-            array('upsert' => true));
-    }
-    
-    private function updateToDb($id, $data)
-    {
-        $m = new \MongoClient();
-        $db = $m->selectDB("perfmonitor");  
-        $key = array(
-            '_id' => $id
-        );
-        
-        return $db->sites->update($key, array('$set' => $data)); 
-    }
-
 
     private function getUrls($urls)
     {
@@ -140,7 +110,7 @@ class SitesController extends Controller
                 $data = $form->getData();
                 $data['urls'] = $this->getUrls($data['urls']);
                 
-                if($this->insertToDb($data))
+                if(SitesDb::insertToDb($data))
                 {
                     return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
@@ -210,7 +180,7 @@ class SitesController extends Controller
                 $data = $form->getData();
                 $data['urls'] = $this->getUrls($data['urls']);
                 
-                if($this->updateToDb($id, $data))
+                if(DbUtils::updateToDb($id, $data))
                 {
                     return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
