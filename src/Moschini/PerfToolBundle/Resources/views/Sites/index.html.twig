@@ -8,13 +8,13 @@
 <a class="btn pull-right" href="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}">Add site</a>
 
 {% if sites.count %}
-<table class="table">
+<table class="table table-condensed table-stripped table-hover">
     <thead>
     <tr>
         <th>Site</th>
         <th>Type</th>
-        <th>Interval (minutes)</th>
         <th># Requests</th>
+        <th>Interval (minutes)</th>
         <th># Urls</th>
     </tr>
     </thead>
@@ -25,16 +25,16 @@
             <a href="{{ path('moschini_perftool_sites_edit', {'site': app.request.get('site'), 'id': attribute(site['_id'], '$id') }) }}">{{ site['site'] }}</a>
         </td>
         <td>
-            {{ site['agent'] }}
+            {{ site['agent']|default('desktop') }}
+        </td>
+        <td>
+            {{ site['nb']|default(1) }}
         </td>
         <td>
             {{ site['interval'] }}
         </td>
         <td>
-            {{ site['nb'] }}
-        </td>
-        <td>
-            {{ site['urls']|length }}
+            <span title="{{ site['urls']|join("\r") }}">{{ site['urls']|length }}<span>
         </td>
     </tr>
     {% endfor %}
