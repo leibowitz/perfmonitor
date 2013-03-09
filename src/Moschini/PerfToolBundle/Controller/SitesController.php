@@ -121,7 +121,7 @@ class SitesController extends Controller
                 
                 if(SitesDb::insertToDb($data))
                 {
-                    return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
+                    return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $data['site'])));
                 }
                 else
                 {
