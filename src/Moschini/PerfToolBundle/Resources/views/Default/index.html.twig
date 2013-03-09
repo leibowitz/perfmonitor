@@ -28,12 +28,39 @@
 {% endfor %}
 </tbody>
 </table>
+<button type="button" data-toggle="modal" class="btn btn-danger" data-target="#modalConfirmDelete">Delete all</button>
 {% endif %}
 
+<div id="modalConfirmDelete" class="modal hide fade" tabindex="-1" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Confirm delete</h3>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete all requests for this site?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button id="btnDelete" class="btn btn-danger">Delete</button>
+  </div>
+</div>
 
 
 {% endblock %}
 {% block javascripts %}
 {% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_index'} %}
 {% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
+<script type="text/javascript">
+$(function(){
+    $('#btnDelete').on('click', function(){
+        $.ajax({
+            url: "{{ path('moschini_perftool_default_delete', {'site': app.request.get('site')}) }}",
+            type: "POST",
+            success: function(data, textStatus, jqXHR){
+                location.reload();
+            }
+        });   
+    });
+});
+</script>
 {% endblock %}

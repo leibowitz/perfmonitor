@@ -3,6 +3,7 @@ namespace Moschini\PerfToolBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Range;
 
 // these import the "@Route" and "@Template" annotations
@@ -42,6 +43,21 @@ class DefaultController extends Controller
         return array(
             'requests' => $requests, 
         );
+    }
+	
+    /**
+     * @Route("/delete", defaults={"_format"="json"})
+     */
+    public function deleteAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $site = $request->get('site');
+            $url = $request->get('url');
+
+            SitesDb::deleteAll($site, $url);
+        }
+        return new JsonResponse(array('result' => 'success'));
     }
 
 	/**

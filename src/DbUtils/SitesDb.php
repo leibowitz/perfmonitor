@@ -9,6 +9,17 @@ use HarUtils\HarResults;
 class SitesDb
 {
 
+    static public function deleteAll($site, $url = null)
+    {
+        $db = SitesDb::getDb();
+        $find = array('site' => $site);
+        if($url)
+        {
+            $find['url'] = $url;
+        }
+        return $db->har->remove($find);
+    }
+
     static public function find($find, $fields)
     {
         $db = SitesDb::getDb();  
