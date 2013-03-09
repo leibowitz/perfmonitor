@@ -4,6 +4,7 @@ namespace Moschini\PerfToolBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -91,6 +92,9 @@ class SitesController extends Controller
                 'attr' => array(
                     'class' => 'input-mini',
                 ),
+                'constraints' => array(
+                    new Range(array('min' => 1, 'max' => 20)),
+                ),
             ))
             ->add('interval', 'choice', 
                 array('choices' => array(
@@ -165,6 +169,9 @@ class SitesController extends Controller
                 'label' => 'Number of requests',
                 'attr' => array(
                     'class' => 'input-mini',
+                ),
+                'constraints' => array(
+                    new Range(array('min' => 1, 'max' => 20)),
                 ),
             ))
             ->add('interval', 'choice', 

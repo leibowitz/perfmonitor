@@ -3,6 +3,7 @@ namespace Moschini\PerfToolBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\Range;
 
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -70,6 +71,9 @@ class DefaultController extends Controller
                 'label' => 'Number of requests',
                 'attr' => array(
                     'class' => 'input-mini',
+                ),
+                'constraints' => array(
+                    new Range(array('min' => 1, 'max' => 20)),
                 ),
             ))
             ->getForm();
