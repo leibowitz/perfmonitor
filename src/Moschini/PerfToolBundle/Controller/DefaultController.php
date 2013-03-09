@@ -51,12 +51,15 @@ class DefaultController extends Controller
     public function sendAction(Request $request)
     {
         $site = $request->get('site');
+        
+        $type = SitesDb::getTypeForSite($site);
+
         $url = $request->get('url');
         $defaultData = array(
             'type' => 'har', 
             'url' => $url, 
             'site' => $site,
-            'agent' => 'desktop',
+            'agent' => $type ? $type : 'desktop',
             'nb' => 1);
 
         $form = $this->createFormBuilder($defaultData)

@@ -187,6 +187,18 @@ class SitesDb
         return $db->sites->find($find)->sort($sort);
     }
 
+    static public function getSiteField($find, $field)
+    {
+        $db = SitesDb::getDb();  
+        $row = $db->sites->findOne($find, array($field => 1));
+        return $row && array_key_exists($field, $row) ? $row[$field] : null;
+    }
+    
+    static public function getTypeForSite($site)
+    {
+        return SitesDb::getSiteField(array('site' => $site, 'agent' => 1), 'agent');
+    }
+
     static public function getFilesFromDB($find, $fields = array(), $sort = array(), $limit = 0)
     {
         $db = SitesDb::getDb();  
