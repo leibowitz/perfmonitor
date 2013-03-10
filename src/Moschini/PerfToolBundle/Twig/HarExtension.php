@@ -17,7 +17,8 @@ class HarExtension extends \Twig_Extension
 	public function getFunctions()
     {
         return array(
-			'showTimeBars' => new \Twig_Function_Method($this, 'showTimeBars')
+			'showTimeBars' => new \Twig_Function_Method($this, 'showTimeBars'),
+			'showTimes' => new \Twig_Function_Method($this, 'showTimes'),
         );
 	}
 	
@@ -100,10 +101,10 @@ class HarExtension extends \Twig_Extension
 
         return self::getHumanValuesFilter($size, self::shiftUnits($units, $start_at), $digits);
     }
-    
-    public function showTimeBars($timings, $total_time)
+
+    private function filterTimings($timings, $names = array('dns', 'connect', 'blocked', 'send', 'wait', 'receive'))
     {
-        $names = array('dns', 'connect', 'blocked', 'send', 'wait', 'receive');
+        $filtered = array();
         foreach($names as $name)
         {
             if(!array_key_exists($name, $timings))
@@ -115,10 +116,29 @@ class HarExtension extends \Twig_Extension
             {
                 continue;
             }
+            $filtered[$name] = $time;
+        }
+        return $filtered;
+    }
+
+    public function showTimes($timings)
+    {
+        $timings = self::filterTimings($timings);
+        foreach($timings as $name => $time)
+        {
+            echo $name.' '.join(self::getHumanTimeFilter($time))."\n";
+        } 
+    }
+
+    public function showTimeBars($timings, $total_time)
+    {
+        $timings = self::filterTimings($timings);
+        foreach($timings as $name => $time)
+        {
             $percentage = round($time/$total_time*100, 2);
-            $humantime = self::getHumanTimeFilter($time);
+            $humantime = join(self::getHumanTimeFilter($time));
             echo "<span data-toggle='tooltip' data-original-title='${name} ${humantime}' class='${name} time' style='width: ${percentage}%'>";
-            echo "<em>${timings[$name]}</em>";
+            echo "<em>$time</em>";
             echo "</span>";
         }
     }

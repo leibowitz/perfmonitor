@@ -68,9 +68,8 @@
         </span>
         <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
 		{{ showTimeBars(entry.getTimings, page.getLoadTime) }}
-		<span style="display:none;">{{ page.getElapsed(entry)|getHumanTime('s')|join }}</span>
 		{% if entry.getTotalTime != 0 %}
-		{{ entry.getTotalTime|getHumanTime|join }}
+		<span data-toggle='tooltip' data-original-title='{{ showTimes(entry.getTimings) }}'>{{ entry.getTotalTime|getHumanTime|join }}</span>
         {% endif %}
         </div>
         </td>
