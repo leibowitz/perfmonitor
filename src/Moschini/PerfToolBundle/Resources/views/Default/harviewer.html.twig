@@ -54,7 +54,9 @@
 		{{ entry.getResponse.getStatus }}
         </td>
         <td>
+        <a href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'host': entry.getUrl.getHost}) }}">
 		{{ entry.getUrl.getHost }}
+        </a>
         </td>
         <td class="size">
         {% if entry.getResponse.getBodySize == 0 %}
