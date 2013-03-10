@@ -74,6 +74,7 @@ class DefaultController extends Controller
         $values = array();
         foreach($timings as $name => $value)
         {
+            $value = $value / $nbentries;
             if($value > 0)
             {
                 $values[] = array('name' => $name, 'val' => $value);

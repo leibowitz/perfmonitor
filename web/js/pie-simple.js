@@ -1,5 +1,5 @@
 
-function loadPieChart(data, div_id, len)
+function loadPieChart(data, div_id)
 {
 var formatCount = d3.format(",.0f");
 var sourceData = data.map(function(d){return d.val;}),
@@ -49,7 +49,7 @@ var total = d3.sum(sourceData);
 slices
     .append('text')
     // d.data is the original datum remember the data is wrapped in the pie helper
-    .text(function(d) { return d.data.name+': '+formatCount(d.data.val/len)+'ms'/*+'(' + Math.round(d.value*100/total) + '%)'*/; })
+    .text(function(d) { return d.data.name+': '+formatCount(d.data.val)+'ms'/*+'(' + Math.round(d.value*100/total) + '%)'*/; })
     // Move the labels to the outside
     .each(function(d) {
         // Get the center of the slice and then move the label out

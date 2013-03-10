@@ -17,7 +17,7 @@
 <script src="{{ asset('js/pie-simple.js') }}"></script>
 <script type="text/javascript">
 loadHistogramSimple({{ times|json_encode|raw }}, '#div-hist');
-loadPieChart({{ timings|json_encode|raw }}, '#div-pie', {{ times|length }});
+loadPieChart({{ timings|json_encode|raw }}, '#div-pie');
 </script>
 {% endblock %}
 
