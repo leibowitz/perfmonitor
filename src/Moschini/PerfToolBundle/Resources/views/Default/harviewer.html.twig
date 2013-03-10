@@ -60,7 +60,7 @@
         {% if entry.getResponse.getBodySize == 0 %}
         (from cache)
         {% else %}
-		{{ entry.getSize|getHumanSize }}
+		{{ entry.getSize|getHumanSize|join(' ') }}
         {% endif %}
         </td>
         <td>
@@ -68,8 +68,10 @@
         </span>
         <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
 		{{ showTimeBars(entry.getTimings, page.getLoadTime) }}
-		<span style="display:none;">{{ page.getElapsed(entry)|getHumanTime('s') }}</span>
-		{{ entry.getTotalTime|getHumanTime }}
+		<span style="display:none;">{{ page.getElapsed(entry)|getHumanTime('s')|join }}</span>
+		{% if entry.getTotalTime != 0 %}
+		{{ entry.getTotalTime|getHumanTime|join }}
+        {% endif %}
         </div>
         </td>
         </tr>
@@ -83,10 +85,10 @@
         <td style="width: 10%;">
         </td>
         <td class="size" style="width: 2%;">
-			{{ page.getTotalSize|getHumanSize }}<br/>
+			{{ page.getTotalSize|getHumanSize|join }}<br/>
         </td>
         <td class="totaltime">
-        	{{ page.getLoadTime|getHumanTime }}<br/>
+        	{{ page.getLoadTime|getHumanTime|join }}<br/>
         </td>
     </tr>
     </table>

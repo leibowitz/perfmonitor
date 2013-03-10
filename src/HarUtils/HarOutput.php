@@ -28,7 +28,7 @@ class HarOutput
         echo '</table>';
     }
 
-    static public function getHumanValues($value, $units, $format = '%.2f')
+    static public function getHumanValues($value, $units)
     {
         $final_unit = null;
 
@@ -46,10 +46,21 @@ class HarOutput
             }
         }
 
-        return sprintf($format."%s", $value, $final_unit);
+        return array(number_format($value), $final_unit);
+    }
+
+    static public function shiftUnits($units, $start_at)
+    {
+        while( key($units) != $start_at )
+        {
+            if(!array_shift($units))
+                break;
+        }
+        
+        return $units;
     }
     
-    static public function getHumanTime($time, $start_at = 'ms', $format = '%.2f')
+    static public function getHumanTime($time, $start_at = 'ms')
     {
         $units = array(
             'ms' => 1000, 
@@ -59,15 +70,10 @@ class HarOutput
             'd' => 0,
         );
 
-        while( key($units) != $start_at )
-        {
-            array_shift($units);
-        }
-
-        return self::getHumanValues($time, $units, $format);
+        return self::getHumanValues($time, self::shiftUnits($units, $start_at);
     }
 
-    static public function getHumanSize($size, $start_at = 'B', $format = '%.1f ')
+    static public function getHumanSize($size, $start_at = 'B')
     {
         $units = array(
             'B' => 1024, 
@@ -77,7 +83,7 @@ class HarOutput
             'TB' => 0, 
         );
 
-        return self::getHumanValues($size, $units, $format);
+        return self::getHumanValues($time, self::shiftUnits($units, $start_at);
     }
     
     public static function showTimeBars($timings, $total_time)

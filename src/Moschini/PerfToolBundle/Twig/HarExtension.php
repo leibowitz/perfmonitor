@@ -44,7 +44,7 @@ class HarExtension extends \Twig_Extension
         echo '</table>';
     }
 
-    public function getHumanValuesFilter($value, $units, $format = '%.2f')
+    public function getHumanValuesFilter($value, $units, $digits = 2)
     {
         $final_unit = null;
 
@@ -62,10 +62,20 @@ class HarExtension extends \Twig_Extension
             }
         }
 
-        return sprintf($format."%s", $value, $final_unit);
+        return array(trim(number_format($value, $digits), '0.'), $final_unit);
+    }
+
+    private function shiftUnits($units, $start_at)
+    {
+        while( key($units) != $start_at )
+        {
+            if(!array_shift($units))
+                break;
+        }
+        return $units;
     }
     
-    public function getHumanTimeFilter($time, $start_at = 'ms', $format = '%.2f')
+    public function getHumanTimeFilter($time, $start_at = 'ms', $digits = 1)
     {
         $units = array(
             'ms' => 1000, 
@@ -75,15 +85,10 @@ class HarExtension extends \Twig_Extension
             'd' => 0,
         );
 
-        while( key($units) != $start_at )
-        {
-            array_shift($units);
-        }
-
-        return self::getHumanValuesFilter($time, $units, $format);
+        return self::getHumanValuesFilter($time, self::shiftUnits($units, $start_at), $digits);
     }
 
-    public function getHumanSizeFilter($size, $start_at = 'B', $format = '%.1f ')
+    public function getHumanSizeFilter($size, $start_at = 'B', $digits = 2)
     {
         $units = array(
             'B' => 1024, 
@@ -93,7 +98,7 @@ class HarExtension extends \Twig_Extension
             'TB' => 0, 
         );
 
-        return self::getHumanValuesFilter($size, $units, $format);
+        return self::getHumanValuesFilter($size, self::shiftUnits($units, $start_at), $digits);
     }
     
     public function showTimeBars($timings, $total_time)
