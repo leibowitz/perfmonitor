@@ -15,6 +15,7 @@ use HarUtils\HarTime;
 use HarUtils\Url;
 
 use DbUtils\SitesDb;
+use Domain\Domain;
 use SclWhois\DomainLookup;
 use SclSocket\Socket;
 
@@ -55,8 +56,9 @@ class DefaultController extends Controller
     {
         $url = $request->get('url');
         $host = parse_url($url, PHP_URL_HOST);
-        $host = str_replace('www.', '', $host);
         
+        $domain = Domain::getRegisteredDomain($host);
+
         $timings = array();
 
         $rows = SitesDb::getStatsForUrl($url);
@@ -81,7 +83,12 @@ class DefaultController extends Controller
             }
         }
         
-        return array('url' => $url, 'host' => $host, 'timings' => $values, 'times' => $times);
+        return array(
+            'url' => $url, 
+            'domain' => $domain, 
+            'host' => $host, 
+            'timings' => $values, 
+            'times' => $times);
     }
 
     /**
