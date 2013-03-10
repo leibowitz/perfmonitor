@@ -3,7 +3,9 @@
 
 {% block content %}
 
-<h3>{{ url }}</h3>
+<h3>
+<a href="{{ path('moschini_perftool_default_lookup', {'domain': host}) }}">{{ url }}</a>
+</h3>
 <div id="div-hist"></div>
 <div id="div-pie"></div>
 

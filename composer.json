@@ -22,7 +22,9 @@
         "oldsound/rabbitmq-bundle": "dev-master",
         "twitter/bootstrap": "dev-master",
         "braincrafted/bootstrap-bundle": "dev-master",
-        "ccampbell/chromephp": "dev-master"
+        "ccampbell/chromephp": "dev-master",
+        "sclinternet/scl-socket": "dev-master",
+        "sclinternet/scl-whois": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

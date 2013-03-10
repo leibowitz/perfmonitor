@@ -15,6 +15,8 @@ use HarUtils\HarTime;
 use HarUtils\Url;
 
 use DbUtils\SitesDb;
+use SclWhois\DomainLookup;
+use SclSocket\Socket;
 
 class DefaultController extends Controller
 {
@@ -52,14 +54,23 @@ class DefaultController extends Controller
     public function infoAction(Request $request)
     {
         $url = $request->get('url');
+        $host = parse_url($url, PHP_URL_HOST);
+        $host = str_replace('www.', '', $host);
+        
         $timings = array();
+
         $rows = SitesDb::getStatsForUrl($url);
+
         $times = array();
         foreach($rows as $row)
         {
             $times[] = $row['log']['entries'][0]['time']/1000;
         }
+        
         $timings = $this->sumUp($rows);
+
+        $nbentries = count($timings);
+
         $values = array();
         foreach($timings as $name => $value)
         {
@@ -68,7 +79,29 @@ class DefaultController extends Controller
                 $values[] = array('name' => $name, 'val' => $value);
             }
         }
-        return array('url' => $url, 'timings' => $values, 'times' => $times);
+        
+        return array('url' => $url, 'host' => $host, 'timings' => $values, 'times' => $times);
+    }
+
+    /**
+     * @Route("/lookup")
+     * @Template()
+     */
+    public function lookupAction(Request $request)
+    {
+        $resp = array();
+
+        $host = $request->get('domain');
+        
+        if(!$host)
+            return $resp;
+        
+        $resp['domain'] = $host;
+
+        $whois = new DomainLookup(new Socket);
+
+        $resp['data'] = $whois->lookup($host);
+        return $resp;
     }
 
 	/**
