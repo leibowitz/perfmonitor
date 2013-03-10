@@ -45,26 +45,26 @@ span.onload{
 span.blocked{
     background-color:#DD514C;
 }
+span.dns{
+    background-color:#007B84;
+}
+span.connect{
+    background-color:#FF7B00;
+}
 span.send{
     background-color:green;
 }
 span.wait{
-    background-color:#FAA732;
+    background-color:#00FF00;
 }
 span.receive{
-    background-color:#5EB95E;
-}
-span.dns{
-    background-color:#4BB1CF;
-}
-span.connect{
-    background-color:yellow;
+    background-color:#007BFF;
 }
 .rel{
     position: relative;
 }
 .tooltip-inner{
-    max-width:none;
+    white-space:pre;
 }
 .pointer{
     cursor: default;
