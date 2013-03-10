@@ -2,28 +2,42 @@
 {% block title 'Histogram of assets' %}
 
 {% block content %}
+{% if url is not empty %}
+<p>
+Host: <a title="Show more assets from this domain" href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'host': host}) }}">{{ host }}</a>
+</p>
+{% endif %}
+<p>
+Domain: <a title="whois" href="{{ path('moschini_perftool_default_lookup', {'site': app.request.get('site'), 'domain': domain}) }}">{{ domain }}</a>
+</p>
 
+{% for url in times|keys %}
 <h3>
-<a href="{{ path('moschini_perftool_default_lookup', {'domain': domain}) }}">{{ url }}</a>
+{% if url is not empty %}
+<a href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site'), 'url': url}) }}" title="{{ url }}">{{ urls[url].getPath }}</a>
+{% else %}
+<a href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'url': url}) }}" title="{{ url }}">{{ urls[url].getPath }}</a>
+{% endif %}
 </h3>
-<p>
-Domain: <a title="whois" href="{{ path('moschini_perftool_default_lookup', {'domain': domain}) }}">{{ domain }}</a>
-</p>
-<p>
-Host: {{ host }}
-</p>
-<div id="div-hist"></div>
-<div id="div-pie"></div>
+<div id="div-hist-{{ loop.index }}"></div>
+<div id="div-pie-{{ loop.index }}"></div>
+{% endfor %}
 
 {% endblock %}
 
 {% block javascripts %}
+{% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_graph'} %}
 <script src="{{ asset('js/d3.v3.min.js') }}"></script>
 <script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script src="{{ asset('js/pie-simple.js') }}"></script>
 <script type="text/javascript">
-loadHistogramSimple({{ times|json_encode|raw }}, '#div-hist');
-loadPieChart({{ timings|json_encode|raw }}, '#div-pie');
+
+{% for url,data in times %}
+loadHistogramSimple({{ data|json_encode|raw }}, '#div-hist-{{ loop.index }}');
+{% endfor %}
+{% for url,data in timings %}
+loadPieChart({{ data|json_encode|raw }}, '#div-pie-{{ loop.index }}');
+{% endfor %}
 </script>
 {% endblock %}
 

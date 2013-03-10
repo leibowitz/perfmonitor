@@ -33,19 +33,40 @@ class DefaultController extends Controller
         $timings = array();
         foreach($rows as $row)
         {
-            foreach($row['log']['entries'][0]['timings'] as $name => $time)
+            $url = $row['url'];
+
+            foreach($row['timings'] as $name => $time)
             {
-                if(!array_key_exists($name, $timings))
+                if(!array_key_exists($url, $timings) || !array_key_exists($name, $timings[$url]))
                 {
-                    $timings[$name] = 0;
+                    $timings[$url][$name] = 0;
                 }
                 if($time != -1)
                 {
-                    $timings[$name] += $time;
+                    $timings[$url][$name] += $time;
                 }
             }
         }
         return $timings;
+    }
+       
+    private function getAvgValues($data)
+    {
+        $values = array();
+        foreach($data as $url => $timings)
+        {
+            $nbentries = count($timings);
+
+            foreach($timings as $name => $value)
+            {
+                $value = $value / $nbentries;
+                if($value > 0)
+                {
+                    $values[$url][] = array('name' => $name, 'val' => $value);
+                }
+            }
+        }
+        return $values;
     }
 
     /**
@@ -54,40 +75,46 @@ class DefaultController extends Controller
      */
     public function infoAction(Request $request)
     {
-        $url = $request->get('url');
-        $host = parse_url($url, PHP_URL_HOST);
-        
-        $domain = Domain::getRegisteredDomain($host);
-
-        $timings = array();
-
-        $rows = SitesDb::getStatsForUrl($url);
-
         $times = array();
+        $urls = array();
+
+        $url = $request->get('url');
+        if($url)
+        {
+            $host = parse_url($url, PHP_URL_HOST);
+        
+            $rows = SitesDb::getStatsForUrl($url);
+
+        }
+        else
+        {
+            $host = $request->get('host');
+            
+            $rows = SitesDb::getStatsForHost($host);
+        }
+        
         foreach($rows as $row)
         {
-            $times[] = $row['log']['entries'][0]['time']/1000;
-        }
-        
-        $timings = $this->sumUp($rows);
-
-        $nbentries = count($timings);
-
-        $values = array();
-        foreach($timings as $name => $value)
-        {
-            $value = $value / $nbentries;
-            if($value > 0)
+            $url = $row['url'];
+            if(!array_key_exists($url, $urls))
             {
-                $values[] = array('name' => $name, 'val' => $value);
+                $urls[$url] = new Url($url);
             }
+            $times[ $url ][] = $row['time']/1000;
         }
+            
+
+        $timings = $this->getAvgValues($this->sumUp($rows));
+
+        $domain = Domain::getRegisteredDomain($host);
+
         
         return array(
             'url' => $url, 
+            'urls' => $urls, 
             'domain' => $domain, 
             'host' => $host, 
-            'timings' => $values, 
+            'timings' => $timings, 
             'times' => $times);
     }
 

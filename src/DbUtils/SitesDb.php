@@ -293,12 +293,24 @@ class SitesDb
 
     static public function getStatsForUrl($url)
     {
-        $find = array('log.entries.request.url' => $url);
-        $fields = array('log.entries.$'=>1);
-        $sort = array();
-        return SitesDb::findSort($find, $fields, $sort);
+        $db = SitesDb::getDb();  
+        $cursor = $db->har->aggregate(
+            array(
+                array('$match'=>array('log.entries.request.url'=>$url)), 
+                array('$unwind'=>'$log.entries'), 
+                array('$match'=> array('log.entries.request.url'=>$url)), 
+                array('$project'=> array('url'=>'$log.entries.request.url', 'timings'=> '$log.entries.timings', 'time'=> '$log.entries.time'))
+            )
+       );
+
+       return $cursor['result'];
     }
 
+    static public function getStatsForHost($host)
+    {
+        return self::getStatsForUrl(array('$regex'=>'^http://'.$host));
+
+    }
 
 };
 
