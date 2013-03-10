@@ -57,7 +57,11 @@
 		{{ entry.getUrl.getHost }}
         </td>
         <td class="size">
+        {% if entry.getResponse.getBodySize == 0 %}
+        (from cache)
+        {% else %}
 		{{ entry.getSize|getHumanSize }}
+        {% endif %}
         </td>
         <td>
         <span class="time onload">
