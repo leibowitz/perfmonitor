@@ -23,6 +23,54 @@ class DefaultController extends Controller
     {
         return array_key_exists($field, $row) ? $row[$field] : $default;
     }
+	
+
+    private function sumUp($rows)
+    {
+        $timings = array();
+        foreach($rows as $row)
+        {
+            foreach($row['log']['entries'][0]['timings'] as $name => $time)
+            {
+                if(!array_key_exists($name, $timings))
+                {
+                    $timings[$name] = 0;
+                }
+                if($time != -1)
+                {
+                    $timings[$name] += $time;
+                }
+            }
+        }
+        return $timings;
+    }
+
+    /**
+     * @Route("/info")
+     * @Template()
+     */
+    public function infoAction(Request $request)
+    {
+        $url = $request->get('url');
+        $timings = array();
+        $rows = SitesDb::getStatsForUrl($url);
+        $times = array();
+        foreach($rows as $row)
+        {
+            $times[] = $row['log']['entries'][0]['time']/1000;
+        }
+        $timings = $this->sumUp($rows);
+        $values = array();
+        foreach($timings as $name => $value)
+        {
+            if($value > 0)
+            {
+                $values[] = array('name' => $name, 'val' => $value);
+            }
+        }
+        return array('url' => $url, 'timings' => $values, 'times' => $times);
+    }
+
 	/**
      * @Route("/")
      * @Route("/index")
@@ -149,7 +197,7 @@ class DefaultController extends Controller
 			'datas' => $datas,
 			);
     }
-
+	
 	/**
      * @Route("/time")
      * @Template()

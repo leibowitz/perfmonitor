@@ -1,0 +1,31 @@
+{% extends "MoschiniPerfToolBundle::layout.html.twig" %}
+{% block title 'Histogram of assets' %}
+
+{% block content %}
+
+<h3>{{ url }}</h3>
+<div id="div-hist"></div>
+<div id="div-pie"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/d3.v3.min.js') }}"></script>
+<script src="{{ asset('js/histogram-simple.js') }}"></script>
+<script src="{{ asset('js/pie-simple.js') }}"></script>
+<script type="text/javascript">
+loadHistogramSimple({{ times|json_encode|raw }}, '#div-hist');
+loadPieChart({{ timings|json_encode|raw }}, '#div-pie', {{ times|length }});
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('css/graph.css') }}" type="text/css" rel="stylesheet" />
+<style type="text/css">
+.slice {
+    stroke: #fff;
+    stroke-width: 1px;
+}
+</style>
+{% endblock %}
+

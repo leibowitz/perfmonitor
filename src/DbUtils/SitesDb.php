@@ -291,6 +291,14 @@ class SitesDb
         return $db->sites->update($key, array('$set' => $data)); 
     }
 
+    static public function getStatsForUrl($url)
+    {
+        $find = array('log.entries.request.url' => $url);
+        $fields = array('log.entries.$'=>1);
+        $sort = array();
+        return SitesDb::findSort($find, $fields, $sort);
+    }
+
 
 };
 
