@@ -95,12 +95,12 @@ class DefaultController extends Controller
         
         foreach($rows as $row)
         {
-            $url = $row['url'];
-            if(!array_key_exists($url, $urls))
+            $key = $row['url'];
+            if(!array_key_exists($key, $urls))
             {
-                $urls[$url] = new Url($url);
+                $urls[$key] = new Url($key);
             }
-            $times[ $url ][] = $row['time']/1000;
+            $times[ $key ][] = $row['time']/1000;
         }
             
 
