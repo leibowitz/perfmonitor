@@ -26,9 +26,9 @@ def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
     content = json.loads(body)
      
-    print ' [x] Executing command phantomjs', content['url']
-    harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
     try:
+        print ' [x] Executing command phantomjs', content['url']
+        harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
         jscontent = json.loads(harcontent)
         jscontent['site'] = content['site']
         jscontent['agent'] = content['agent']
