@@ -24,6 +24,7 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+#    cache: false
     form:
         resources:
             - "BraincraftedBootstrapBundle:Form:form_div_layout.html.twig"
@@ -36,7 +37,7 @@ assetic:
     filters:
         less:
             node:       /usr/bin/node
-            node_paths: [/usr/lib/node_modules]
+            node_paths: [/usr/local/lib/node_modules]
             apply_to:   "\.less$"
         cssrewrite: ~
     assets:
