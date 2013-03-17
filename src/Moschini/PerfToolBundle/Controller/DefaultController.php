@@ -231,7 +231,7 @@ class DefaultController extends Controller
                     'nb' => $data['nb'],
                     'account' => 'me',
                     'type' => 'har', //$data['type'],
-                    'user-agent' => $data['agent'],
+                    'agent' => $data['agent'],
                 );
                 $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
                 // If no site has been defined, use the one used for this request 
