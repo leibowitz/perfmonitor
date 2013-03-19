@@ -26,6 +26,9 @@ td.totaltime{
 tr.total{
     border: 1px solid black;
 }
+.tab-content{
+    overflow: visible;
+}
 span.time{
     height: 12px;
     position: relative;

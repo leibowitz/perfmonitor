@@ -28,73 +28,87 @@
 </table>
 </div>
 
-{% for page in har.getPages %}
-	<h1>{{ page.getName }}</h1>
-    <p> 
-    {{ har.getDate.format('Y-m-d@H:i:s') }}
-    </p>
+{% if har.getPages|length > 1 %}
+    <ul class="nav nav-tabs">
+    {% for page in har.getPages %}
+        <li class="{% if loop.index == 1 %}active{% endif %}">
+            <a href="#view-{{ loop.index }}" data-toggle="tab">Request {{ loop.index }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
 
-    <table class="har table-hover">
+    <div class="tab-content">
+    {% for page in har.getPages %}
+        <div class="tab-pane {% if loop.index == 1 %}active{% endif %}" id="view-{{ loop.index }}">
+            <h1>{{ page.getName }}</h1>
+            <p> 
+            {{ page.getStarted.format('Y-m-d@H:i:s') }}
+            </p>
+            <table class="har table-hover">
 
-	{% for entry in page.getEntries %}
-        <tr>
-        <td>
-        <b>
-		{{ entry.getRequest.getMethod }}
-        <a title="{{ entry.getUrl.getUrl }}" href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'url': entry.getUrl.getUrl}) }}">
-		{% if entry.getUrl.getFileName %}
-		{{ entry.getUrl.getFileName|slice(0,40) }}
-		{% else %}
-		{{ entry.getUrl.getHost }}
-		{% endif %}
-        </a>
-        </b>
-        </td>
-        <td>
-		{{ entry.getResponse.getStatus }}
-        </td>
-        <td>
-        <a href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'host': entry.getUrl.getHost}) }}">
-		{{ entry.getUrl.getHost }}
-        </a>
-        </td>
-        <td class="size">
-        {% if entry.getResponse.getBodySize == 0 %}
-        (from cache)
-        {% else %}
-		{{ entry.getSize|getHumanSize|join(' ') }}
-        {% endif %}
-        </td>
-        <td>
-        <span class="time onload">
-        </span>
-        <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
-		{{ showTimeBars(entry.getTimings, page.getLoadTime) }}
-		{% if entry.getTotalTime != 0 %}
-		<span data-toggle='tooltip' data-original-title='{{ showTimes(entry.getTimings) }}'>{{ entry.getTotalTime|getHumanTime|join }}</span>
-        {% endif %}
+            {% for entry in page.getEntries %}
+                <tr>
+                <td>
+                <b>
+                {{ entry.getRequest.getMethod }}
+                <a title="{{ entry.getUrl.getUrl }}" href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'url': entry.getUrl.getUrl}) }}">
+                {% if entry.getUrl.getFileName %}
+                {{ entry.getUrl.getFileName|slice(0,40) }}
+                {% else %}
+                {{ entry.getUrl.getHost }}
+                {% endif %}
+                </a>
+                </b>
+                </td>
+                <td>
+                {{ entry.getResponse.getStatus }}
+                </td>
+                <td>
+                <a href="{{ path('moschini_perftool_default_info', {'site': app.request.get('site'), 'host': entry.getUrl.getHost}) }}">
+                {{ entry.getUrl.getHost }}
+                </a>
+                </td>
+                <td class="size">
+                {% if entry.getResponse.getBodySize == 0 %}
+                (from cache)
+                {% else %}
+                {{ entry.getSize|getHumanSize|join(' ') }}
+                {% endif %}
+                </td>
+                <td>
+                <span class="time onload">
+                </span>
+                <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
+                {{ showTimeBars(entry.getTimings, page.getLoadTime) }}
+                {% if entry.getTotalTime != 0 %}
+                <span data-toggle='tooltip' data-original-title='{{ showTimes(entry.getTimings) }}'>{{ entry.getTotalTime|getHumanTime|join }}</span>
+                {% endif %}
+                </div>
+                </td>
+                </tr>
+            {% endfor %}
+            <tr class="total">
+                <td style="width: 10%;">
+                    {{ page.getEntries|length }} Requests 
+                </td>
+                <td style="width: 2%;">
+                </td>
+                <td style="width: 10%;">
+                </td>
+                <td class="size" style="width: 2%;">
+                    {{ page.getTotalSize|getHumanSize|join }}<br/>
+                </td>
+                <td class="totaltime">
+                    {{ page.getLoadTime|getHumanTime|join }}<br/>
+                </td>
+            </tr>
+            </table>
         </div>
-        </td>
-        </tr>
-	{% endfor %}
-    <tr class="total">
-        <td style="width: 10%;">
-			{{ page.getEntries|length }} Requests 
-        </td>
-        <td style="width: 2%;">
-        </td>
-        <td style="width: 10%;">
-        </td>
-        <td class="size" style="width: 2%;">
-			{{ page.getTotalSize|getHumanSize|join }}<br/>
-        </td>
-        <td class="totaltime">
-        	{{ page.getLoadTime|getHumanTime|join }}<br/>
-        </td>
-    </tr>
-    </table>
+    {% endfor %}
+    </div>
 
-{% endfor %}
+
 
 {% endblock %}
 {% block javascripts %}

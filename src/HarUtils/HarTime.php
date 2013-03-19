@@ -12,13 +12,22 @@ class HarTime
     
     static public function parseDate($date)
     {
-        return \DateTime::createFromFormat('Y-m-d?H:i:s?u', substr($date, 0, 23));
+        return new \DateTime($date);
     }
 
     public function __construct($date)
     {
         $this->date = self::parseDate($date);
-        $this->value = self::getTimeInSeconds($this->date);
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function asSeconds()
+    {
+        return HarTime::getTimeInSeconds($this->getDate());
     }
 
     public function __toString()
@@ -28,7 +37,7 @@ class HarTime
     
     public function asTimestamp()
     {
-        return $this->value;
+        return $this->asSeconds();
     }
 
     public function format($format)

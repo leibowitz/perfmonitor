@@ -68,20 +68,36 @@ class HarFile
             {
                 $this->pages[ $entry['pageref'] ]->addEntry($entry);
             }
-			else if(count($ids) > 0)
+			else if(count($ids) > 0 && array_key_exists($ids[0], $this->pages))
 			{
                 $this->pages[ $ids[0] ]->addEntry($entry);
 			}
         }
     }
 
+    private static function replaceKeyWithIds($pages)
+    {
+        $values = array();
+
+        foreach($pages as $key => $page)
+        {
+            $values[ $page->getId() ] = $page;
+        }
+        return $values;
+    }
+
     public function setPages()
     {
+        $pages = array();
+
         foreach($this->content['log']['pages'] as $page)
         {
-            $this->pages[ $page['id'] ] = new HarPage($page);
-
+            $pages[ $page['startedDateTime'] ] = new HarPage($page);
         }
+        
+        ksort($pages);
+
+        $this->pages = self::replaceKeyWithIds($pages);
     }
     
     public function getFirstPage()
