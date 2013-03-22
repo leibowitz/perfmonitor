@@ -1,5 +1,5 @@
 {
-    "hash": "f3642176c2d5c7caae14093174311304",
+    "hash": "679ab54764525c983bfee9036597e7d9",
     "packages": [
         {
             "name": "braincrafted/bootstrap-bundle",
@@ -729,16 +729,16 @@
         },
         {
             "name": "kriswallsmith/assetic",
-            "version": "v1.1.0-alpha3",
+            "version": "v1.1.0-alpha4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "v1.1.0-alpha3"
+                "reference": "v1.1.0-alpha4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/v1.1.0-alpha3",
-                "reference": "v1.1.0-alpha3",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/v1.1.0-alpha4",
+                "reference": "v1.1.0-alpha4",
                 "shasum": ""
             },
             "require": {
@@ -796,7 +796,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-02-18 16:17:57"
+            "time": "2013-02-24 17:22:20"
         },
         {
             "name": "monolog/monolog",
@@ -1716,6 +1716,7 @@
     ],
     "minimum-stability": "alpha",
     "stability-flags": {
+        "twig/extensions": 20,
         "oldsound/rabbitmq-bundle": 20,
         "twitter/bootstrap": 20,
         "braincrafted/bootstrap-bundle": 20,
