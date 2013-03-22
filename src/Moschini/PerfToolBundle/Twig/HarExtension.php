@@ -45,6 +45,15 @@ class HarExtension extends \Twig_Extension
         echo '</table>';
     }
 
+    private static function removeZeroAfterDot($value)
+    {
+        // Write code to remove zeros after last decimal value 
+        // 100.00 => 100
+        // 155.50 => 155.5 
+        // 155.55 => 155.55
+        return $value;
+    }
+
     public function getHumanValuesFilter($value, $units, $digits = 2)
     {
         $final_unit = null;
@@ -63,7 +72,7 @@ class HarExtension extends \Twig_Extension
             }
         }
 
-        return array(trim(number_format($value, $digits), '0.'), $final_unit);
+        return array(self::removeZeroAfterDot(number_format($value, $digits)), $final_unit);
     }
 
     private function shiftUnits($units, $start_at)
