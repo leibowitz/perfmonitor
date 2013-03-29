@@ -39,6 +39,11 @@ function addToHar(har, page)
         if (!request || !startReply || !endReply) {
             return;
         }
+        
+        // Exclude data:uri included images
+        if (request.url.match(/(^data:image\/.*)/i)) {
+            return;
+        }
 
         har.log.entries.push({
             startedDateTime: request.time.toISOString(),
