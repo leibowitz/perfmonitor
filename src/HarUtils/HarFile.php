@@ -73,6 +73,12 @@ class HarFile
                 $this->pages[ $ids[0] ]->addEntry($entry);
 			}
         }
+
+        // Update staretdDateTime as it can be off when generated from browsermobproxy
+        foreach($this->pages as $page)
+        {
+            $page->setStartedFromEntry();
+        }
     }
 
     private static function replaceKeyWithIds($pages)

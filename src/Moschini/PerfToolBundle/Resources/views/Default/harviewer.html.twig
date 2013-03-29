@@ -70,17 +70,13 @@
                 </a>
                 </td>
                 <td class="size">
-                {% if entry.getResponse.getBodySize == 0 %}
-                (from cache)
-                {% else %}
                 {{ entry.getSize|getHumanSize|join(' ') }}
-                {% endif %}
                 </td>
                 <td>
                 <span class="time onload">
                 </span>
                 <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
-                {{ showTimeBars(entry.getTimings, page.getLoadTime) }}
+                {{ showTimeBars(entry.getTimings, page.getTotalTime) }}
                 {% if entry.getTotalTime != 0 %}
                 <span data-toggle='tooltip' data-original-title='{{ showTimes(entry.getTimings) }}'>{{ entry.getTotalTime|getHumanTime|join }}</span>
                 {% endif %}
@@ -100,15 +96,13 @@
                     {{ page.getTotalSize|getHumanSize|join }}<br/>
                 </td>
                 <td class="totaltime">
-                    {{ page.getLoadTime|getHumanTime|join }}<br/>
+                    {{ page.getTotalTime|getHumanTime|join }}<br/>
                 </td>
             </tr>
             </table>
         </div>
     {% endfor %}
     </div>
-
-
 
 {% endblock %}
 {% block javascripts %}

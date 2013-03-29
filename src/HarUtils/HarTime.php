@@ -37,7 +37,7 @@ class HarTime
     
     public function asTimestamp()
     {
-        return $this->asSeconds();
+        return floatval($this->getDate()->format('U.u'));
     }
 
     public function format($format)

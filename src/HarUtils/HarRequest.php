@@ -16,11 +16,13 @@ class HarRequest
     {
         $times = array();
 
-        foreach($entry['timings'] as $type => $time)
-        {
-            if($time != -1)
+        if(array_key_exists('timings', $entry)){
+            foreach($entry['timings'] as $type => $time)
             {
-                $times[ $type ] = $time;
+                if($time != -1)
+                {
+                    $times[ $type ] = $time;
+                }
             }
         }
 

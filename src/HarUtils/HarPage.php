@@ -18,8 +18,19 @@ class HarPage
 
     public function addEntry($request)
     {
-        $this->requests[] = new HarRequest($request);
+        $request = new HarRequest($request);
+
+        $this->requests[ ] = $request;
 	}
+       
+    public function setStartedFromEntry()
+    {
+        $entry = $this->getFirstEntry();
+        if($entry)
+        {
+            $this->started = $entry->getStarted();
+        }
+    }
 
 	public function getElapsed(HarRequest $entry)
 	{
@@ -28,11 +39,19 @@ class HarPage
 
 	public function getElapsedAsPercentage(HarRequest $entry)
 	{
-		return max($this->getElapsed($entry) / ($this->getLoadTime() / 1000) * 100, 0);
+        $total = $this->getTotalTime();
+		return $total ? max($this->getElapsed($entry) / ($total / 1000) * 100, 0) : 0;
 	}
+
+    public function getFirstEntry()
+    {
+        reset($this->requests);
+        return count($this->requests) ? $this->requests[key($this->requests)] : null;
+    }
 
     public function getEntries()
     {
+        reset($this->requests);
         return $this->requests;
     }
 
@@ -48,11 +67,8 @@ class HarPage
 
     public function getUrl()
     {
-        if(count($this->requests) != 0)
-        {
-            return $this->requests[0]->getUrl();
-        }
-        return null;
+        $entry = $this->getFirstEntry();
+        return $entry ? $entry->getUrl() : null;
     }
 
     public function getId()
@@ -62,7 +78,8 @@ class HarPage
 
     public function getLoadTime()
     {
-        return $this->page['pageTimings']['onLoad'];
+        return array_key_exists('onLoad', $this->page['pageTimings']) ? 
+            $this->page['pageTimings']['onLoad'] : 0;
     }
 
     public function getLoadTimeAndDate()
@@ -73,6 +90,23 @@ class HarPage
         );
     }
     
+    public function getTotalTime()
+    {
+        // Find latest request in term of end time
+        $time = 0;
+        $start = $this->getStarted()->asTimestamp();
+        foreach($this->requests as $request)
+        {
+            $reqtime = $request->getElapsed($start) + $request->getTotalTime()/1000;
+            
+            if($reqtime > $time)
+            {
+                $time = $reqtime;
+            }
+        }
+        return $time*1000;
+    }
+
     public function getTotalSize()
     {
         $size = 0;

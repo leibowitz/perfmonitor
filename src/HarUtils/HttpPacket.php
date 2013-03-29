@@ -13,7 +13,7 @@ abstract class HttpPacket
 
     public function getSize()
     {
-        return $this->getBodySize();// + $this->getHeadersSize();
+        return $this->getBodySize() + $this->getHeadersSize();
     }
     
     public function getBodySize()
