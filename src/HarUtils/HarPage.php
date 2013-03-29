@@ -28,7 +28,7 @@ class HarPage
 
 	public function getElapsedAsPercentage(HarRequest $entry)
 	{
-		return $this->getElapsed($entry) / ($this->getLoadTime() / 1000) * 100;
+		return max($this->getElapsed($entry) / ($this->getLoadTime() / 1000) * 100, 0);
 	}
 
     public function getEntries()
