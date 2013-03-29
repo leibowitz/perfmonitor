@@ -17,7 +17,7 @@ class HarHttpRequest extends HttpPacket
     
     public function getUrl()
     {
-        return $this->packet['url'];
+        return array_key_exists('url', $this->packet) ? $this->packet['url'] : null;
     }
     
 }
