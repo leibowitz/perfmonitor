@@ -30,32 +30,40 @@
 
       </header>
       <section>
-        <h3>Welcome to GitHub Pages.</h3>
+        <h3>Web front-end performance monitoring</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>This project aims to automate the monitoring or your website load time from an end-user point of view (with multiple synthetic tests). It uses PhantomJS to access webpages, and record the time it takes to download each individual requests using the HAR format. This analysis report is then saved to a database to later aggregate more informations about the load time for the page and the individual requests.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<h3>Screenshots</h3>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h3> Installing</h3>
 
-<h3>Designer Templates</h3>
+<p>To download and install the project you can either install manually each components on your server/box, or use the provided <a href="https://github.com/leibowitz/perfmonitor/wiki/Getting-Started">chef recipes</a> to setup a VirtualBox or VMWare based Virtual Machine with everything pre-installed.</p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<h3>Requisites</h3>
 
-<h3>Rather Drive Stick?</h3>
+<p>MongoDB &gt;= 2.2
+PHP &gt;= 5.3.2 (and extensions: mongo)
+Python (and libs: pika, pymongo)
+PhantomJS &gt;= 1.5
+RabbitMQ
+Apache </p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h3>Why create another tool for this?</h3>
+
+<p>Many tools already exists online, as services, and even open source projects. But many of them are not giving enough informations about individual assets, are providing only the result of one individual page load, or are just giving the average load time for multiple requests. The main objective of this tool is to provide monitoring of your pages over time, by loading the same page multiple times, discarding the extreme values, and returning a stable significant value of the front-end performance of your page, in an automated way, ie continuous load time performance testing. </p>
+
+<p>Also the customisation of existing tools is quite difficult, thus starting a project from scratch with a simple interface and code makes it very flexible to add functionalities.</p>
+
+<p>Google Analytics and NewRelic are good at giving you Real User Measurement, that tells you how your website performs in the real world. This is not what this tool is intending to monitor. It is mainly to track the performance from one point of view and make sure that any optimisation or regular development (features) are not degrading the load time of your site. Regardless of if you are using caching or not, it will provide you a good idea of how slow your pages are.</p>
 
 <h3>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>This project has been initiated by <a href="https://github.com/leibowitz" class="user-mention">@leibowitz</a>  </p>
 
 <h3>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>If you have any problems installing the app please e-mail us for support.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
