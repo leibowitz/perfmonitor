@@ -36,20 +36,22 @@
 
 <h3>Screenshots</h3>
 
+<p><img src="http://leibowitz.github.io/perfmonitor/images/perf_create_new.png" alt="Create New"><img src="http://leibowitz.github.io/perfmonitor/images/perf_waterfall_index.png" alt="Waterfall Index"><img src="http://leibowitz.github.io/perfmonitor/images/perf_waterfall.png" alt="Waterfall"><img src="http://leibowitz.github.io/perfmonitor/images/perf_histogram.png" alt="Histogram"><img src="http://leibowitz.github.io/perfmonitor/images/perf_timeline.png" alt="Timeline"></p>
+
 <h3> Installing</h3>
 
 <p>To download and install the project you can either install manually each components on your server/box, or use the provided <a href="https://github.com/leibowitz/perfmonitor/wiki/Getting-Started">chef recipes</a> to setup a VirtualBox or VMWare based Virtual Machine with everything pre-installed.</p>
 
 <h3>Requisites</h3>
 
-<p>MongoDB &gt;= 2.2
-PHP &gt;= 5.3.2 (and extensions: mongo)
-Python (and libs: pika, pymongo)
-PhantomJS &gt;= 1.5
-RabbitMQ
-Apache </p>
-
-<h3>Why create another tool for this?</h3>
+<ul>
+<li>MongoDB &gt;= 2.2</li>
+<li>PHP &gt;= 5.3.2 (and extensions: mongo)</li>
+<li>Python (and libs: pika, pymongo)</li>
+<li>PhantomJS &gt;= 1.5</li>
+<li>RabbitMQ</li>
+<li>Apache or a Web server </li>
+</ul><h3>Why create another tool for this?</h3>
 
 <p>Many tools already exists online, as services, and even open source projects. But many of them are not giving enough informations about individual assets, are providing only the result of one individual page load, or are just giving the average load time for multiple requests. The main objective of this tool is to provide monitoring of your pages over time, by loading the same page multiple times, discarding the extreme values, and returning a stable significant value of the front-end performance of your page, in an automated way, ie continuous load time performance testing. </p>
 
