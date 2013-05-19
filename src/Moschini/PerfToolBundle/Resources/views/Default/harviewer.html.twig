@@ -93,10 +93,13 @@
                 <td style="width: 10%;">
                 </td>
                 <td class="size" style="width: 2%;">
-                    {{ page.getTotalSize|getHumanSize|join }}<br/>
+                    {{ page.getTotalSize|getHumanSize|join }}
                 </td>
                 <td class="totaltime">
-                    {{ page.getTotalTime|getHumanTime|join }}<br/>
+                    {% for name, time in page.getPageTimings %}
+                        {{ name }}: {{ time|getHumanTime|join }} - 
+                    {% endfor %}
+                    total: {{ page.getTotalTime|getHumanTime|join }}
                 </td>
             </tr>
             </table>

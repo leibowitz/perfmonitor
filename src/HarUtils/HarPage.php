@@ -75,11 +75,21 @@ class HarPage
     {
         return $this->page['id'];
     }
+    
+    public function getTime($name)
+    {
+        return array_key_exists($name, $this->page['pageTimings']) ? 
+            $this->page['pageTimings'][$name] : 0;
+    }
 
     public function getLoadTime()
     {
-        return array_key_exists('onLoad', $this->page['pageTimings']) ? 
-            $this->page['pageTimings']['onLoad'] : 0;
+        return $this->getTime('onLoad');
+    }
+
+    public function getPageTimings()
+    {
+        return $this->page['pageTimings'];
     }
 
     public function getLoadTimeAndDate()
