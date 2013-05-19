@@ -76,7 +76,7 @@
                 <span class="time onload">
                 </span>
                 {% for seconds in range(1, page.getSeconds) %}
-                <span class="time second" style="left: {{ (100//page.getSeconds)*seconds }}%;">
+                <span class="time second" title="{{ seconds }} seconds" style="left: {{ (100//page.getSeconds)*seconds }}%;">
                 </span>
                 {% endfor %}
                 <div class="rel" style="left: {{ page.getElapsedAsPercentage(entry) }}%; display:inline;">
