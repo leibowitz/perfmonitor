@@ -77,6 +77,7 @@ class SitesDb
     {
         $find = array(
             'site' => $site, 
+            'log.pages.pageTimings.onLoad' => array('$exists' => true)
             ); 
         if($from)
         {
@@ -115,7 +116,11 @@ class SitesDb
 
         foreach($rows as $row)
         {
-            $urls[ $row['log']['entries'][0]['request']['url'] ][] = $row['log']['pages'][0]['pageTimings']['onLoad'] / 1000;
+            $onload = $row['log']['pages'][0]['pageTimings']['onLoad'];
+            if($onload)
+            {
+                $urls[ $row['log']['entries'][0]['request']['url'] ][] = $onload / 1000;
+            }
         }
         
         return $urls;
