@@ -38,18 +38,20 @@ span.time{
 span.time em{
     display:none;
 }
-span.onload{
-    background-color:red;
+span.bar{
     height: 15px;
     left: 100%;
     width:1px;
     float:left;
 }
+span.onload{
+    background-color:red;
+}
+span.oncontentloaded{
+    background-color:blue;
+}
 span.second{
-    height: 15px;
-    width:1px;
     background-color:#dedede;
-    float:left;
 }
 span.five{
     background-color:#bbb;

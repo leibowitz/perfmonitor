@@ -73,10 +73,12 @@
                 {{ entry.getSize|getHumanSize|join(' ') }}
                 </td>
                 <td>
-                <span class="time onload">
+                <span class="time bar onload">
+                </span>
+                <span class="time bar oncontentloaded">
                 </span>
                 {% for seconds in range(1, page.getSeconds) %}
-                <span class="time second {% if seconds % 5 == 0 %}five{% endif %}" title="{{ seconds }} seconds" 
+                <span class="time bar second {% if seconds % 5 == 0 %}five{% endif %}" title="{{ seconds }} seconds" 
                 style="left: {{ (1000//page.getSeconds)*seconds/10 }}%;">
                 </span>
                 {% endfor %}
@@ -112,6 +114,9 @@
 <style type="text/css">
 span.onload{
     left: {{ (page.getLoadTime/page.getTotalTime)*100 }}%;
+}
+span.oncontentloaded{
+    left: {{ (page.getTime('onContentLoad')/page.getTotalTime)*100 }}%;
 }
 </style>
     {% endfor %}
