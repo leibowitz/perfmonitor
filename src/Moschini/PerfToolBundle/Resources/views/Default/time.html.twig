@@ -8,12 +8,12 @@
 {% for url, times in values %}
     var avgs = [];
     
-    datas = groupValuesByDate({{ times|json_encode|raw }});
+    datas = {{ times|json_encode|raw }};
     for(time in datas)
     {
         avgs.push({'date': new Date(parseInt(time)*1000), 'value': getHistAvgValue(datas[time])});
     }
-    showTimesGraph(avgs, '#div-key-{{ loop.index }}');
+    showTimesGraph(avgs, '#div-key-{{ loop.index }}', {{ from.getTimestamp*1000 }}, {{ to.getTimestamp*1000 }});
 {% endfor %}
 </script>
 
