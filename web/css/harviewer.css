@@ -51,6 +51,9 @@ span.second{
     background-color:#dedede;
     float:left;
 }
+span.five{
+    background-color:#bbb;
+}
 span.blocked{
     background-color:#DD514C;
 }
