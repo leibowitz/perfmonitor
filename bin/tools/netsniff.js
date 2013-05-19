@@ -1,3 +1,12 @@
+var phantomjs_debug = false;
+function debug(msg)
+{
+    if(phantomjs_debug)
+    {
+        console.log(msg);
+    }
+}
+
 if (!Date.prototype.toISOString) {
     Date.prototype.toISOString = function () {
         function pad(n) { return n < 10 ? '0' + n : n; }
@@ -90,7 +99,7 @@ function addToHar(har, page)
         startedDateTime: startTime.toISOString(),
         id: id,
         title: title,
-        pageTimings: {"onLoad": page.endTime - page.startTime}
+        pageTimings: {"onLoad": page.windowOnLoadTime, "onContentLoad": page.onDOMReadyTime}
     });
 
 }
@@ -112,30 +121,60 @@ function createHAR()
     };
 }
 
+function getTimeInSeconds(page)
+{
+    return page.evaluate(function(){
+        return Date.now();
+    });
+}
+
 function updatePage(page)
 {
     page.endTime = new Date();
     page.title = page.evaluate(function () {
         return document.title;
     });
+
+    page.onDOMReadyTime = page.phantomjs_timingDOMContentLoaded - page.phantomjs_timingLoadStarted;
+
+    page.windowOnLoadTime = page.phantomjs_timingOnLoad - page.phantomjs_timingLoadStarted;
+
+}
+
+function waitTillFinished(har, page, cb)
+{
+    debug('waitTillFinished [' + getTimeInSeconds(page) + ']');
+    if(page.phantomjs_timingOnLoad)
+    {
+        updatePage(page);
+        addToHar(har, page);
+        cb();
+    }
+    else {
+        setTimeout(function(){
+            waitTillFinished(har, page, cb);
+        }, 500);
+    }
 }
 
 function testUrl(har, page, url, cb)
 {
     page.address = url;
     page.resources = [];
-    page.open(page.address, function (status) {
+    debug('opening url ['+url+']');
+    page.onLoadFinished = function (status) {
+        debug('onLoadFinished status ['+status+']');
         if (status !== 'success') {
             console.log('FAIL to load the address');
             phantom.exit();
         } else {
-            updatePage(page);
-            addToHar(har, page);
-            cb();
+            debug('setting timeout for callback function');
+            waitTillFinished(har, page, cb);
         }
-    });
+    };
+    page.open(page.address);
 }
-
+const PHANTOM_FUNCTION_PREFIX = '/* PHANTOM_FUNCTION */';
 function runMain()
 {
     var system = require('system');
@@ -148,9 +187,42 @@ function runMain()
     var url = system.args[1];
 
     var page = require('webpage').create();
+page.onInitialized = function() {
+    debug('onInitialized at ['+getTimeInSeconds(page)+']');
+    page.evaluate(function(onLoadMsg) {
+        window.addEventListener("load", function() {
+            console.log(onLoadMsg);
+        }, false);
+    }, PHANTOM_FUNCTION_PREFIX + page.onLoad);
+    page.evaluate(function(domContentLoadedMsg) {
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log(domContentLoadedMsg);
+        }, false);
+    }, PHANTOM_FUNCTION_PREFIX + page.onDOMContentLoaded);
+};
+page.onDOMContentLoaded = function() {
+    page.phantomjs_timingDOMContentLoaded = getTimeInSeconds(page);
 
+    debug('onDOMContentLoaded at ['+getTimeInSeconds(page)+'] time ['+page.phantomjs_timingDOMContentLoaded+']');
+};
+page.onLoad = function() {
+    page.phantomjs_timingOnLoad = getTimeInSeconds(page);
+    
+    debug('onLoad at ['+getTimeInSeconds(page)+'] time ['+page.phantomjs_timingOnLoad+']');
+};
+
+    page.onNavigationRequested = function(url, type, willNavigate, main){
+        debug('onNavigationRequested ['+url+']');
+    };
     page.onLoadStarted = function () {
-        page.startTime = new Date();
+        debug('onLoadStarted at ['+getTimeInSeconds(page)+']');
+        if(!page.startTime)
+        {
+            debug('setting StartTime');
+            page.startTime = new Date();
+            page.phantomjs_timingLoadStarted = getTimeInSeconds(page);
+        }
+
     };
 
     page.onResourceRequested = function (req) {
@@ -170,8 +242,17 @@ function runMain()
         }
     };
 
-    page.onError = function () {
+    page.onError = function (msg, trace) {
         // catch uncaught error from the page
+        debug('Error ' + msg);
+    };
+
+    page.onConsoleMessage = function (msg) {
+if (msg.indexOf(PHANTOM_FUNCTION_PREFIX) === 0) {
+        eval('(' + msg + ')()');
+            } else {
+        //console.log('Message ' + msg);
+        }
     };
 
     if (system.args.length > 2 && system.args[2].indexOf('mobile') != -1){
