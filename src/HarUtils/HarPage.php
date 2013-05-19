@@ -99,7 +99,12 @@ class HarPage
             'value' => $this->getLoadTime()/1000
         );
     }
-    
+   
+    public function getSeconds()
+    {
+        return round($this->getTotalTime()/1000, 1);
+    }
+
     public function getTotalTime()
     {
         // Find latest request in term of end time

@@ -45,6 +45,12 @@ span.onload{
     width:1px;
     float:left;
 }
+span.second{
+    height: 15px;
+    width:1px;
+    background-color:#dedede;
+    float:left;
+}
 span.blocked{
     background-color:#DD514C;
 }
