@@ -8,3 +8,12 @@ div#form_nb label{
     display:inline-block; 
     margin-right: 20px;
 }
+
+path.domain{
+    stroke:black;
+    fill:none;
+}
+
+line.tick{
+    stroke:black;
+}

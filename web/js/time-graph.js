@@ -34,8 +34,8 @@ function groupValuesByDate(values)
 
 function showTimesGraph(values, div_id, date_from, date_to)
 {
-    var height = 200;
-    var margin_h = 20;
+    var height = 300;
+    var margin_h = 30;
     var margin_w = 50;
 
     var h=100;
@@ -43,19 +43,21 @@ function showTimesGraph(values, div_id, date_from, date_to)
     
     date_from = new Date(date_from);
     date_to = new Date(date_to);
-
+    
     values.sort(sort_by_time);
     values_key = values.map(function(d){return d.date;});
     values_val = values.map(function(d){return d.value;});
 
-    var width = 600;
+    var width = 900;
     
     var x = d3.time.scale()
         .domain([date_from, date_to])
         .range([margin_w, width-margin_w]);
 
+    var min = d3.max(values_val)+1 || 5;
+    var max = Math.max(d3.min(values_val)-2,0) || 0;
     var y = d3.scale.linear()
-        .domain([d3.max(values_val)+1, Math.max(d3.min(values_val)-2,0)])
+        .domain([min, max])
         .range([margin_h, height-margin_h]);
 
     var div = d3.select(div_id)
@@ -67,6 +69,7 @@ function showTimesGraph(values, div_id, date_from, date_to)
         .attr("height", height)
       .append("g");
         
+    msformat = d3.format('.3f');
 
     var bar = svg.selectAll(".bar")
         .data(values)
@@ -75,19 +78,20 @@ function showTimesGraph(values, div_id, date_from, date_to)
     bar.append("circle")
         .attr("cx", function(d,i){ return x(d.date)})
         .attr("cy", function(d,i){ return y(d.value)})
-		.attr("r", 5)
-        .attr("fill", "red");
+		.attr("r", 2)
+        .attr("fill", "red")
+        .append('svg:title')
+        .text(function(d){return msformat(d.value)+'s';});
 
-    var text = svg.selectAll(".text")
+    /*var text = svg.selectAll(".text")
         .data(values)
         .enter();
 
-    msformat = d3.format('.3f');
     text.append("text")
         .attr("x", function(d,i){ return x(d.date); })
         .attr("y", function(d,i){ return y(d.value)-5; })
         .text(function(d,i){ return msformat(d.value)+'s'; });
-
+*/
     bar.append("line")
         .attr("x1", function(d,i){ return x(d.date)})
         .attr("y1", function(d,i){ return y(d.value)})
@@ -97,25 +101,26 @@ function showTimesGraph(values, div_id, date_from, date_to)
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom")
-        .ticks(d3.time.days, 1);
+        //.orient("bottom")
+        //.ticks(d3.time.days,1)
+        .tickFormat(d3.time.format("%d/%m"))
+        .tickSize(3, 0);
 
     svg.append("g")
         .attr("class", "x axis")
-		.attr("opacity", 0.7)
-        .attr("transform", "translate(0," + (height-20) + ")")
+        .attr("transform", "translate(0," + (height-margin_h) + ")")
         .call(xAxis);
 
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
-        .ticks(5);
+        //.ticks(5)
+        .tickSize(5, 0);
 
     svg.append("g")
         .attr("class", "y axis")
-        .attr("width", 1)
-		.attr("opacity", 0.7)
-        .attr("transform", "translate(50,0)")
+        .attr("transform", "translate("+margin_w+",0)")
         .call(yAxis);
     
 }
+

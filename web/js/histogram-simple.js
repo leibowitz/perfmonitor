@@ -13,7 +13,7 @@ var max = d3.max(values);
 
 if(min == max)
 {
-    min = Math.max(min-1, 0);
+    max = min+1;
 }
 
 var x = d3.scale.linear()
