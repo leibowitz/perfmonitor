@@ -73,9 +73,19 @@ class SitesDb
     }
 
 
-    static public function getLoadTimes($site, $url)
+    static public function getLoadTimes($site, $url, $from = null, $to = null)
     {
-        $find = array('site' => $site); 
+        $find = array(
+            'site' => $site, 
+            ); 
+        if($from)
+        {
+            $find['log.pages.startedDateTime']['$gt'] = $from->format(\DateTime::ISO8601);
+        }
+        if($to)
+        {
+            $find['log.pages.startedDateTime']['$lt'] = $to->format(\DateTime::ISO8601);
+        }
         if($url)
         {
             $find['log.entries.request.url'] = $url;
@@ -128,13 +138,13 @@ class SitesDb
         return $urls;
     }
 
-    static public function getLoadTimesPerUrl($site, $url)
+    static public function getLoadTimesPerUrl($site, $url, $from, $to)
     {
-        return self::groupByUrl(self::getLoadTimes($site, $url));
+        return self::groupByUrl(self::getLoadTimes($site, $url, $from, $to));
     }
-    static public function getLoadTimesAndDatePerUrl($site, $url)
+    static public function getLoadTimesAndDatePerUrl($site, $url, $from, $to)
     {
-        return self::groupByUrlWithDate(self::getLoadTimes($site, $url));
+        return self::groupByUrlWithDate(self::getLoadTimes($site, $url, $from, $to));
     }
 
     static public function getSites()

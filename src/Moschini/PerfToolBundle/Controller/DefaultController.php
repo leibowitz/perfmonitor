@@ -260,7 +260,11 @@ class DefaultController extends Controller
      */
     public function graphAction(Request $request)
 	{
-        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'));
+        $from = new \DateTime();
+        $from->modify('-4 months');
+        $to = new \DateTime();
+        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'), $from, $to);
+        
 		return array(
 			'datas' => $datas,
 			);
@@ -273,10 +277,15 @@ class DefaultController extends Controller
     public function timeAction(Request $request)
 	{
 
-        $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'));
+        $from = new \DateTime();
+        $from->modify('-3 months');
+        $to = new \DateTime();
+        $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
 
         return array(
             'values' => $datas, 
+            'from' => $from,
+            'to' => $to
         );
 	}
 
