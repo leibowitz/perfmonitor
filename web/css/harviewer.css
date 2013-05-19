@@ -57,22 +57,22 @@ span.five{
     background-color:#bbb;
 }
 span.blocked{
-    background-color:#DD514C;
+    background-color:#DE232A;
 }
 span.dns{
-    background-color:#007B84;
+    background-color:#C49123;
 }
 span.connect{
-    background-color:#FF7B00;
+    background-color:#F7C318;
 }
 span.send{
-    background-color:green;
+    background-color:#A46226;
 }
 span.wait{
-    background-color:#00FF00;
+    background-color:#FE882E;
 }
 span.receive{
-    background-color:#007BFF;
+    background-color:#563933;
 }
 .rel{
     position: relative;
