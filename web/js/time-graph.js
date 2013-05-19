@@ -1,3 +1,30 @@
+function getValue(element)
+{
+    return element['value'];
+}
+
+function getNValuesAvg(values, idx, nb)
+{
+    vals = values.slice(idx, idx+nb).map(getValue);
+    return {
+        'date': values[idx]['date'],
+        'value': d3.mean(vals)
+    };
+    
+}
+
+function getMovingAverages(values)
+{
+    var nb = 3;
+    var results = new Array();
+    var start = nb;
+    for(var i=start;i<values.length+1;i++)
+    {
+        r = getNValuesAvg(values, i-start, nb);
+        results.push(r);
+    }
+    return results;
+}
 function getData()
 {
     return d3.range(33).map(d3.random.normal(10));
@@ -45,6 +72,10 @@ function showTimesGraph(values, div_id, date_from, date_to)
     date_to = new Date(date_to);
     
     values.sort(sort_by_time);
+    if(values.length > 3)
+    {
+        values = getMovingAverages(values);
+    }
     values_key = values.map(function(d){return d.date;});
     values_val = values.map(function(d){return d.value;});
 
