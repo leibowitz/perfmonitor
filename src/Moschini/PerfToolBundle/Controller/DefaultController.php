@@ -266,7 +266,7 @@ class DefaultController extends Controller
         $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'), $from, $to);
         
 		return array(
-            'datas' => array_map(array($this, 'groupValuesByDate'), $datas), 
+            'datas' => $datas, 
 			);
     }
 	
@@ -283,7 +283,7 @@ class DefaultController extends Controller
         $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
 
         return array(
-            'values' => $datas, 
+            'values' => array_map(array($this, 'groupValuesByDate'), $datas), 
             'from' => $from,
             'to' => $to
         );
