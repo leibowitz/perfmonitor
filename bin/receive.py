@@ -22,31 +22,46 @@ channel.queue_bind(exchange='perfmonitor', queue=queue_name, routing_key='perfte
 
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
+def sendback(msg):
+    channel.basic_publish(exchange='perfmonitor',
+          routing_key='perftest',
+          body=json.dumps(msg))
+
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
     content = json.loads(body)
      
-    try:
-        print ' [x] Executing command phantomjs', content['url']
-        harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
-        jscontent = json.loads(harcontent)
-        jscontent['site'] = content['site']
-        jscontent['agent'] = content['agent']
-        dbcon.perfmonitor.har.insert(jscontent)
-    except:
-        print ' [x] Unable to parse JSON, ignoring request'
+    content['nb'] -= 1
+
+    if content['nb'] > 0:
+        sendback(content)
+        print ' [x] Message sent back to queue'
+
+    print ' [x] Executing command phantomjs', content['url']
+
+    harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
+
+    if harcontent:
+        try:
+            jscontent = json.loads(harcontent)
+        except:
+            print ' [x] Unable to parse JSON output'
+            jscontent = None
+
+        if jscontent:
+            jscontent['site'] = content['site']
+            jscontent['agent'] = content['agent']
+
+            try:
+                dbcon.perfmonitor.har.insert(jscontent)
+                print ' [x] HAR response saved'
+            except:
+                print ' [x] Unable to save HAR response, sending one request to queue'
+                content['nb'] = 1
+                sendback(content)
 
     ch.basic_ack(delivery_tag = method.delivery_tag)
-    try:
-        if content['nb'] > 1:
-            content['nb'] -= 1
-            channel.basic_publish(exchange='perfmonitor',
-                      routing_key='perftest',
-                      body=json.dumps(content))
-            print ' [x] Message sent back to queue'
-    except:
-        print ' [x] Error while trying to send message back to queue'
-    print " [x] Done"
+    print " [x] Acknoledgment sent"
 
 channel.basic_consume(callback,
                       queue=queue_name)
