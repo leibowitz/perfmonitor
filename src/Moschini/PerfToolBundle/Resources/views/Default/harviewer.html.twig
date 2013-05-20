@@ -74,7 +74,7 @@
                 </td>
                 <td>
                 {% for name, time in page.getPageTimings %}
-                <span class="time bar {{ name|lower }}">
+                <span class="time bar {{ name|lower }}" style="left: {{ (page.getTime(name)/page.getTotalTime)*100 }}%;">
                 </span>
                 {% endfor %}
                 {% if(page.getSeconds >= 1) %}
@@ -113,14 +113,6 @@
             </tr>
             </table>
         </div>
-<style type="text/css">
-span.onload{
-    left: {{ (page.getLoadTime/page.getTotalTime)*100 }}%;
-}
-span.oncontentloaded{
-    left: {{ (page.getTime('onContentLoad')/page.getTotalTime)*100 }}%;
-}
-</style>
     {% endfor %}
     </div>
 
