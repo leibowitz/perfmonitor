@@ -73,10 +73,10 @@
                 {{ entry.getSize|getHumanSize|join(' ') }}
                 </td>
                 <td>
-                <span class="time bar onload">
+                {% for name, time in page.getPageTimings %}
+                <span class="time bar {{ name|lower }}">
                 </span>
-                <span class="time bar oncontentloaded">
-                </span>
+                {% endfor %}
                 {% if(page.getSeconds > 1) %}
                 {% for seconds in range(1, page.getSeconds) %}
                 <span class="time bar second {% if seconds % 5 == 0 %}five{% endif %}" title="{{ seconds }} seconds" 
