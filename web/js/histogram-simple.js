@@ -4,7 +4,7 @@ function loadHistogramSimple(values, div_id)
 // A formatter for counts.
 var formatCount = d3.format(",.0f");
 
-var margin = {top: 0, right: 0, bottom: 20, left: 50},
+var margin = {top: 10, right: 0, bottom: 20, left: 50},
     width = 560 - margin.left - margin.right,
     height = 200 - margin.top - margin.bottom;
 
