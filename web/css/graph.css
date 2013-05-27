@@ -2,10 +2,21 @@
 .bar rect {
   fill: steelblue;
   shape-rendering: crispEdges;
+  stroke:white;
 }
 
 .bar text {
-  fill: #fff;
+  fill: black;
+}
+
+line {
+  stroke: red;
+  stroke-width:1px;
+}
+
+path{
+    fill:none;
+    stroke:black;
 }
 
 .axis path, .axis line {
@@ -13,3 +24,4 @@
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
