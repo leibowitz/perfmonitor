@@ -9,11 +9,14 @@
     var avgs = [];
     
     datas = {{ times|json_encode|raw }};
+    showBoxPlot(datas, '#div-key-{{ loop.index }}', {{ from.getTimestamp*1000 }}, {{ to.getTimestamp*1000 }});
+    /*
     for(time in datas)
     {
         avgs.push({'date': new Date(parseInt(time)*1000), 'value': getHistAvgValue(datas[time])});
     }
     showTimesGraph(avgs, '#div-key-{{ loop.index }}', {{ from.getTimestamp*1000 }}, {{ to.getTimestamp*1000 }});
+    */
 {% endfor %}
 </script>
 

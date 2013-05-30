@@ -25,3 +25,8 @@ line.tick{
 .grid path {
       stroke-width: 0;
 }
+
+rect{
+    stroke:black;
+    fill:none;
+}
