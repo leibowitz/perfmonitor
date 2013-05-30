@@ -153,5 +153,23 @@ function showTimesGraph(values, div_id, date_from, date_to)
         .attr("transform", "translate("+margin_w+",0)")
         .call(yAxis);
     
+
+    // Adding grid lines
+    svg.append("g")         
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + (margin_h) + ")")
+        .call(xAxis
+            .tickSize(height-(margin_h*2))
+            .tickFormat("")
+        );
+
+    svg.append("g")         
+        .attr("class", "grid")
+        .attr("transform", "translate("+margin_w+",0)")
+        .call(yAxis
+            .orient("right")
+            .tickSize(width-(margin_w*2))
+            .tickFormat("")
+        );
 }
 

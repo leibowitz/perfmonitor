@@ -17,3 +17,11 @@ path.domain{
 line.tick{
     stroke:black;
 }
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}
