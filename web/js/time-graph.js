@@ -62,22 +62,53 @@ function groupValuesByDate(values)
 function showBoxPlot(datas, div_id, date_from, date_to)
 {
 
-    values = d3.map(datas);
-
     var height = 300;
     var width = 900;
     var margin_h = 30;
     var margin_w = 50;
 
+    var min = +Infinity;
+    var max = -Infinity;
+
     date_from = new Date(date_from);
     date_to = new Date(date_to);
+    // Eventually add one day to the right
+    date_to.setDate(date_to.getDate() + 1);
     
     var x = d3.time.scale()
         .domain([date_from, date_to])
         .range([margin_w, width-margin_w]);
     
-    var min = +Infinity;
-    var max = -Infinity;
+    var values = d3.map(datas);
+    // Create Date object for the whole data set
+    var entries = values.entries();
+    for(i in entries)
+    {
+        // Set js timestamp and date object 
+        entries[i].time = entries[i].key * 1000;
+        entries[i].date = new Date(entries[i].time);
+        // Sort values
+        entries[i].value.sort(d3.ascending);
+        // Mean
+        entries[i].mean = d3.mean(entries[i].value);
+        // Median
+        entries[i].median = d3.median(entries[i].value);
+        // Set first and third quartile
+        entries[i].quart1 = d3.quantile(entries[i].value, .25);
+        entries[i].quart3 = d3.quantile(entries[i].value, .75);
+        // Midhinge
+        entries[i].midhinge = (entries[i].quart3 + entries[i].quart1)/2;
+        // IQR
+        entries[i].iqr = entries[i].quart3 - entries[i].quart1;
+        // Lower and upper fences
+        //entries[i].lower = entries[i].quart1 - 1.5*entries[i].iqr;
+        //entries[i].upper = entries[i].quart3 + 1.5*entries[i].iqr;
+        entries[i].lower = d3.quantile(entries[i].value, .09);
+        entries[i].upper = d3.quantile(entries[i].value, .91);
+        // trimean 20, 50 and 80
+    }
+
+    var dates = values.keys().sort(d3.ascending);
 
     for(time in datas)
     {
@@ -89,12 +120,18 @@ function showBoxPlot(datas, div_id, date_from, date_to)
             min = m;
     }
 
+    // Change domain to have margins above and below boxes
+    min = min * 0.9;
+    max = max * 1.1;
+
     var y = d3.scale.linear()
         .domain([max, min])
         .range([margin_h, height-margin_h]);
 
-d1 = d3.min(values.keys());
-var bar_width = (x(d1*1000+86400000)-x(d1*1000));
+    // Get the lowest time
+    var d1 = d3.min(dates);
+    // Find width between two ticks
+    var bar_width = (x(d1*1000+86400000)-x(d1*1000));
 
     var div = d3.select(div_id)
         .append("div");
@@ -105,7 +142,7 @@ var bar_width = (x(d1*1000+86400000)-x(d1*1000));
         .attr("height", height);
         
     var bar = svg.selectAll(".bar")
-        .data(values.entries())
+        .data(entries)
       .enter();
 /*
     values.sort(sort_by_time);
@@ -134,63 +171,86 @@ var bar_width = (x(d1*1000+86400000)-x(d1*1000));
         // Rectangle
         bar
         .append("g")
-        .attr("transform", function(d, i){return "translate("+(x(d.key*1000)+bar_width*.1)+","+0+")";})
-        .text(function(d){ return new Date(d.key*1000);})
+        .attr("transform", function(d, i){return "translate("+(x(d.time)+bar_width*.1)+","+0+")";})
+        .text(function(d){ return d.key;})
         .append("rect")
         //.attr("x", function(d, i){return x(d.key*1000);})
         .attr("y", function(d, i){
         
             if(d.value.length == 1)
                 return y(d.value[0]);
-            d.value.sort(d3.ascending);
-            return y(d3.quantile(d.value, .75));
+            return y(d.quart3);
             })
         .attr("width", bar_width*.8)
         .attr("height", function(d, i){ 
-    
             if(d.value.length == 1)
                 return 1;
-            d.value.sort(d3.ascending);
-            quart1 = d3.quantile(d.value, .25);
-            quart3 = d3.quantile(d.value, .75);
-            return y(quart1) - y(quart3)
+            return y(d.quart1) - y(d.quart3)
         });
 
 
         // Bar up
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.key*1000)+bar_width/2})
-        .attr("y1", function(d,i){ d.value.sort(d3.ascending); return y(d3.max(d.value))})
-        .attr("x2", function(d,i){ return x(d.key*1000)+bar_width/2})
-        .attr("y2", function(d,i){ d.value.sort(d3.ascending); return y(d3.quantile(d.value, .75))})
+        .attr("x1", function(d,i){ return x(d.time)+bar_width/2})
+        //.attr("y1", function(d,i){ return y(d3.max(d.value))})
+        .attr("y1", function(d,i){ return y(d.upper)})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("y2", function(d,i){ return y(d.quart3)})
+        .attr("stroke", "black");
+       
+        // -
+        bar.append("g")
+        .append('line')
+        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45})
+        .attr("y1", function(d,i){ return y(d.upper)})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55})
+        .attr("y2", function(d,i){ return y(d.upper)})
         .attr("stroke", "black");
 
         // Bar down
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.key*1000)+bar_width/2})
-        .attr("y1", function(d,i){ d.value.sort(d3.ascending); return y(d3.min(d.value))})
-        .attr("x2", function(d,i){ return x(d.key*1000)+bar_width/2})
-        .attr("y2", function(d,i){ d.value.sort(d3.ascending); return y(d3.quantile(d.value, .25))})
+        .attr("x1", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("y1", function(d,i){ return y(d.lower)})
+        //.attr("y1", function(d,i){ return y(d3.min(d.value))})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("y2", function(d,i){ return y(d.quart1)})
+        .attr("stroke", "black");
+        
+        // -
+        bar.append("g")
+        .append('line')
+        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45})
+        .attr("y1", function(d,i){ return y(d.lower)})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55})
+        .attr("y2", function(d,i){ return y(d.lower)})
         .attr("stroke", "black");
 
         // Mean
+        bar.append("circle")
+        .attr("cx", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("cy", function(d,i){ return y(d.mean)})
+		.attr("r", 2)
+        .attr("fill", "red")
+        .append('svg:title')
+        .text(function(d){return d.value;});
+
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.key*1000)+bar_width*.1;})
-        .attr("y1", function(d,i){ d.value.sort(d3.ascending); return y(d3.mean(d.value))})
-        .attr("x2", function(d,i){ return x(d.key*1000)+bar_width*.9;})
-        .attr("y2", function(d,i){ d.value.sort(d3.ascending); return y(d3.mean(d.value))})
+        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45;})
+        .attr("y1", function(d,i){ return y(d.mean)})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55;})
+        .attr("y2", function(d,i){ return y(d.mean)})
         .attr("stroke", "red");
         
         // Median 
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.key*1000)+bar_width*.1;})
-        .attr("y1", function(d,i){ d.value.sort(d3.ascending); return y(d3.median(d.value))})
-        .attr("x2", function(d,i){ return x(d.key*1000)+bar_width*.9;})
-        .attr("y2", function(d,i){ d.value.sort(d3.ascending); return y(d3.median(d.value))})
+        .attr("x1", function(d,i){ return x(d.time)+bar_width*.1;})
+        .attr("y1", function(d,i){ return y(d.median)})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.9;})
+        .attr("y2", function(d,i){ return y(d.median)})
         .attr("stroke", "blue");
 
     var xAxis = d3.svg.axis()
