@@ -1,7 +1,12 @@
-var phantomjs_debug = false;
+var OPT_DEBUG = false;
+// Maximum time to wait for a resource
+var MAX_TIMEOUT = 5000; // 5s
+// Maximum total time to wait
+var MAX_WAIT = 60000; // 60s
+
 function debug(msg)
 {
-    if(phantomjs_debug)
+    if(OPT_DEBUG)
     {
         console.log(msg);
     }
@@ -143,7 +148,14 @@ function updatePage(page)
 
 function waitTillFinished(har, page, cb)
 {
-    debug('waitTillFinished [' + getTimeInSeconds(page) + ']');
+    var now = getTimeInSeconds(page);
+    var elapsed = now - page.startTime.getTime();
+    debug('waitTillFinished [' + elapsed + ']');
+    if(elapsed > MAX_WAIT)
+    {
+        debug('waited too long, exiting');
+        phantom.exit();
+    }
     if(page.phantomjs_timingOnLoad)
     {
         updatePage(page);
@@ -241,6 +253,10 @@ page.onLoad = function() {
             page.resources[res.id].endReply = res;
         }
     };
+    
+    page.onResourceTimeout = function (req) {
+        debug('timeout: ' + req.url);
+    };
 
     page.onError = function (msg, trace) {
         // catch uncaught error from the page
@@ -258,13 +274,15 @@ if (msg.indexOf(PHANTOM_FUNCTION_PREFIX) === 0) {
     if (system.args.length > 2 && system.args[2].indexOf('mobile') != -1){
         page.settings.userAgent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7';
     }
-    
+   
+    page.settings.resourceTimeout = MAX_TIMEOUT;
+
     var har = createHAR();
     testUrl(har, page, url, function(){
-        testUrl(har, page, url, function(){
+        //testUrl(har, page, url, function(){
             console.log(JSON.stringify(har, undefined, 4));
             phantom.exit();
-        });
+        //});
     });
 
 }
