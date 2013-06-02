@@ -2,6 +2,11 @@
     padding-bottom:20px;
 }
 
+.table th.text-right,
+.table td.text-right{
+    text-align:right;
+}
+
 div.block{
     padding:20px;
 }
