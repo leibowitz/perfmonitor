@@ -14,6 +14,7 @@
     <tr>
         <th width="150">Date</th>
         <th>Url</th>
+        <th width="90" class="text-right">Load Time</th>
     </tr>
 </thead>
 <tbody>
@@ -23,6 +24,9 @@
         <td>{{ request['date'].format('Y-m-d@H:i:s') }}</td>
         <td>
 <a href="{{ path('moschini_perftool_default_harviewer', {'id': id, 'site': app.request.get('site')}) }}">{{ request['url'] }}</a>
+        </td>
+        <td class="text-right">
+            {{ (request['loadtime']/1000)|number_format(3) }}
         </td>
     </tr>
 {% endfor %}

@@ -154,6 +154,7 @@ class DefaultController extends Controller
                 'url' => $row['log']['entries'][0]['request']['url'],
                 'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
                 'agent' => $this->getRowField($row, 'agent'),
+                'loadtime' => $row['log']['pages'][0]['pageTimings']['onLoad'],
                 );
         }
         return array(

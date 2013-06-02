@@ -165,6 +165,7 @@ class SitesDb
             'log.pages.startedDateTime' => 1, 
             'log.entries' => array('$slice' => array(0, 1)),
             'log.entries.request.url' => 1,
+            'log.pages.pageTimings.onLoad' => 1,
             'agent' => 1);
         $sort['log.pages.startedDateTime'] = -1;
         return self::findSort($find, $fields, $sort, $limit);
