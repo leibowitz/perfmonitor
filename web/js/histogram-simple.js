@@ -7,6 +7,7 @@ function getPercentileRange(values, from, to)
 
     var pvalue1 = d3.quantile(values, from);
     var pvalue2 = d3.quantile(values, to);
+
     var idx1 = d3.bisect(values, pvalue1);
     var idx2 = d3.bisect(values, pvalue2);
 
@@ -15,7 +16,10 @@ function getPercentileRange(values, from, to)
 
 function loadHistogramSimple(values, div_id, min, max)
 {
-
+    if(values.length > 10)
+    {
+        values = getPercentileRange(values, 0.02, 0.98);
+    }
 // A formatter for counts.
 var formatCount = d3.format(",.0f");
 
@@ -35,10 +39,6 @@ if(!min)
 if(!max)
 {
     max = d3.max(values);
-    if(min == max)
-    {
-        max = min+1;
-    }
 }
 
 var color = d3.scale.category10();
@@ -46,7 +46,7 @@ var color = d3.scale.category10();
 var x = d3.scale.linear()
     //.domain(data.map(function(d){return d.x;}))
     //.rangeRoundBands([0, (width-margin.left-margin.right)]);
-    .domain([min, max])
+    .domain([min, min == max ? max+1 : max])
     .rangeRound([0, (width-margin.left-margin.right)])
     .nice();
 
@@ -175,13 +175,10 @@ var curve = svg.selectAll(".curve")
 //min = 0.4;
 //max = 1.6;
 var values = d3.range(0, 1, 1/50);
-//console.log(values);
 
 var y = d3.scale.linear()
     .domain([0, 3])
     .range([height, 0]);
-
-//console.log(values.map(function(v){ return pdf(v, stdev, mean); }));
 
 var line = d3.svg.line()
     .interpolate("monotone")
@@ -224,6 +221,8 @@ function draw_mark(svg, x, height, value, color)
 
 function getStandardDeviation(values)
 {
+    if(values.length<2)
+        return 0;
     mean = d3.mean(values);
     dv = values.map(function(d){return Math.pow(d-mean, 2)});
     // divide by n-1 to get a better approximation
