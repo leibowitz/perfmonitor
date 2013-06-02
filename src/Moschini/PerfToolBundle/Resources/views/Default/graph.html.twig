@@ -6,14 +6,7 @@
 <script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script type="text/javascript">
 {% for url, times in datas %}
-    {% for i in [25, 50, 100, 250, 500, 1000, 2000] %}
-    loadHistogramSimple({{ times|slice(0, i)|json_encode }}, '#div-hist_{{ i }}-{{ loop.index }}');
-    loadHistogramSimple(getPercentileRange({{ times|slice(0, i)|json_encode }}, 0.02, .98), '#div-histbis_{{ i }}-{{ loop.index }}');
-    {% endfor %}
-
     loadHistogramSimple({{ times|json_encode }}, '#div-hist-{{ loop.index }}');
-    loadHistogramSimple(getPercentileRange({{ times|json_encode }}, 0.02, .98), '#div-histbis-{{ loop.index }}');
-    
 {% endfor %}
 
 </script>
@@ -32,13 +25,6 @@
 {% for url, times in datas %}
         <h3><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site'), 'url': url}) }}">{{ url }}</a>
 		</h3>
-    {% for i in [25, 50, 100, 250, 500, 1000, 2000] %}
-        {{ i }}
-	    <div id="div-hist_{{ i }}-{{ loop.index }}"></div>
-	    <div id="div-histbis_{{ i }}-{{ loop.index }}"></div>
-    {% endfor %}
-    all
-	<div id="div-histbis-{{ loop.index }}">
 	<div id="div-hist-{{ loop.index }}">
 	</div>
 
