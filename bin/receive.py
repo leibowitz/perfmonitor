@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import pika
-import subprocess
+from subprocess import check_output, CalledProcessError
 import json
 import os
 from pymongo import MongoClient
@@ -23,23 +23,35 @@ channel.queue_bind(exchange='perfmonitor', queue=queue_name, routing_key='perfte
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
 def sendback(msg):
-    channel.basic_publish(exchange='perfmonitor',
-          routing_key='perftest',
-          body=json.dumps(msg))
+    if msg['nb'] > 0:
+        channel.basic_publish(exchange='perfmonitor',
+              routing_key='perftest',
+              body=json.dumps(msg))
+        print ' [x] Message sent to queue with count ', msg['nb']
+
+def send_ack(ch, method):
+    ch.basic_ack(delivery_tag = method.delivery_tag)
+    print " [x] Acknoledgment sent"
 
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
     content = json.loads(body)
      
-    content['nb'] -= 1
+    # if the current count reached 0
+    # there are no more requests left
+    if content['nb'] <= 0:
+        # acknowledge the msg and quit 
+        send_ack(ch, method)
+        print ' [x] No more requests left'
+        return
 
-    if content['nb'] > 0:
-        sendback(content)
-        print ' [x] Message sent back to queue'
+    print ' [x] Executing browser', content['url']
 
-    print ' [x] Executing command phantomjs', content['url']
-
-    harcontent = subprocess.check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
+    try:
+        harcontent = check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
+    except CalledProcessError:
+        print ' [x] Sub-process failed'
+        harcontent = None
 
     if harcontent:
         try:
@@ -55,13 +67,18 @@ def callback(ch, method, properties, body):
             try:
                 dbcon.perfmonitor.har.insert(jscontent)
                 print ' [x] HAR response saved'
-            except:
-                print ' [x] Unable to save HAR response, sending one request to queue'
-                content['nb'] = 1
-                sendback(content)
 
-    ch.basic_ack(delivery_tag = method.delivery_tag)
-    print " [x] Acknoledgment sent"
+                send_ack(ch, method)
+                content['nb'] -= 1
+                if content['nb'] > 0:
+                    sendback(content)
+            except:
+                print ' [x] Unable to save HAR response, sending back'
+        else:
+            print ' [x] Unable to parse HAR file from sub-process, sending back'
+
+    else:
+        print ' [x] Unable to generate HAR file, sending back'
 
 channel.basic_consume(callback,
                       queue=queue_name)
