@@ -3,10 +3,9 @@
 {% block title 'Requests' %}
 {% block content %}
 
-{% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
-
 <a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
 
+{% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
 
 {% if requests|length > 0 %}
 <table class="table table-condensed">

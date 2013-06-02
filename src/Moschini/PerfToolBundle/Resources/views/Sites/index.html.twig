@@ -3,9 +3,9 @@
 
 {% block content %}
 
-{% render url('moschini_perftool_sites_managedsites', {'site': app.request.get('site')}) %}
-
 <a class="btn pull-right" href="{{ path('moschini_perftool_sites_add', {'site': app.request.get('site')}) }}">Add site</a>
+
+{% render url('moschini_perftool_sites_managedsites', {'site': app.request.get('site')}) %}
 
 {% if sites.count %}
 <table class="table table-condensed table-stripped table-hover">
