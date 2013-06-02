@@ -72,8 +72,6 @@ function showBoxPlot(datas, div_id, date_from, date_to)
 
     date_from = new Date(date_from);
     date_to = new Date(date_to);
-    // Eventually add one day to the right
-    date_to.setDate(date_to.getDate() + 1);
     
     var x = d3.time.scale()
         .domain([date_from, date_to])
@@ -131,7 +129,8 @@ function showBoxPlot(datas, div_id, date_from, date_to)
     // Get the lowest time
     var d1 = d3.min(dates);
     // Find width between two ticks
-    var bar_width = (x(d1*1000+86400000)-x(d1*1000));
+    var bin_width = (x(d1*1000+86400000)-x(d1*1000));
+    var bar_width = bin_width*.8;
 
     var div = d3.select(div_id)
         .append("div");
@@ -171,7 +170,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         // Rectangle
         bar
         .append("g")
-        .attr("transform", function(d, i){return "translate("+(x(d.time)+bar_width*.1)+","+0+")";})
+        .attr("transform", function(d, i){return "translate("+(x(d.time)-bar_width/2)+","+0+")";})
         .text(function(d){ return d.key;})
         .append("rect")
         //.attr("x", function(d, i){return x(d.key*1000);})
@@ -181,7 +180,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
                 return y(d.value[0]);
             return y(d.quart3);
             })
-        .attr("width", bar_width*.8)
+        .attr("width", bar_width)
         .attr("height", function(d, i){ 
             if(d.value.length == 1)
                 return 1;
@@ -192,44 +191,44 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         // Bar up
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("x1", function(d,i){ return x(d.time)})
         //.attr("y1", function(d,i){ return y(d3.max(d.value))})
         .attr("y1", function(d,i){ return y(d.upper)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("x2", function(d,i){ return x(d.time)})
         .attr("y2", function(d,i){ return y(d.quart3)})
         .attr("stroke", "black");
        
         // -
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45})
+        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.upper)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.upper)})
         .attr("stroke", "black");
 
         // Bar down
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("x1", function(d,i){ return x(d.time)})
         .attr("y1", function(d,i){ return y(d.lower)})
         //.attr("y1", function(d,i){ return y(d3.min(d.value))})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("x2", function(d,i){ return x(d.time)})
         .attr("y2", function(d,i){ return y(d.quart1)})
         .attr("stroke", "black");
         
         // -
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45})
+        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.lower)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.lower)})
         .attr("stroke", "black");
 
         // Mean
         bar.append("circle")
-        .attr("cx", function(d,i){ return x(d.time)+bar_width/2})
+        .attr("cx", function(d,i){ return x(d.time)})
         .attr("cy", function(d,i){ return y(d.mean)})
 		.attr("r", 2)
         .attr("fill", "red")
@@ -238,18 +237,18 @@ function showBoxPlot(datas, div_id, date_from, date_to)
 
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width*.45;})
+        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.mean)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.55;})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.mean)})
         .attr("stroke", "red");
         
         // Median 
         bar.append("g")
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)+bar_width*.1;})
+        .attr("x1", function(d,i){ return x(d.time)-bar_width/2;})
         .attr("y1", function(d,i){ return y(d.median)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.9;})
+        .attr("x2", function(d,i){ return x(d.time)+bar_width/2;})
         .attr("y2", function(d,i){ return y(d.median)})
         .attr("stroke", "blue");
 
