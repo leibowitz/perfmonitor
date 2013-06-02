@@ -61,22 +61,11 @@ function groupValuesByDate(values)
 
 function showBoxPlot(datas, div_id, date_from, date_to)
 {
-
     var height = 300;
     var width = 900;
     var margin_h = 30;
     var margin_w = 50;
 
-    var min = +Infinity;
-    var max = -Infinity;
-
-    date_from = new Date(date_from);
-    date_to = new Date(date_to);
-    
-    var x = d3.time.scale()
-        .domain([date_from, date_to])
-        .range([margin_w, width-margin_w]);
-    
     var values = d3.map(datas);
     // Create Date object for the whole data set
     var entries = values.entries();
@@ -108,6 +97,9 @@ function showBoxPlot(datas, div_id, date_from, date_to)
 
     var dates = values.keys().sort(d3.ascending);
 
+    var min = +Infinity;
+    var max = -Infinity;
+
     for(time in datas)
     {
         m = d3.max(datas[time]);
@@ -118,20 +110,33 @@ function showBoxPlot(datas, div_id, date_from, date_to)
             min = m;
     }
 
-    // Change domain to have margins above and below boxes
+    // Change y domain values to have margins above and below boxes
     min = min * 0.9;
     max = max * 1.1;
 
+    // y Axis
     var y = d3.scale.linear()
         .domain([max, min])
         .range([margin_h, height-margin_h]);
+    
+    // create Date objects for xAxis domain
+    date_from = new Date(date_from);
+    date_to = new Date(date_to);
+    
+    // x Axis
+    var x = d3.time.scale()
+        .domain([date_from, date_to])
+        .range([margin_w, width-margin_w]);
+    
 
     // Get the lowest time
     var d1 = d3.min(dates);
+
     // Find width between two ticks
     var bin_width = (x(d1*1000+86400000)-x(d1*1000));
     var bar_width = bin_width*.8;
 
+    // Create graph div and svg elements
     var div = d3.select(div_id)
         .append("div");
     
@@ -139,7 +144,52 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .append("svg")
         .attr("width", width)
         .attr("height", height);
-        
+
+    // Show axis
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        //.orient("bottom")
+        .ticks(d3.time.days,1)
+        .tickFormat(d3.time.format("%d/%m"))
+        .tickSize(6, 0);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height-margin_h) + ")")
+        .call(xAxis);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        //.ticks(5)
+        .tickSize(4, 0);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate("+margin_w+",0)")
+        .call(yAxis);
+  
+
+    // Adding grid lines
+    svg.append("g")         
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + (margin_h) + ")")
+        .call(xAxis
+            .tickSize(height-(margin_h*2))
+            .tickFormat("")
+        );
+
+    svg.append("g")         
+        .attr("class", "grid")
+        .attr("transform", "translate("+margin_w+",0)")
+        .call(yAxis
+            .orient("right")
+            .tickSize(width-(margin_w*2))
+            .tickFormat("")
+        );
+
+       
+    // Start drawing the data 
     var bar = svg.selectAll(".bar")
         .data(entries)
       .enter();
@@ -198,7 +248,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("y2", function(d,i){ return y(d.quart3)})
         .attr("stroke", "black");
        
-        // -
+        // Upper whisker
         bar.append("g")
         .append('line')
         .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
@@ -217,7 +267,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("y2", function(d,i){ return y(d.quart1)})
         .attr("stroke", "black");
         
-        // -
+        // Lower whisker
         bar.append("g")
         .append('line')
         .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
@@ -226,7 +276,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("y2", function(d,i){ return y(d.lower)})
         .attr("stroke", "black");
 
-        // Mean
+        // Mean Dot
         bar.append("circle")
         .attr("cx", function(d,i){ return x(d.time)})
         .attr("cy", function(d,i){ return y(d.mean)})
@@ -235,6 +285,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .append('svg:title')
         .text(function(d){return d.value;});
 
+        // Mean Line
         bar.append("g")
         .append('line')
         .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
@@ -251,48 +302,6 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("x2", function(d,i){ return x(d.time)+bar_width/2;})
         .attr("y2", function(d,i){ return y(d.median)})
         .attr("stroke", "blue");
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        //.orient("bottom")
-        .ticks(d3.time.days,1)
-        .tickFormat(d3.time.format("%d/%m"))
-        .tickSize(6, 0);
-
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + (height-margin_h) + ")")
-        .call(xAxis);
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        //.ticks(5)
-        .tickSize(4, 0);
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate("+margin_w+",0)")
-        .call(yAxis);
-  
-
-    // Adding grid lines
-    svg.append("g")         
-        .attr("class", "grid")
-        .attr("transform", "translate(0," + (margin_h) + ")")
-        .call(xAxis
-            .tickSize(height-(margin_h*2))
-            .tickFormat("")
-        );
-
-    svg.append("g")         
-        .attr("class", "grid")
-        .attr("transform", "translate("+margin_w+",0)")
-        .call(yAxis
-            .orient("right")
-            .tickSize(width-(margin_w*2))
-            .tickFormat("")
-        );
 
 }
 
