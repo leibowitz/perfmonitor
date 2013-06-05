@@ -47,7 +47,7 @@ span.bar{
 span.onload{
     background-color:red;
 }
-span.oncontentloaded{
+span.oncontentload{
     background-color:blue;
 }
 span.second{
