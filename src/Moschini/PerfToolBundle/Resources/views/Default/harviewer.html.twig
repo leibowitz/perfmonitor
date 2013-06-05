@@ -78,9 +78,9 @@
                 </span>
                 {% endfor %}
                 {% if(page.getSeconds >= 1) %}
-                {% for seconds in range(1, page.getSeconds) %}
-                <span class="time bar second {% if seconds % 5 == 0 %}five{% endif %}" title="{{ seconds }} seconds" 
-                style="left: {{ (1000//page.getSeconds)*seconds/10 }}%;">
+                {% for seconds in range(0, page.getSeconds) %}
+                <span class="time bar second {% if seconds+1 % 5 == 0 %}five{% endif %}" title="{{ seconds+1 }} seconds" 
+                style="left: {{ (1000//page.getSeconds)*(seconds+1)/10 }}%;">
                 </span>
                 {% endfor %}
                 {% endif %}
