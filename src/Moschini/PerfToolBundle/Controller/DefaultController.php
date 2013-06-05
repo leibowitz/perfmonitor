@@ -150,11 +150,13 @@ class DefaultController extends Controller
         $requests = array();
         foreach($rows as $row)
         {
+            $loadtime = $this->getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad');
+
             $requests[ (string)$row['_id'] ] = array(
                 'url' => $row['log']['entries'][0]['request']['url'],
                 'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
                 'agent' => $this->getRowField($row, 'agent'),
-                'loadtime' => $row['log']['pages'][0]['pageTimings']['onLoad'],
+                'loadtime' => $loadtime,
                 );
         }
         return array(
