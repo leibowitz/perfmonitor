@@ -26,7 +26,7 @@ class DefaultController extends Controller
     {
         return array_key_exists($field, $row) ? $row[$field] : $default;
     }
-	
+    
 
     private function sumUp($rows)
     {
@@ -139,7 +139,7 @@ class DefaultController extends Controller
         return $resp;
     }
 
-	/**
+    /**
      * @Route("/")
      * @Route("/index")
      * @Template()
@@ -163,7 +163,7 @@ class DefaultController extends Controller
             'requests' => $requests, 
         );
     }
-	
+    
     /**
      * @Route("/delete", defaults={"_format"="json"})
      */
@@ -179,7 +179,7 @@ class DefaultController extends Controller
         return new JsonResponse(array('result' => 'success'));
     }
 
-	/**
+    /**
      * @Route("/send")
      * @Template()
      */
@@ -247,7 +247,7 @@ class DefaultController extends Controller
         return array('form' => $form->createView());
         
     }
-	
+    
     /**
      * @Route("/done")
      * @Template()
@@ -256,13 +256,13 @@ class DefaultController extends Controller
     {
         return array();
     }
-	
-	/**
+    
+    /**
      * @Route("/graph")
      * @Template()
      */
     public function graphAction(Request $request)
-	{
+    {
         $to = new \DateTime();
         $to->modify('+1 day');
         $to->setTime(0, 0);
@@ -270,23 +270,44 @@ class DefaultController extends Controller
         $from->modify('-1 week');
         $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'), $from, $to);
         
-		return array(
+        $to->modify('-1 day');
+
+        return array(
             'datas' => $datas, 
-			);
+            );
     }
-	
-	/**
+    
+    /**
      * @Route("/time")
      * @Template()
      */
     public function timeAction(Request $request)
-	{
+    {
         $to = new \DateTime();
-        $to->modify('+1 day');
+        $to->setTimezone(new \DateTimeZone('GMT'));
         $to->setTime(0, 0);
+
         $from = clone $to;
         $from->modify('-1 week');
+        
+        $to->modify('+1 day');
+
+        $reqfrom = $request->query->get('from');
+        if($reqfrom)
+        {
+            $from = new \DateTime("@".$reqfrom, new \DateTimeZone('GMT'));
+            $from->setTime(0, 0);
+        }
+        $reqto = $request->query->get('to');
+        if($reqto)
+        {
+            $to = new \DateTime("@".$reqto, new \DateTimeZone('GMT'));
+            $to->modify('+1 day');
+            $to->setTime(0, 0);
+        }
+
         $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
+        $to->modify('-1 day');
         array_walk($datas, array($this, 'groupValuesByDate'), array('from' => $from, 'to' => $to));
 
         return array(
@@ -294,13 +315,13 @@ class DefaultController extends Controller
             'from' => $from,
             'to' => $to
         );
-	}
+    }
 
     private function addOrderByAndDate($query, $field, $value, $sort = 1)
     {
         $operator = $sort == 1 ? '$gt' : '$lt';
         $query[$field] = array($operator => $value);
-	    return array('query' => $query, 'orderby' => array($field => $sort));
+        return array('query' => $query, 'orderby' => array($field => $sort));
     }
 
     private function getPreviousNext($item)
@@ -335,12 +356,12 @@ class DefaultController extends Controller
      * @Route("/harviewer/{id}")
      * @Template()
      */
-	public function harviewerAction(Request $request, $id)
+    public function harviewerAction(Request $request, $id)
     {
         $db = SitesDb::getDb();
         $mongoid = new \MongoId($id);
         $item = $db->har->findOne(array('_id' => $mongoid));
-		$har = HarFile::fromJson($item);
+        $har = HarFile::fromJson($item);
         
         list($previous, $next) = $this->getPreviousNext($item);
 

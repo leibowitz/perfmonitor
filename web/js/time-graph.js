@@ -74,7 +74,8 @@ function showBoxPlot(datas, div_id, date_from, date_to)
     date_from = new Date(date_from);
     date_to = new Date(date_to);
     
-    var domain = d3.time.days(date_from, date_to);
+    // Interval between from and to
+    var domain = d3.time.days(d3.time.day.offset(date_from, -1), date_to);
 
     // setup rangedata keys using the timestamp of the dates
     var rangedata = {};
@@ -165,11 +166,16 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("width", width)
         .attr("height", height);
 
+    // Get ticks every X days
+    var tickDays = domain.length > 10 ? 2 : 1;
+    var ticks = domain.filter(function(d, i){ return i%tickDays==0;});
+
     // Show x axis
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
-        .ticks(d3.time.days,1)
+        .tickValues(ticks)
+        //.ticks(d3.time.days, 2)
         .tickFormat(d3.time.format("%d/%m"))
         .tickSize(6, 0);
 

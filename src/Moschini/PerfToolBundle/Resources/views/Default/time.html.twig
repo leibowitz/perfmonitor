@@ -18,6 +18,57 @@
     showTimesGraph(avgs, '#div-key-{{ loop.index }}', {{ from.getTimestamp*1000 }}, {{ to.getTimestamp*1000 }});
     */
 {% endfor %}
+$(document).ready(function() {
+var now = moment.utc().startOf('day'); 
+      $('#reportrange').daterangepicker(
+         {
+            ranges: {
+                /*
+               'Today': [now, now],
+               'Yesterday': [now.clone().subtract('days', 1), now.clone().subtract('days', 1)],
+               */
+               'One week': [now.clone().subtract('days', 7), now],
+               'One Month': [now.clone().subtract('days', 29), now]
+               //'Last Month': [now.clone().subtract('month', 1).startOf('month'), now.clone().subtract('month', 1).endOf('month')],
+               //'This Month': [now.clone().startOf('month'), now.clone().endOf('month')],
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+            separator: ' to ',
+            startDate: moment.unix({{ from.getTimestamp }}).utc(),
+            endDate: moment.unix({{ to.getTimestamp }}).utc(),
+            //minDate: '01/01/2012',
+            //maxDate: '12/31/2013',
+            locale: {
+                applyLabel: 'Submit',
+                fromLabel: 'From',
+                toLabel: 'To',
+                customRangeLabel: 'Custom Range',
+                daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                firstDay: 1
+            },
+            showWeekNumbers: true,
+            buttonClasses: ['btn-danger'],
+            dateLimit: false
+         },
+         function(start, end) {
+            end = end.startOf('day');
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            var url = '{{ path('moschini_perftool_default_time') }}';
+            var params = {
+                'site': '{{ app.request.get('site') }}',
+                'from': start.format('X'),
+                'to': end.format('X')
+            };
+            console.log(start, start.format('X'));
+            console.log(end, end.format('X'));
+            // reload page with different time range
+            document.location.href = url + '?' + $.param(params);
+         }
+      );
+
+   });
 </script>
 
 {% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_time'} %}
@@ -25,8 +76,12 @@
 {% endblock %}
 
 {% block content %}
-
 {% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
+
+               <div id="reportrange" class="pull-right">
+                  <i class="icon-calendar icon-large"></i>
+                    <span>{{ from|date("F j, Y") }} - {{ to|date("F j, Y") }}</span> <b class="caret"></b>
+               </div>
 
 {% for url, times in values %}
 <div id="div-key-{{ loop.index }}">
