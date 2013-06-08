@@ -61,42 +61,67 @@ function groupValuesByDate(values)
 
 function showBoxPlot(datas, div_id, date_from, date_to)
 {
+    // Define plot size and margins
     var height = 300;
     var width = 900;
     var margin_h = 30;
     var margin_w = 50;
 
-    var values = d3.map(datas);
-    // Create Date object for the whole data set
-    var entries = values.entries();
-    for(i in entries)
+    // Define the upper and lower whisker 
+    var data_percentile = .09;
+    
+    // create Date objects for xAxis domain
+    date_from = new Date(date_from);
+    date_to = new Date(date_to);
+    
+    var domain = d3.time.days(date_from, date_to);
+
+    // setup rangedata keys using the timestamp of the dates
+    var rangedata = {};
+    for(k in domain)
     {
-        // Set js timestamp and date object 
-        entries[i].time = entries[i].key * 1000;
-        entries[i].date = new Date(entries[i].time);
-        // Sort values
-        entries[i].value.sort(d3.ascending);
-        // Mean
-        entries[i].mean = d3.mean(entries[i].value);
-        // Median
-        entries[i].median = d3.median(entries[i].value);
-        // Set first and third quartile
-        entries[i].quart1 = d3.quantile(entries[i].value, .25);
-        entries[i].quart3 = d3.quantile(entries[i].value, .75);
-        // Midhinge
-        entries[i].midhinge = (entries[i].quart3 + entries[i].quart1)/2;
-        // IQR
-        entries[i].iqr = entries[i].quart3 - entries[i].quart1;
-        // Lower and upper fences
-        //entries[i].lower = entries[i].quart1 - 1.5*entries[i].iqr;
-        //entries[i].upper = entries[i].quart3 + 1.5*entries[i].iqr;
-        entries[i].lower = d3.quantile(entries[i].value, .09);
-        entries[i].upper = d3.quantile(entries[i].value, .91);
-        // trimean 20, 50 and 80
+        rangedata[ domain[k].getTime() ] = {'date': domain[k]};
     }
 
-    var dates = values.keys().sort(d3.ascending);
+    // Setup rangedata entries with all the computer values for 
+    // plotting the boxes
+    var values = d3.map(datas);
 
+    // Create Date object for the whole data set
+    var entries = values.entries();
+    for(url in entries)
+    {
+        entries[url].value.sort(d3.ascending);
+
+        var time = entries[url].key * 1000;
+        var date = new Date(time);
+        var key = time;
+        // Set js timestamp and date object 
+        rangedata[key].time = time;
+        //rangedata[date].date = date;
+        rangedata[key].url = url;
+        // Sort values
+        rangedata[key].value = entries[url].value;
+        // Mean
+        rangedata[key].mean = d3.mean(entries[url].value);
+        // Median
+        rangedata[key].median = d3.median(entries[url].value);
+        // Set first and third quartile
+        rangedata[key].quart1 = d3.quantile(entries[url].value, .25);
+        rangedata[key].quart3 = d3.quantile(entries[url].value, .75);
+        // Midhinge
+        rangedata[key].midhinge = (rangedata[key].quart3 + rangedata[key].quart1)/2;
+        // IQR
+        rangedata[key].iqr = rangedata[key].quart3 - rangedata[key].quart1;
+        // Lower and upper fences
+        //rangedata[key].lower = entries[url].quart1 - 1.5*entries[url].iqr;
+        //rangedata[key].upper = entries[url].quart3 + 1.5*entries[url].iqr;
+        rangedata[key].lower = d3.quantile(entries[url].value, data_percentile);
+        rangedata[key].upper = d3.quantile(entries[url].value, 1-data_percentile);
+        // trimean 20, 50 and 80
+    }
+    
+    // Find global min and max of all distributions
     var min = +Infinity;
     var max = -Infinity;
 
@@ -110,7 +135,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
             min = m;
     }
 
-    // Change y domain values to have margins above and below boxes
+    // Change y domain values to have margins above and below boxes whiskers
     min = min * 0.9;
     max = max * 1.1;
 
@@ -119,22 +144,23 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .domain([max, min])
         .range([margin_h, height-margin_h]);
     
-    // create Date objects for xAxis domain
-    date_from = new Date(date_from);
-    date_to = new Date(date_to);
-    
     // x Axis
-    var x = d3.time.scale()
-        .domain([date_from, date_to])
-        .range([margin_w, width-margin_w]);
+    var x = d3.scale.ordinal()
+        .domain(domain)
+        .rangeRoundBands([margin_w, width-margin_w]);
     
+    // Margin to the left and right of the boxes (in % of total width)
+    var bin_margin_val = .2;
 
-    // Get the lowest time
-    var d1 = d3.min(dates);
+    // Store variables for sizes used to draw boxes
+    var bin_width = x.rangeBand();
+    var halfbin_width = bin_width/2;
 
-    // Find width between two ticks
-    var bin_width = (x(d1*1000+86400000)-x(d1*1000));
-    var bar_width = bin_width*.8;
+    var bin_margin = bin_margin_val*bin_width;
+    var halfbin_margin = bin_margin/2;
+
+    var bar_width = bin_width-bin_margin;
+    var halfbar_width = bar_width/2;
 
     // Create graph div and svg elements
     var div = d3.select(div_id)
@@ -145,10 +171,10 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("width", width)
         .attr("height", height);
 
-    // Show axis
+    // Show x axis
     var xAxis = d3.svg.axis()
         .scale(x)
-        //.orient("bottom")
+        .orient("bottom")
         .ticks(d3.time.days,1)
         .tickFormat(d3.time.format("%d/%m"))
         .tickSize(6, 0);
@@ -158,6 +184,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("transform", "translate(0," + (height-margin_h) + ")")
         .call(xAxis);
 
+    // Show y axis
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
@@ -188,11 +215,11 @@ function showBoxPlot(datas, div_id, date_from, date_to)
             .tickFormat("")
         );
 
-       
     // Start drawing the data 
     var bar = svg.selectAll(".bar")
-        .data(entries)
-      .enter();
+        .data(d3.map(rangedata).values())
+      .enter()
+      ;
 /*
     values.sort(sort_by_time);
     if(values.length > 3)
@@ -217,21 +244,25 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .attr("y2", function(d,i){ return values_val[i+1] ? y(values_val[i+1]) : y(d.value)})
         .attr("stroke", "green");
 */
+        
         // Rectangle
         bar
         .append("g")
-        .attr("transform", function(d, i){return "translate("+(x(d.time)-bar_width/2)+","+0+")";})
-        .text(function(d){ return d.key;})
-        .append("rect")
-        //.attr("x", function(d, i){return x(d.key*1000);})
-        .attr("y", function(d, i){
         
+        .filter(function(d){ return d.value != null; })
+        .append("rect")
+        .attr("x", function(d, i){return x(d.date)+halfbin_margin;})
+        .attr("y", function(d, i){
+            if(!d.value)
+                return 0;
             if(d.value.length == 1)
                 return y(d.value[0]);
             return y(d.quart3);
             })
         .attr("width", bar_width)
         .attr("height", function(d, i){ 
+            if(!d.value)
+                return 0;
             if(d.value.length == 1)
                 return 1;
             return y(d.quart1) - y(d.quart3)
@@ -240,66 +271,71 @@ function showBoxPlot(datas, div_id, date_from, date_to)
 
         // Bar up
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)})
-        //.attr("y1", function(d,i){ return y(d3.max(d.value))})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y1", function(d,i){ return y(d.upper)})
-        .attr("x2", function(d,i){ return x(d.time)})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart3)})
         .attr("stroke", "black");
        
         // Upper whisker
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.upper)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.upper)})
         .attr("stroke", "black");
 
         // Bar down
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y1", function(d,i){ return y(d.lower)})
-        //.attr("y1", function(d,i){ return y(d3.min(d.value))})
-        .attr("x2", function(d,i){ return x(d.time)})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart1)})
         .attr("stroke", "black");
         
         // Lower whisker
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.lower)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.lower)})
         .attr("stroke", "black");
 
         // Mean Dot
         bar.append("circle")
-        .attr("cx", function(d,i){ return x(d.time)})
+        .filter(function(d){ return d.value != null; })
+        .attr("cx", function(d,i){ return x(d.date)+halfbin_width})
         .attr("cy", function(d,i){ return y(d.mean)})
 		.attr("r", 2)
         .attr("fill", "red")
         .append('svg:title')
-        .text(function(d){return d.value;});
+        .text(function(d){return d.mean;});
 
         // Mean Line
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)-bar_width*.05;})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
         .attr("y1", function(d,i){ return y(d.mean)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width*.05;})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
         .attr("y2", function(d,i){ return y(d.mean)})
         .attr("stroke", "red");
-        
+       
         // Median 
         bar.append("g")
+        .filter(function(d){ return d.value != null; })
         .append('line')
-        .attr("x1", function(d,i){ return x(d.time)-bar_width/2;})
+        .attr("x1", function(d,i){ return x(d.date)+halfbin_margin;})
         .attr("y1", function(d,i){ return y(d.median)})
-        .attr("x2", function(d,i){ return x(d.time)+bar_width/2;})
+        .attr("x2", function(d,i){ return x(d.date)+halfbin_margin+bar_width;})
         .attr("y2", function(d,i){ return y(d.median)})
         .attr("stroke", "blue");
 
