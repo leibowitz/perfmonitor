@@ -279,14 +279,14 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
 	{
-
         $from = new \DateTime();
         $from->modify('-3 months');
         $to = new \DateTime();
         $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
+        array_walk($datas, array($this, 'groupValuesByDate'), array('from' => $from, 'to' => $to));
 
         return array(
-            'values' => array_map(array($this, 'groupValuesByDate'), $datas), 
+            'values' => $datas, 
             'from' => $from,
             'to' => $to
         );
@@ -347,16 +347,22 @@ class DefaultController extends Controller
         );
     }
 
-    public function groupValuesByDate($values)
+    public function groupValuesByDate(&$values, $url, $userdata)
     {
-        $datas = array();
+        $interval = new \DateInterval('P1D');
+        
+        $times = array();
 
         foreach($values as $data)
         {
-            $key = floor($data['date'] / 86400) * 86400;
+            $tz = new \DateTimeZone('Europe/London');
+            $data['date']->getDate()->setTimeZone($tz);
+            $data['date']->getDate()->setTime(0, 0);
+            $ts = $data['date']->asTimestamp();
 
-            $datas[$key][] = $data['value'];
+            $times[ $ts ][] = $data['value'];
         }
-        return $datas;
+
+        $values = $times;
     }
 }

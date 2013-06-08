@@ -136,7 +136,7 @@ class SitesDb
             $urls[ $row['log']['entries'][0]['request']['url'] ][] = 
                 array(
                     'value' => $row['log']['pages'][0]['pageTimings']['onLoad'] / 1000,
-                    'date' => $date->asTimestamp(),
+                    'date' => $date,
                 );
         }
         
