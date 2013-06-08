@@ -263,9 +263,11 @@ class DefaultController extends Controller
      */
     public function graphAction(Request $request)
 	{
-        $from = new \DateTime();
-        $from->modify('-4 months');
         $to = new \DateTime();
+        $to->modify('+1 day');
+        $to->setTime(0, 0);
+        $from = clone $to;
+        $from->modify('-1 week');
         $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'), $from, $to);
         
 		return array(
@@ -279,9 +281,11 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
 	{
-        $from = new \DateTime();
-        $from->modify('-3 months');
         $to = new \DateTime();
+        $to->modify('+1 day');
+        $to->setTime(0, 0);
+        $from = clone $to;
+        $from->modify('-1 week');
         $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
         array_walk($datas, array($this, 'groupValuesByDate'), array('from' => $from, 'to' => $to));
 
