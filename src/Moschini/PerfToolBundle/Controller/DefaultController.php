@@ -159,6 +159,7 @@ class DefaultController extends Controller
                 'loadtime' => $loadtime,
                 );
         }
+        
         return array(
             'requests' => $requests, 
         );
@@ -305,8 +306,19 @@ class DefaultController extends Controller
             $to->modify('+1 day');
             $to->setTime(0, 0);
         }
+        
 
-        $datas = SitesDb::getLoadTimesAndDatePerUrl($request->get('site'), $request->get('url'), $from, $to);
+        $site = $request->get('site');
+        $url = $request->get('url');
+        
+        $datas = SitesDb::getLoadTimesAndDatePerUrl($site, $url, $from, $to);
+        $sites = SitesDb::getSitesAndUrls();
+        if(count($datas) == 0)
+        {
+            $values = array_pad(array(), count($sites[$site]), array());
+            $datas = array_combine($sites[$site], $values);
+        }
+
         $to->modify('-1 day');
         array_walk($datas, array($this, 'groupValuesByDate'), array('from' => $from, 'to' => $to));
 

@@ -126,13 +126,11 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         rangedata[key].min = d3.min([rangedata[key].mean, rangedata[key].lower]);
     }
     
-    // Find global min and max of all distributions
-    var min = d3.min(d3.values(rangedata).map(function(data){ return data.min;}))
-    var max = d3.max(d3.values(rangedata).map(function(data){ return data.max;}))
-
     // Change y domain values to have margins above and below min/max
-    min = min * 0.9;
-    max = max * 1.1;
+    var margin_ud = 0.1;
+    // Find global min and max of all distributions
+    var min = d3.min(d3.values(rangedata).map(function(data){ return data.min;})) * (1-margin_ud) || 1;
+    var max = d3.max(d3.values(rangedata).map(function(data){ return data.max;})) * (1+margin_ud) || 10;
 
     // y Axis
     var y = d3.scale.linear()
