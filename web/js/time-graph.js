@@ -119,23 +119,17 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         rangedata[key].lower = d3.quantile(entries[url].value, data_percentile);
         rangedata[key].upper = d3.quantile(entries[url].value, 1-data_percentile);
         // trimean 20, 50 and 80
+
+        // Store a value that is the maximum
+        rangedata[key].max = d3.max([rangedata[key].mean, rangedata[key].upper]);
+        rangedata[key].min = d3.min([rangedata[key].mean, rangedata[key].lower]);
     }
     
     // Find global min and max of all distributions
-    var min = +Infinity;
-    var max = -Infinity;
+    var min = d3.min(d3.values(rangedata).map(function(data){ return data.min;}))
+    var max = d3.max(d3.values(rangedata).map(function(data){ return data.max;}))
 
-    for(time in datas)
-    {
-        m = d3.max(datas[time]);
-        if(m > max)
-            max = m;
-        m = d3.min(datas[time]);
-        if(m < min)
-            min = m;
-    }
-
-    // Change y domain values to have margins above and below boxes whiskers
+    // Change y domain values to have margins above and below min/max
     min = min * 0.9;
     max = max * 1.1;
 
