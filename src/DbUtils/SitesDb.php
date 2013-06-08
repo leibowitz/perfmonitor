@@ -143,7 +143,7 @@ class SitesDb
         return $urls;
     }
 
-    static public function getLoadTimesPerUrl($site, $url, $from, $to)
+    static public function getLoadTimesPerUrl($site, $url, $from = null, $to = null)
     {
         return self::groupByUrl(self::getLoadTimes($site, $url, $from, $to));
     }

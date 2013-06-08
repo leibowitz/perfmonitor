@@ -264,14 +264,15 @@ class DefaultController extends Controller
      */
     public function graphAction(Request $request)
     {
-        $to = new \DateTime();
+        /*$to = new \DateTime();
         $to->modify('+1 day');
         $to->setTime(0, 0);
         $from = clone $to;
         $from->modify('-1 week');
-        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'), $from, $to);
+        */
+        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'));//, $from, $to);
         
-        $to->modify('-1 day');
+        //$to->modify('-1 day');
 
         return array(
             'datas' => $datas, 
