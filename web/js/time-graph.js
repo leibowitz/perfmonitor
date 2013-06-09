@@ -104,26 +104,32 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         // Sort values
         rangedata[key].value = entries[url].value;
         // Mean
-        rangedata[key].mean = d3.mean(entries[url].value);
+        rangedata[key].mean = d3.mean(rangedata[key].value);
         // Median
-        rangedata[key].median = d3.median(entries[url].value);
+        rangedata[key].median = d3.median(rangedata[key].value);
         // Set first and third quartile
-        rangedata[key].quart1 = d3.quantile(entries[url].value, .25);
-        rangedata[key].quart3 = d3.quantile(entries[url].value, .75);
+        rangedata[key].quart1 = d3.quantile(rangedata[key].value, .25);
+        rangedata[key].quart3 = d3.quantile(rangedata[key].value, .75);
         // Midhinge
         rangedata[key].midhinge = (rangedata[key].quart3 + rangedata[key].quart1)/2;
         // IQR
         rangedata[key].iqr = rangedata[key].quart3 - rangedata[key].quart1;
         // Lower and upper fences
-        //rangedata[key].lower = entries[url].quart1 - 1.5*entries[url].iqr;
-        //rangedata[key].upper = entries[url].quart3 + 1.5*entries[url].iqr;
-        rangedata[key].lower = d3.quantile(entries[url].value, data_percentile);
-        rangedata[key].upper = d3.quantile(entries[url].value, 1-data_percentile);
+        //rangedata[key].lower = d3.quantile(rangedata[key].value, data_percentile);
+        //rangedata[key].upper = d3.quantile(rangedata[key].value, 1-data_percentile);
+        // Inner fences
+        rangedata[key].lowerIn = rangedata[key].quart1 - 1.5*rangedata[key].iqr;
+        rangedata[key].upperIn = rangedata[key].quart3 + 1.5*rangedata[key].iqr;
+        // Outer fences
+        rangedata[key].lowerOut = rangedata[key].quart1 - 3*rangedata[key].iqr;
+        rangedata[key].upperOut = rangedata[key].quart3 + 3*rangedata[key].iqr;
         // trimean 20, 50 and 80
 
         // Store a value that is the maximum
-        rangedata[key].max = d3.max([rangedata[key].mean, rangedata[key].upper]);
-        rangedata[key].min = d3.min([rangedata[key].mean, rangedata[key].lower]);
+        //rangedata[key].max = d3.max([rangedata[key].mean, rangedata[key].upperIn]);
+        //rangedata[key].min = d3.min([rangedata[key].mean, rangedata[key].lowerIn]);
+        rangedata[key].max = d3.max([rangedata[key].upperOut, rangedata[key].value]);
+        rangedata[key].min = d3.min([rangedata[key].lowerOut, rangedata[key].value]);
     }
     
     // Change y domain values to have margins above and below min/max
@@ -272,19 +278,19 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
-        .attr("y1", function(d,i){ return y(d.upper)})
+        .attr("y1", function(d,i){ return y(d.upperIn)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart3)})
         .attr("stroke", "black");
        
-        // Upper whisker
+        // Upper whisker (inner fence)
         bar.append("g")
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
-        .attr("y1", function(d,i){ return y(d.upper)})
+        .attr("y1", function(d,i){ return y(d.upperIn)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
-        .attr("y2", function(d,i){ return y(d.upper)})
+        .attr("y2", function(d,i){ return y(d.upperIn)})
         .attr("stroke", "black");
 
         // Bar down
@@ -292,20 +298,58 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
-        .attr("y1", function(d,i){ return y(d.lower)})
+        .attr("y1", function(d,i){ return y(d.lowerIn)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart1)})
         .attr("stroke", "black");
         
-        // Lower whisker
+        // Lower whisker (inner fence)
         bar.append("g")
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
-        .attr("y1", function(d,i){ return y(d.lower)})
+        .attr("y1", function(d,i){ return y(d.lowerIn)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
-        .attr("y2", function(d,i){ return y(d.lower)})
+        .attr("y2", function(d,i){ return y(d.lowerIn)})
         .attr("stroke", "black");
+   
+        // Show outliners
+        d3.map(rangedata).values().forEach(function(d){
+            if(!d.value)
+                return;
+            svg.selectAll(".outline")
+            .data(
+                d.value.map(function(e){ 
+                    return {
+                        'date': d.date, 
+                        'val': e, 
+                        'lowerIn': d.lowerIn, 
+                        'upperIn': d.upperIn,
+                        'lowerOut': d.lowerOut, 
+                        'upperOut': d.upperOut
+                    }; 
+                })
+                .filter(function(d){
+                    return d.val > d.upperIn || d.val < d.lowerIn;
+                })
+                // Limit number of outliners to plot, just in case
+                // we end up with thousands of points to draw
+                .slice(0, 30)
+            )
+            .enter()
+            // Lower Outer fence
+            .append("circle")
+            .attr("cx", function(d,i){ return x(d.date)+halfbin_width})
+            .attr("cy", function(d,i){ return y(d.val)})
+            .attr("r", 2)
+            .attr("stroke", "black")
+            .attr("stroke-width", "1px")
+            .attr("fill", "black")
+            .filter(function(d){
+                return d.val < d.upperOut || d.val > d.lowerOut;
+            })
+            .attr("fill", "none");
+        });
 
         // Mean Dot
         bar.append("circle")
