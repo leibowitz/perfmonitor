@@ -58,8 +58,8 @@ for row in rows['result']:
         'site': str(row['site']),
         'account': 'me',
         'type': 'har',
-        'nb': 1,
-        'user-agent': 'default'
+        'nb': int(row['nb']),
+        'agent': str(row['agent'])
     }
 
     send_msg(msg)
