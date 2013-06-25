@@ -4,34 +4,52 @@ from subprocess import check_output, CalledProcessError
 import json
 import os
 from pymongo import MongoClient
+import logging
+logging.basicConfig()
 
+def create_channel(connection, exchange, queue, key, type = 'direct'):
+    channel = connection.channel()
+    channel.exchange_declare(exchange=exchange, type=type)
+
+    channel.queue_declare(queue)
+
+    channel.queue_bind(exchange=exchange, queue=queue, routing_key=key)
+
+    return channel
 
 dbcon = MongoClient()
 
 NETSNIFF_UTIL = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tools', 'netsniff.js')
 
+exchange = 'perfmonitor'
+
+queue_read = 'perf'
+key_read = 'perftest'
+
+queue_write = 'reinject'
+key_write = 'perfreinject'
+
 queuecon = pika.BlockingConnection(pika.ConnectionParameters(
                'localhost'))
-channel = queuecon.channel()
-channel.exchange_declare(exchange='perfmonitor', type='direct')
-
-result = channel.queue_declare('perf')
-queue_name = result.method.queue
-
-channel.queue_bind(exchange='perfmonitor', queue=queue_name, routing_key='perftest')
+channelread = create_channel(queuecon, exchange, queue_read, key_read)
+channelwrite = create_channel(queuecon, exchange, queue_write, key_write)
 
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
 def sendback(msg):
     if msg['nb'] > 0:
-        channel.basic_publish(exchange='perfmonitor',
-              routing_key='perftest',
+        channelwrite.basic_publish(exchange=exchange,
+              routing_key=key_write,
               body=json.dumps(msg))
         print ' [x] Message sent to queue with count ', msg['nb']
 
 def send_ack(ch, method):
     ch.basic_ack(delivery_tag = method.delivery_tag)
     print " [x] Acknoledgment sent"
+
+def send_nack(ch, method):
+    ch.basic_nack(delivery_tag = method.delivery_tag)
+    print " [x] Nacknoledgment sent"
 
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
@@ -72,6 +90,7 @@ def callback(ch, method, properties, body):
                 content['nb'] -= 1
                 if content['nb'] > 0:
                     sendback(content)
+                return
             except:
                 print ' [x] Unable to save HAR response, sending back'
         else:
@@ -79,8 +98,16 @@ def callback(ch, method, properties, body):
 
     else:
         print ' [x] Unable to generate HAR file, sending back'
+    send_nack(ch, method)
 
-channel.basic_consume(callback,
-                      queue=queue_name)
+try:
+    channelread.basic_consume(callback,
+                      queue=queue_read)
 
-channel.start_consuming()
+    channelread.start_consuming()
+except pika.exceptions.ConnectionClosed, e:
+    print 'Connection closed', e
+
+except KeyboardInterrupt:
+    channelread.stop_consuming()
+
