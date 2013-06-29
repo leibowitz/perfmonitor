@@ -237,7 +237,10 @@ class DefaultController extends Controller
                     'type' => 'har', //$data['type'],
                     'agent' => $data['agent'],
                 );
-                $this->get('old_sound_rabbit_mq.upload_picture_producer')->publish(json_encode($msg), 'perftest');
+
+                // Send to background job
+                $celery = new \Celery('localhost', 'guest', 'guest', '/');
+                $celery->PostTask('tasks.processtest', array($msg));
                 // If no site has been defined, use the one used for this request 
                 if(!$site){
                     $site = $data['site'];
