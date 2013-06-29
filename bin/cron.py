@@ -1,15 +1,10 @@
 #!/usr/bin/env python
-import pika
 import json
 import sys
 from pymongo import MongoClient
+from celery import Celery
+from tasks import processtest
 
-def send_msg(msg):
-    print msg
-    channel.basic_publish(exchange='perfmonitor',
-                      routing_key='perftest',
-                      body=json.dumps(msg))
-                      
 if len(sys.argv) == 1:
     sys.exit(1)
 
@@ -45,14 +40,7 @@ rows = dbcon.perfmonitor.sites.aggregate([
 if not rows['result']:
     sys.exit(0)
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(
-               'localhost'))
-channel = connection.channel()
-channel.exchange_declare(exchange='perfmonitor', type='direct')
-channel.queue_declare(queue='perf')
-
 for row in rows['result']:
-
     msg = {
         'url': str(row['urls']),
         'site': str(row['site']),
@@ -62,8 +50,7 @@ for row in rows['result']:
         'agent': str(row['agent'])
     }
 
-    send_msg(msg)
+    processtest.delay(msg)
 
 
-connection.close()
 sys.exit(0)
