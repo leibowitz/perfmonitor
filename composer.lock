@@ -1,5 +1,5 @@
 {
-    "hash": "f8db9786330db1fc6a6d183a3e684b44",
+    "hash": "44c5ff76578c4ef0668c72ceb2c2d769",
     "packages": [
         {
             "name": "braincrafted/bootstrap-bundle",
@@ -1132,6 +1132,53 @@
             "time": "2013-06-01 22:13:43"
         },
         {
+            "name": "massivescale/celery-php",
+            "version": "dev-php-amqplib",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gjedeer/celery-php.git",
+                "reference": "22ba72d4e97204cfe6e75e924bc329083d25ee1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gjedeer/celery-php/zipball/22ba72d4e97204cfe6e75e924bc329083d25ee1d",
+                "reference": "22ba72d4e97204cfe6e75e924bc329083d25ee1d",
+                "shasum": ""
+            },
+            "require": {
+                "videlalvaro/php-amqplib": ">=2.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "celery.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "GDR!",
+                    "email": "info@massivescale.net",
+                    "homepage": "http://massivescale.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP client for Celery task queue",
+            "homepage": "https://github.com/gjedeer/celery-php/",
+            "keywords": [
+                "AMQP",
+                "celery",
+                "cron",
+                "python",
+                "queue",
+                "task"
+            ],
+            "time": "2013-06-12 22:12:43"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.5.0",
             "source": {
@@ -2057,6 +2104,7 @@
         "twitter/bootstrap": 20,
         "ccampbell/chromephp": 20,
         "sclinternet/scl-socket": 20,
-        "sclinternet/scl-whois": 20
+        "sclinternet/scl-whois": 20,
+        "massivescale/celery-php": 20
     }
 }

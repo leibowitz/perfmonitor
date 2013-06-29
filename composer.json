@@ -24,7 +24,8 @@
         "braincrafted/bootstrap-bundle": "1.2.*",
         "ccampbell/chromephp": "dev-master",
         "sclinternet/scl-socket": "dev-master",
-        "sclinternet/scl-whois": "dev-master"
+        "sclinternet/scl-whois": "dev-master",
+        "massivescale/celery-php": "dev-php-amqplib"
     },
     "scripts": {
         "post-install-cmd": [
