@@ -118,11 +118,11 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         //rangedata[key].lower = d3.quantile(rangedata[key].value, data_percentile);
         //rangedata[key].upper = d3.quantile(rangedata[key].value, 1-data_percentile);
         // Inner fences
-        rangedata[key].lowerIn = d3.max(rangedata[key].quart1 - 1.5*rangedata[key].iqr, 0);
-        rangedata[key].upperIn = d3.max(rangedata[key].quart3 + 1.5*rangedata[key].iqr, 0);
+        rangedata[key].lowerIn = d3.max([rangedata[key].quart1 - 1.5*rangedata[key].iqr, 0]);
+        rangedata[key].upperIn = d3.max([rangedata[key].quart3 + 1.5*rangedata[key].iqr, 0]);
         // Outer fences
-        rangedata[key].lowerOut = d3.max(rangedata[key].quart1 - 3*rangedata[key].iqr, 0);
-        rangedata[key].upperOut = d3.max(rangedata[key].quart3 + 3*rangedata[key].iqr, 0);
+        rangedata[key].lowerOut = d3.max([rangedata[key].quart1 - 3*rangedata[key].iqr, 0]);
+        rangedata[key].upperOut = d3.max([rangedata[key].quart3 + 3*rangedata[key].iqr, 0]);
         // trimean 20, 50 and 80
 
         // Store a value that is the maximum
