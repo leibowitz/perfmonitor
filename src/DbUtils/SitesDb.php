@@ -9,6 +9,107 @@ use HarUtils\HarResults;
 class SitesDb
 {
 
+    static public function getRowField($row, $field, $default = null)
+    {
+        return array_key_exists($field, $row) ? $row[$field] : $default;
+    }
+    
+    static public function sumUp($rows)
+    {
+        $timings = array();
+        foreach($rows as $row)
+        {
+            $url = $row['url'];
+
+            foreach($row['timings'] as $name => $time)
+            {
+                if(!array_key_exists($url, $timings) || !array_key_exists($name, $timings[$url]))
+                {
+                    $timings[$url][$name] = 0;
+                }
+                if($time != -1)
+                {
+                    $timings[$url][$name] += $time;
+                }
+            }
+        }
+        return $timings;
+    }
+       
+    static public function getAvgValues($data)
+    {
+        $values = array();
+        foreach($data as $url => $timings)
+        {
+            $nbentries = count($timings);
+
+            foreach($timings as $name => $value)
+            {
+                $value = $value / $nbentries;
+                if($value > 0)
+                {
+                    $values[$url][] = array('name' => $name, 'val' => $value);
+                }
+            }
+        }
+        return $values;
+    }
+
+    static public function addOrderByAndDate($query, $field, $value, $sort = 1)
+    {
+        $operator = $sort == 1 ? '$gt' : '$lt';
+        $query[$field] = array($operator => $value);
+        return array('query' => $query, 'orderby' => array($field => $sort));
+    }
+
+    static public function getPreviousNext($item)
+    {
+        $db = SitesDb::getDb();
+        $find = SitesDb::getRelatedFinder($item);
+        $date = $item['log']['pages'][0]['startedDateTime'];
+        $findNext = SitesDb::addOrderByAndDate($find, 'log.pages.startedDateTime', $date, 1);
+        $findPrevious = SitesDb::addOrderByAndDate($find, 'log.pages.startedDateTime', $date, -1);
+        $next = $db->har->findOne($findNext, array('_id' => 1));
+        $previous = $db->har->findOne($findPrevious, array('_id' => 1));
+        return array($previous, $next);
+    }
+
+    static public function getRelatedFinder($item)
+    {
+        $site = $item['site'];
+        $url = $item['log']['entries'][0]['request']['url'];
+        return array(
+            '_id' => array('$ne' => $item['_id']),
+            'site' => $site, 
+            'log.entries.request.url' => $url
+        );
+    }
+
+    static public function getObjectId($item)
+    {
+        return $item ? $item['_id'] : null;
+    }
+
+
+    static public function groupValuesByDate(&$values, $url, $userdata)
+    {
+        $interval = new \DateInterval('P1D');
+        
+        $times = array();
+
+        foreach($values as $data)
+        {
+            $tz = new \DateTimeZone('Europe/London');
+            $data['date']->getDate()->setTimeZone($tz);
+            $data['date']->getDate()->setTime(0, 0);
+            $ts = $data['date']->asTimestamp();
+
+            $times[ $ts ][] = $data['value'];
+        }
+
+        $values = $times;
+    }
+    
     static public function deleteAll($site, $url = null)
     {
         $db = SitesDb::getDb();

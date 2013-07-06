@@ -22,52 +22,7 @@ use SclSocket\Socket;
 class DefaultController extends Controller
 {
 
-    private function getRowField($row, $field, $default = null)
-    {
-        return array_key_exists($field, $row) ? $row[$field] : $default;
-    }
-    
 
-    private function sumUp($rows)
-    {
-        $timings = array();
-        foreach($rows as $row)
-        {
-            $url = $row['url'];
-
-            foreach($row['timings'] as $name => $time)
-            {
-                if(!array_key_exists($url, $timings) || !array_key_exists($name, $timings[$url]))
-                {
-                    $timings[$url][$name] = 0;
-                }
-                if($time != -1)
-                {
-                    $timings[$url][$name] += $time;
-                }
-            }
-        }
-        return $timings;
-    }
-       
-    private function getAvgValues($data)
-    {
-        $values = array();
-        foreach($data as $url => $timings)
-        {
-            $nbentries = count($timings);
-
-            foreach($timings as $name => $value)
-            {
-                $value = $value / $nbentries;
-                if($value > 0)
-                {
-                    $values[$url][] = array('name' => $name, 'val' => $value);
-                }
-            }
-        }
-        return $values;
-    }
 
     /**
      * @Route("/info")
@@ -104,7 +59,7 @@ class DefaultController extends Controller
         }
             
 
-        $timings = $this->getAvgValues($this->sumUp($rows));
+        $timings = SitesDb::getAvgValues(SitesDb::sumUp($rows));
 
         $domain = Domain::getRegisteredDomain($host);
 
@@ -150,12 +105,12 @@ class DefaultController extends Controller
         $requests = array();
         foreach($rows as $row)
         {
-            $loadtime = $this->getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad');
+            $loadtime = SitesDb::getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad');
 
             $requests[ (string)$row['_id'] ] = array(
                 'url' => $row['log']['entries'][0]['request']['url'],
                 'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
-                'agent' => $this->getRowField($row, 'agent'),
+                'agent' => SitesDb::getRowField($row, 'agent'),
                 'loadtime' => $loadtime,
                 );
         }
@@ -324,7 +279,8 @@ class DefaultController extends Controller
         }
 
         $to->modify('-1 day');
-        array_walk($datas, array($this, 'groupValuesByDate'), array('from' => $from, 'to' => $to));
+        $arg = array();
+        array_walk($datas, array('DbUtils\\SitesDb', 'groupValuesByDate'), array('from' => $from, 'to' => $to));
 
         return array(
             'values' => $datas, 
@@ -332,42 +288,7 @@ class DefaultController extends Controller
             'to' => $to
         );
     }
-
-    private function addOrderByAndDate($query, $field, $value, $sort = 1)
-    {
-        $operator = $sort == 1 ? '$gt' : '$lt';
-        $query[$field] = array($operator => $value);
-        return array('query' => $query, 'orderby' => array($field => $sort));
-    }
-
-    private function getPreviousNext($item)
-    {
-        $db = SitesDb::getDb();
-        $find = $this->getRelatedFinder($item);
-        $date = $item['log']['pages'][0]['startedDateTime'];
-        $findNext = $this->addOrderByAndDate($find, 'log.pages.startedDateTime', $date, 1);
-        $findPrevious = $this->addOrderByAndDate($find, 'log.pages.startedDateTime', $date, -1);
-        $next = $db->har->findOne($findNext, array('_id' => 1));
-        $previous = $db->har->findOne($findPrevious, array('_id' => 1));
-        return array($previous, $next);
-    }
-
-    private function getRelatedFinder($item)
-    {
-        $site = $item['site'];
-        $url = $item['log']['entries'][0]['request']['url'];
-        return array(
-            '_id' => array('$ne' => $item['_id']),
-            'site' => $site, 
-            'log.entries.request.url' => $url
-        );
-    }
-
-    private function getObjectId($item)
-    {
-        return $item ? $item['_id'] : null;
-    }
-
+    
     /**
      * @Route("/harviewer/{id}")
      * @Template()
@@ -379,31 +300,12 @@ class DefaultController extends Controller
         $item = $db->har->findOne(array('_id' => $mongoid));
         $har = HarFile::fromJson($item);
         
-        list($previous, $next) = $this->getPreviousNext($item);
+        list($previous, $next) = SitesDb::getPreviousNext($item);
 
         return array(
             'har' => $har,
-            'previous' => $this->getObjectId($previous),
-            'next' => $this->getObjectId($next),
+            'previous' => SitesDb::getObjectId($previous),
+            'next' => SitesDb::getObjectId($next),
         );
-    }
-
-    public function groupValuesByDate(&$values, $url, $userdata)
-    {
-        $interval = new \DateInterval('P1D');
-        
-        $times = array();
-
-        foreach($values as $data)
-        {
-            $tz = new \DateTimeZone('Europe/London');
-            $data['date']->getDate()->setTimeZone($tz);
-            $data['date']->getDate()->setTime(0, 0);
-            $ts = $data['date']->asTimestamp();
-
-            $times[ $ts ][] = $data['value'];
-        }
-
-        $values = $times;
     }
 }
