@@ -1,56 +1,37 @@
 #!/usr/bin/env python
-import json
-import sys
 from pymongo import MongoClient
 from celery import Celery
 from tasks import processtest
 
-if len(sys.argv) == 1:
-    sys.exit(1)
+celery = Celery('cron')
+celery.config_from_object('celeryconfig')
 
-if not sys.argv[1].isdigit():
-    sys.exit(1)
+@celery.task
+def process(minutes):
+    print 'Running cron of tasks for every %d minutes' % (minutes)
+    dbcon = MongoClient()
+    rows = dbcon.perfmonitor.sites.aggregate([
+        {
+         '$match': {'interval': minutes}
+        }, 
+        {'$unwind': "$urls"} 
+    ])
 
-minutes = int(sys.argv[1])
+    if not rows['result']:
+        print 'No tasks found to run every %d minutes' % (minutes)
+        return False
 
-dbcon = MongoClient()
+    for row in rows['result']:
+        msg = {
+            'url': str(row['urls']),
+            'site': str(row['site']),
+            'account': 'me',
+            'type': 'har',
+            'nb': int(row['nb']),
+            'agent': str(row['agent'])
+        }
 
-# 5, 10, 15, 30, 60, 180, 360, 720, 1440
-
-# 5 = 5
-# 10 = 5, 10
-# 15 = 5, 15
-# 20 = 5, 10
-# 25 = 5
-# 30 = 5, 10, 15, 30
-# 35 = 5
-# 40 = 5, 10
-# 45 = 5, 15
-# 50 = 5, 10
-# 55 = 5
-# 60 = 5, 10, 15, 30, 60
-
-rows = dbcon.perfmonitor.sites.aggregate([
-    {
-     '$match': {'interval': minutes}
-    }, 
-    {'$unwind': "$urls"} 
-])
-
-if not rows['result']:
-    sys.exit(0)
-
-for row in rows['result']:
-    msg = {
-        'url': str(row['urls']),
-        'site': str(row['site']),
-        'account': 'me',
-        'type': 'har',
-        'nb': int(row['nb']),
-        'agent': str(row['agent'])
-    }
-
-    processtest.delay(msg)
-
-
-sys.exit(0)
+        processtest.delay(msg)
+    
+    print 'Done running tasks for every %d minutes' % (minutes)
+    return True

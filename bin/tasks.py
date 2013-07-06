@@ -6,14 +6,8 @@ from pymongo import MongoClient
 
 NETSNIFF_UTIL = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tools', 'netsniff.js')
 
-celery = Celery('tasks', backend='amqp', broker='amqp://guest:guest@localhost:5672//')
-
-celery.conf.update(
-    CELERY_TASK_SERIALIZER='json',
-    CELERY_RESULT_SERIALIZER='json',
-    CELERY_TASK_RESULT_EXPIRES = None
-)
-
+celery = Celery('tasks')
+celery.config_from_object('celeryconfig')
 
 @celery.task
 def processtest(content):
@@ -45,3 +39,4 @@ def processtest(content):
     except:
         print ' [x] Unable to save HAR response, sending back'
         return False
+
