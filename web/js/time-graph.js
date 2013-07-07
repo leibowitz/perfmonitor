@@ -118,11 +118,13 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         //rangedata[key].lower = d3.quantile(rangedata[key].value, data_percentile);
         //rangedata[key].upper = d3.quantile(rangedata[key].value, 1-data_percentile);
         // Inner fences
-        rangedata[key].lowerIn = d3.max([rangedata[key].quart1 - 1.5*rangedata[key].iqr, 0]);
-        rangedata[key].upperIn = d3.max([rangedata[key].quart3 + 1.5*rangedata[key].iqr, 0]);
+        rangedata[key].lowerIn = rangedata[key].quart1 - 1.5*rangedata[key].iqr;
+        rangedata[key].lowerW =  rangedata[key].value[d3.bisectRight(rangedata[key].value, rangedata[key].lowerIn)];
+        rangedata[key].upperIn = rangedata[key].quart3 + 1.5*rangedata[key].iqr;
+        rangedata[key].upperW =  rangedata[key].value[d3.bisectLeft(rangedata[key].value, rangedata[key].upperIn)-1];
         // Outer fences
-        rangedata[key].lowerOut = d3.max([rangedata[key].quart1 - 3*rangedata[key].iqr, 0]);
-        rangedata[key].upperOut = d3.max([rangedata[key].quart3 + 3*rangedata[key].iqr, 0]);
+        rangedata[key].lowerOut = rangedata[key].quart1 - 3*rangedata[key].iqr;
+        rangedata[key].upperOut = rangedata[key].quart3 + 3*rangedata[key].iqr;
         // trimean 20, 50 and 80
 
         // Store a value that is the maximum
@@ -278,7 +280,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
-        .attr("y1", function(d,i){ return y(d.upperIn)})
+        .attr("y1", function(d,i){ return y(d.upperW)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart3)})
         .attr("stroke", "black");
@@ -288,9 +290,9 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
-        .attr("y1", function(d,i){ return y(d.upperIn)})
+        .attr("y1", function(d,i){ return y(d.upperW)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
-        .attr("y2", function(d,i){ return y(d.upperIn)})
+        .attr("y2", function(d,i){ return y(d.upperW)})
         .attr("stroke", "black");
 
         // Bar down
@@ -298,7 +300,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width})
-        .attr("y1", function(d,i){ return y(d.lowerIn)})
+        .attr("y1", function(d,i){ return y(d.lowerW)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width})
         .attr("y2", function(d,i){ return y(d.quart1)})
         .attr("stroke", "black");
@@ -308,9 +310,9 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         .filter(function(d){ return d.value != null; })
         .append('line')
         .attr("x1", function(d,i){ return x(d.date)+halfbin_width-bar_width*.05;})
-        .attr("y1", function(d,i){ return y(d.lowerIn)})
+        .attr("y1", function(d,i){ return y(d.lowerW)})
         .attr("x2", function(d,i){ return x(d.date)+halfbin_width+bar_width*.05;})
-        .attr("y2", function(d,i){ return y(d.lowerIn)})
+        .attr("y2", function(d,i){ return y(d.lowerW)})
         .attr("stroke", "black");
    
         // Show outliners
