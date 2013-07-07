@@ -5,9 +5,65 @@ namespace DbUtils;
 use HarUtils\HarFile;
 use HarUtils\HarTime;
 use HarUtils\HarResults;
+use HarUtils\Url;
 
 class SitesDb
 {
+
+    static public function getRecentRequests($rows)
+    {
+        $requests = array();
+
+        foreach($rows as $row)
+        {
+            $requests[ (string)$row['_id'] ] = array(
+                'url' => $row['log']['entries'][0]['request']['url'],
+                'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
+                'agent' => SitesDb::getRowField($row, 'agent'),
+                'loadtime' => SitesDb::getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad'),
+                );
+        }
+
+        return $requests;
+    }
+    
+    static public function createUrl($url)
+    {
+        return new Url($url);
+    }
+
+    static public function getUrlsFromTimesList($times)
+    {
+        $urls = array_unique(array_keys($times));
+        return array_combine($urls, array_map('DbUtils\\SitesDb::createUrl', $urls));
+    }
+
+    static public function getUrlTimes($rows)
+    {
+        $times = array();
+
+        foreach($rows as $row)
+        {
+            $times[ $row['url'] ][] = $row['time']/1000;
+        }
+
+        return $times;
+    }
+            
+
+    static public function getLoadTimeGroupBySites($datas, $from, $to)
+    {
+        if(count($datas) == 0)
+        {
+            $sites = SitesDb::getSitesAndUrls();
+            $values = array_pad(array(), count($sites[$site]), array());
+            $datas = array_combine($sites[$site], $values);
+        }
+
+        $to->modify('-1 day');
+        array_walk($datas, array('DbUtils\\SitesDb', 'groupValuesByDate'), array('from' => $from, 'to' => $to));
+        return $datas;
+    }
 
     static public function getRowField($row, $field, $default = null)
     {

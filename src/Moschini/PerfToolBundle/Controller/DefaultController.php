@@ -30,9 +30,6 @@ class DefaultController extends Controller
      */
     public function infoAction(Request $request)
     {
-        $times = array();
-        $urls = array();
-
         $url = $request->get('url');
         if($url)
         {
@@ -47,22 +44,15 @@ class DefaultController extends Controller
             
             $rows = SitesDb::getStatsForHost($host);
         }
-        
-        foreach($rows as $row)
-        {
-            $key = $row['url'];
-            if(!array_key_exists($key, $urls))
-            {
-                $urls[$key] = new Url($key);
-            }
-            $times[ $key ][] = $row['time']/1000;
-        }
-            
-
-        $timings = SitesDb::getAvgValues(SitesDb::sumUp($rows));
 
         $domain = Domain::getRegisteredDomain($host);
 
+        $timings = SitesDb::getAvgValues(SitesDb::sumUp($rows));
+        
+
+        $times = SitesDb::getUrlTimes($rows);
+
+        $urls = SitesDb::getUrlsFromTimesList($times);
         
         return array(
             'url' => $url, 
@@ -95,25 +85,12 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/")
      * @Route("/index")
      * @Template()
      */
     public function indexAction(Request $request)
     {
-        $rows = SitesDb::getRecentRequestsList($request->get('site'), $request->get('url'));
-        $requests = array();
-        foreach($rows as $row)
-        {
-            $loadtime = SitesDb::getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad');
-
-            $requests[ (string)$row['_id'] ] = array(
-                'url' => $row['log']['entries'][0]['request']['url'],
-                'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
-                'agent' => SitesDb::getRowField($row, 'agent'),
-                'loadtime' => $loadtime,
-                );
-        }
+        $requests = SitesDb::getRecentRequests(SitesDb::getRecentRequestsList($request->get('site'), $request->get('url')));
         
         return array(
             'requests' => $requests, 
@@ -270,20 +247,13 @@ class DefaultController extends Controller
         $site = $request->get('site');
         $url = $request->get('url');
         
-        $datas = SitesDb::getLoadTimesAndDatePerUrl($site, $url, $from, $to);
-        $sites = SitesDb::getSitesAndUrls();
-        if(count($datas) == 0)
-        {
-            $values = array_pad(array(), count($sites[$site]), array());
-            $datas = array_combine($sites[$site], $values);
-        }
-
-        $to->modify('-1 day');
-        $arg = array();
-        array_walk($datas, array('DbUtils\\SitesDb', 'groupValuesByDate'), array('from' => $from, 'to' => $to));
+        $values = SitesDb::getLoadTimeGroupBySites(
+            SitesDb::getLoadTimesAndDatePerUrl($site, $url, $from, $to), 
+            $from, 
+            $to);
 
         return array(
-            'values' => $datas, 
+            'values' => $values, 
             'from' => $from,
             'to' => $to
         );
