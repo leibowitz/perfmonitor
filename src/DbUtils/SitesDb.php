@@ -485,5 +485,5 @@ class SitesDb
 
     }
 
-};
+}
 
