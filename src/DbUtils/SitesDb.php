@@ -177,7 +177,9 @@ class SitesDb
         {
             $find['url'] = $url;
         }
-        return $db->har->remove($find);
+        $db->har->remove($find);
+        $db->timings->remove($find);
+        return true;
     }
 
     static public function find($find, $fields)
