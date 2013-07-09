@@ -75,7 +75,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
     date_to = new Date(date_to);
     
     // Interval between from and to
-    var domain = d3.time.days(d3.time.day.offset(date_from, -1), date_to);
+    var domain = d3.time.days(date_from, d3.time.day.offset(date_to, 1));
 
     // setup rangedata keys using the timestamp of the dates
     var rangedata = {};

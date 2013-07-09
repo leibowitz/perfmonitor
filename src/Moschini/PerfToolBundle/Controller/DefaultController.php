@@ -220,8 +220,9 @@ class DefaultController extends Controller
      */
     public function timeAction(Request $request)
     {
+        $tz = new \DateTimeZone('GMT');
         $to = new \DateTime();
-        $to->setTimezone(new \DateTimeZone('GMT'));
+        $to->setTimezone($tz);
         $to->setTime(0, 0);
 
         $from = clone $to;
@@ -232,18 +233,17 @@ class DefaultController extends Controller
         $reqfrom = $request->query->get('from');
         if($reqfrom)
         {
-            $from = new \DateTime("@".$reqfrom, new \DateTimeZone('GMT'));
-            $from->setTime(0, 0);
+            $from = new \DateTime("@".$reqfrom);
+            //$from->setTime(0, 0);
         }
         $reqto = $request->query->get('to');
         if($reqto)
         {
-            $to = new \DateTime("@".$reqto, new \DateTimeZone('GMT'));
+            $to = new \DateTime("@".$reqto);
             $to->modify('+1 day');
-            $to->setTime(0, 0);
+            //$to->setTime(0, 0);
         }
         
-
         $site = $request->get('site');
         $url = $request->get('url');
         
