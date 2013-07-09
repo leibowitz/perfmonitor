@@ -107,19 +107,24 @@ class HarPage
 
     public function getTotalTime()
     {
-        // Find latest request in term of end time
-        $time = 0;
-        $start = $this->getStarted()->asTimestamp();
-        foreach($this->requests as $request)
+        if(!isset($this->totalTime))
         {
-            $reqtime = $request->getElapsed($start) + $request->getTotalTime()/1000;
-            
-            if($reqtime > $time)
+            // Find latest request in term of end time
+            $time = 0;
+            $start = $this->getStarted()->asTimestamp();
+            foreach($this->requests as $request)
             {
-                $time = $reqtime;
+                $reqtime = $request->getElapsed($start) + $request->getTotalTime()/1000;
+                
+                if($reqtime > $time)
+                {
+                    $time = $reqtime;
+                }
             }
+            $this->totalTime = $time*1000;
         }
-        return $time*1000;
+
+        return $this->totalTime;
     }
 
     public function getTotalSize()
