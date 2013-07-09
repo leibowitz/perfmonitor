@@ -479,5 +479,12 @@ class SitesDb
 
     }
 
+    static public function getHarItem($id)
+    {
+        $db = SitesDb::getDb();
+        $mongoid = new \MongoId($id);
+
+        return $db->har->findOne(array('_id' => $mongoid));
+    }
 }
 

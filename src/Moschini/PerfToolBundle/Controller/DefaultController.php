@@ -265,9 +265,7 @@ class DefaultController extends Controller
      */
     public function harviewerAction(Request $request, $id)
     {
-        $db = SitesDb::getDb();
-        $mongoid = new \MongoId($id);
-        $item = $db->har->findOne(array('_id' => $mongoid));
+        $item = SitesDb::getHarItem($id);
         $har = HarFile::fromJson($item);
         
         list($previous, $next) = SitesDb::getPreviousNext($item);
