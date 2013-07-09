@@ -126,10 +126,10 @@ class SitesDb
         $db = SitesDb::getDb();
         $find = SitesDb::getRelatedFinder($item);
         $date = $item['log']['pages'][0]['startedDateTime'];
-        $findNext = SitesDb::addOrderByAndDate($find, 'log.pages.startedDateTime', $date, 1);
-        $findPrevious = SitesDb::addOrderByAndDate($find, 'log.pages.startedDateTime', $date, -1);
-        $next = $db->har->findOne($findNext, array('_id' => 1));
-        $previous = $db->har->findOne($findPrevious, array('_id' => 1));
+        $findNext = SitesDb::addOrderByAndDate($find, 'startedDateTime', $date, 1);
+        $findPrevious = SitesDb::addOrderByAndDate($find, 'startedDateTime', $date, -1);
+        $next = $db->timings->findOne($findNext, array('_id' => 1));
+        $previous = $db->timings->findOne($findPrevious, array('_id' => 1));
         return array($previous, $next);
     }
 
@@ -140,7 +140,7 @@ class SitesDb
         return array(
             '_id' => array('$ne' => $item['_id']),
             'site' => $site, 
-            'log.entries.request.url' => $url
+            'url' => $url
         );
     }
 
