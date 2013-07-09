@@ -342,16 +342,7 @@ class SitesDb
     static public function getUrls($name)
     {
         $db = SitesDb::getDb();
-        $rows = $db->har->find(array('site' => $name), array('log.entries.request.url' => 1));
-        $urls = array();
-        foreach($rows as $row)
-        {
-            $urls[] = $row['log']['entries'][0]['request']['url'];
-        }
-
-        $urls = array_unique($urls);
-
-        return $urls;
+        return $db->har->distinct('log.entries.request.url', array('site' => $name));
     }
     
     static public function getManagedSites()
