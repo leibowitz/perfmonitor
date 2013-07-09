@@ -30,6 +30,16 @@ def processtest(content):
     try:
         dbcon.perfmonitor.har.insert(jscontent)
         print ' [x] HAR response saved'
+        
+        tinydoc = {
+            'startedDateTime': jscontent['log']['pages'][0]['startedDateTime'],
+            'pageTimings': jscontent['log']['pages'][0]['pageTimings'],
+            'url': jscontent['log']['entries'][0]['request']['url'],
+            'site': jscontent['site'],
+            'agent': jscontent['agent']
+        }
+        dbcon.perfmonitor.timings.insert(tinydoc)
+        print ' [x] HAR response saved'
 
         content['nb'] -= 1
         if content['nb'] > 0:

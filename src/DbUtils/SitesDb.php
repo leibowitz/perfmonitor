@@ -237,37 +237,34 @@ class SitesDb
     {
         $find = array(
             'site' => $site, 
-            'log.pages.pageTimings.onLoad' => array('$exists' => true)
+            'pageTimings.onLoad' => array('$exists' => true)
             ); 
         if($from)
         {
-            $find['log.pages.startedDateTime']['$gt'] = $from->format(\DateTime::ISO8601);
+            $find['startedDateTime']['$gt'] = $from->format(\DateTime::ISO8601);
         }
         if($to)
         {
-            $find['log.pages.startedDateTime']['$lt'] = $to->format(\DateTime::ISO8601);
+            $find['startedDateTime']['$lt'] = $to->format(\DateTime::ISO8601);
         }
         if($url)
         {
-            $find['log.entries.request.url'] = $url;
+            $find['url'] = $url;
         }
 
         $db = SitesDb::getDb();  
 
-        $db->har->ensureIndex(array('log.pages.startedDateTime'=>1), array('background' => true));
+        $db->timings->ensureIndex(array('startedDateTime'=>1), array('background' => true));
 
-        return $db->har
+        return $db->timings
             ->find(
                 $find,
                 array(
-                    'log.pages.pageTimings.onLoad'=>1, 
-                    'log.pages.startedDateTime'=>1, 
+                    'pageTimings.onLoad'=>1, 
+                    'startedDateTime'=>1, 
                     'site'=>1, 
-                    'log.entries'=>
-                        array(
-                            '$slice'=>array(0,1)),
-                    'log.entries.request.url'=>1))
-            ->sort(array('log.pages.startedDateTime' => -1));
+                    'url'=>1))
+            ->sort(array('startedDateTime' => -1));
     }
 
     static public function groupByUrl($rows)
@@ -276,10 +273,10 @@ class SitesDb
 
         foreach($rows as $row)
         {
-            $onload = $row['log']['pages'][0]['pageTimings']['onLoad'];
+            $onload = $row['pageTimings']['onLoad'];
             if($onload)
             {
-                $urls[ $row['log']['entries'][0]['request']['url'] ][] = $onload / 1000;
+                $urls[ $row['url'] ][] = $onload / 1000;
             }
         }
         
@@ -292,10 +289,10 @@ class SitesDb
 
         foreach($rows as $row)
         {
-            $date = new HarTime($row['log']['pages'][0]['startedDateTime']);
-            $urls[ $row['log']['entries'][0]['request']['url'] ][] = 
+            $date = new HarTime($row['startedDateTime']);
+            $urls[ $row['url'] ][] = 
                 array(
-                    'value' => $row['log']['pages'][0]['pageTimings']['onLoad'] / 1000,
+                    'value' => $row['pageTimings']['onLoad'] / 1000,
                     'date' => $date,
                 );
         }
@@ -345,7 +342,7 @@ class SitesDb
     static public function getUrls($name)
     {
         $db = SitesDb::getDb();
-        return $db->har->distinct('log.entries.request.url', array('site' => $name));
+        return $db->timings->distinct('url', array('site' => $name));
     }
     
     static public function getManagedSites()
