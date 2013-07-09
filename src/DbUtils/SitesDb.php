@@ -17,10 +17,10 @@ class SitesDb
         foreach($rows as $row)
         {
             $requests[ (string)$row['_id'] ] = array(
-                'url' => $row['log']['entries'][0]['request']['url'],
-                'date' => new HarTime($row['log']['pages'][0]['startedDateTime']),
+                'url' => $row['url'],
+                'date' => new HarTime($row['startedDateTime']),
                 'agent' => SitesDb::getRowField($row, 'agent'),
-                'loadtime' => SitesDb::getRowField($row['log']['pages'][0]['pageTimings'], 'onLoad'),
+                'loadtime' => SitesDb::getRowField($row['pageTimings'], 'onLoad'),
                 );
         }
 
@@ -183,7 +183,7 @@ class SitesDb
     static public function find($find, $fields)
     {
         $db = SitesDb::getDb();  
-        return $db->har->find($find, $fields);
+        return $db->timings->find($find, $fields);
     }
 
     static public function findSort($find, $fields = array(), $sort = array(), $limit = 0)
@@ -225,7 +225,7 @@ class SitesDb
 
             if($url)
             {
-                $find['log.entries.request.url'] = $url;
+                $find['url'] = $url;
             }
 
         }
@@ -319,12 +319,11 @@ class SitesDb
     {
         $find = self::filterBySiteAndUrl($site, $url);
         $fields = array(
-            'log.pages.startedDateTime' => 1, 
-            'log.entries' => array('$slice' => array(0, 1)),
-            'log.entries.request.url' => 1,
-            'log.pages.pageTimings.onLoad' => 1,
+            'startedDateTime' => 1, 
+            'url' => 1,
+            'pageTimings.onLoad' => 1,
             'agent' => 1);
-        $sort['log.pages.startedDateTime'] = -1;
+        $sort['startedDateTime'] = -1;
         return self::findSort($find, $fields, $sort, $limit);
     }
 

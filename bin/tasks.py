@@ -28,7 +28,7 @@ def processtest(content):
 
     dbcon = MongoClient()
     try:
-        dbcon.perfmonitor.har.insert(jscontent)
+        content_id = dbcon.perfmonitor.har.insert(jscontent)
         print ' [x] HAR response saved'
         
         tinydoc = {
@@ -36,7 +36,8 @@ def processtest(content):
             'pageTimings': jscontent['log']['pages'][0]['pageTimings'],
             'url': jscontent['log']['entries'][0]['request']['url'],
             'site': jscontent['site'],
-            'agent': jscontent['agent']
+            'agent': jscontent['agent'],
+            '_id': content_id
         }
         dbcon.perfmonitor.timings.insert(tinydoc)
         print ' [x] HAR response saved'
