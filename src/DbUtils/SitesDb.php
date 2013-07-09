@@ -402,10 +402,10 @@ class SitesDb
         return SitesDb::getFilesFromDB($find, $sort, $limit);
     }
 
-    static public function getDb()
+    static public function getDb($db = 'perfmonitor')
     {
         $m = new \MongoClient();
-        return $m->selectDB("perfmonitor");  
+        return $m->selectDB($db);  
     }
 
     static public function getFilesFromFilter($site = null, $url = null, $limit = 0)
