@@ -247,7 +247,7 @@ class DefaultController extends Controller
         $site = $request->get('site');
         $url = $request->get('url');
         
-        $values = SitesDb::getLoadTimeGroupBySites(
+        $values = SitesDb::getLoadTimeGroupBySites($site, 
             SitesDb::getLoadTimesAndDatePerUrl($site, $url, $from, $to), 
             $from, 
             $to);

@@ -51,13 +51,16 @@ class SitesDb
     }
             
 
-    static public function getLoadTimeGroupBySites($datas, $from, $to)
+    static public function getLoadTimeGroupBySites($site, $datas, $from, $to)
     {
         if(count($datas) == 0)
         {
             $sites = SitesDb::getSitesAndUrls();
-            $values = array_pad(array(), count($sites[$site]), array());
-            $datas = array_combine($sites[$site], $values);
+            if($sites && isset($sites[$site]))
+            {
+                $values = array_pad(array(), count($sites[$site]), array());
+                $datas = array_combine($sites[$site], $values);
+            }
         }
 
         $to->modify('-1 day');
