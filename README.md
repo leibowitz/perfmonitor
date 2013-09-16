@@ -29,25 +29,25 @@ Start the queue processing by running the task.py celery worker from the bin dir
 
 If RabbitMQ and python pika library are installed correctly, you should see this:
 
- -------------- celery@user-MACHINE v3.0.20 (Chiastic Slide)
----- **** ----- 
---- * ***  * -- Linux-3.5.0-34-generic-x86_64-with-Ubuntu-12.10-quantal
--- * - **** --- 
-- ** ---------- [config]
-- ** ---------- .> broker:      amqp://guest@localhost:5672//
-- ** ---------- .> app:         tasks:0x25697d0
-- ** ---------- .> concurrency: 2 (processes)
-- *** --- * --- .> events:      OFF (enable -E to monitor this worker)
--- ******* ---- 
---- ***** ----- [queues]
- -------------- .> celery:      exchange:celery(direct) binding:celery
-                
+     -------------- celery@user-MACHINE v3.0.20 (Chiastic Slide)
+    ---- **** ----- 
+    --- * ***  * -- Linux-3.5.0-34-generic-x86_64-with-Ubuntu-12.10-quantal
+    -- * - **** --- 
+    - ** ---------- [config]
+    - ** ---------- .> broker:      amqp://guest@localhost:5672//
+    - ** ---------- .> app:         tasks:0x25697d0
+    - ** ---------- .> concurrency: 2 (processes)
+    - *** --- * --- .> events:      OFF (enable -E to monitor this worker)
+    -- ******* ---- 
+    --- ***** ----- [queues]
+     -------------- .> celery:      exchange:celery(direct) binding:celery
+                    
+    
+    [Tasks]
+      . tasks.processcron
+      . tasks.processtest
 
-[Tasks]
-  . tasks.processcron
-  . tasks.processtest
-
-[2013-09-10 21:47:50,608: WARNING/MainProcess] celery@user-MACHINE ready.
+    [2013-09-10 21:47:50,608: WARNING/MainProcess] celery@user-MACHINE ready.
 
 Now to test everything, open your webbrowser and go to your local site and generate a new request (remember you need to configure it first)
 
@@ -55,11 +55,14 @@ Now to test everything, open your webbrowser and go to your local site and gener
 
 Go back to the other shell and make sure the output looks like this:
 
-[2013-09-16 21:54:07,387: INFO/MainProcess] Got task from broker: tasks.processtest[php_52376fef4f4177.69911429]
-[2013-09-16 21:54:12,416: WARNING/PoolWorker-1] [x] HAR response saved
-[2013-09-16 21:54:12,467: INFO/MainProcess] Task tasks.processtest[php_52376fef4f4177.69911429] succeeded in 5.04600286484s: True
+    [2013-09-10 21:54:07,387: INFO/MainProcess] Got task from broker: tasks.processtest[php_52376fef4f4177.69911429]
+    [2013-09-10 21:54:12,416: WARNING/PoolWorker-1] [x] HAR response saved
+    [2013-09-10 21:54:12,467: INFO/MainProcess] Task tasks.processtest[php_52376fef4f4177.69911429] succeeded in 5.04600286484s: True
 
-If that's the case, it means everything is set-up correctly on your machine.
+The first line appears only if the message has been received by celery from the RabbitMQ queue.
+The second message means the request has been processed using phantomJS and has been saved to the MongoDB backend.
+
+If you see both, it means everything is set-up correctly on your machine. If you struggle getting everything configured seek help on the mailing list or use the Vagrantfile provided to get everything setup for you.
 
 Now open your web browser and go check the results
 
