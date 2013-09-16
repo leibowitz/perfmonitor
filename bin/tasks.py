@@ -1,18 +1,19 @@
 from celery import Celery
-from subprocess import check_output, CalledProcessError
-import os
+from subprocess import CalledProcessError
 import json
 from pymongo import MongoClient
-
-NETSNIFF_UTIL = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tools', 'netsniff.js')
+from dbinsert import insertToMongo
+import run_tests
 
 celery = Celery('tasks')
 celery.config_from_object('celeryconfig')
 
+
 @celery.task
 def processtest(content):
     try:
-        harcontent = check_output(['phantomjs', NETSNIFF_UTIL, content['url'], content['agent']])
+        #harcontent = run_tests.run_webkit_remote(content['url'], content['agent'])
+        harcontent = run_tests.run_phantomjs(content['url'], content['agent'])
     except CalledProcessError:
         print ' [x] Sub-process failed'
         return False
@@ -26,20 +27,8 @@ def processtest(content):
     jscontent['site'] = content['site']
     jscontent['agent'] = content['agent']
 
-    dbcon = MongoClient()
     try:
-        content_id = dbcon.perfmonitor.har.insert(jscontent)
-        print ' [x] HAR response saved'
-        
-        tinydoc = {
-            'startedDateTime': jscontent['log']['pages'][0]['startedDateTime'],
-            'pageTimings': jscontent['log']['pages'][0]['pageTimings'],
-            'url': jscontent['log']['entries'][0]['request']['url'],
-            'site': jscontent['site'],
-            'agent': jscontent['agent'],
-            '_id': content_id
-        }
-        dbcon.perfmonitor.timings.insert(tinydoc)
+        insertToMongo(jscontent)
         print ' [x] HAR response saved'
 
         content['nb'] -= 1

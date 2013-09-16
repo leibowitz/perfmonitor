@@ -3,9 +3,7 @@ import json
 import os
 import sys
 from pymongo import MongoClient
-
-
-dbcon = MongoClient()
+from dbinsert import insertToMongo
 
 
 for path in sys.argv[1:]:
@@ -14,7 +12,8 @@ for path in sys.argv[1:]:
         f = open(path, 'r')
         harcontent = f.read()
         jscontent = json.loads(harcontent)
-        dbcon.perfmonitor.har.insert(jscontent)
+            
+        insertToMongo(jscontent)
         f.close()
 
 sys.exit(0)
