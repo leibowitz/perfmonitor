@@ -114,3 +114,13 @@ old_sound_rabbit_mq:
 #            exchange_options: {name: '', type: direct}
 #            queue_options:    {name: ''}
 #            callback:         upload_picture_service 
+
+
+
+ek_iron_mq:
+    token: %ironmq_token%
+    project_id: %ironmq_project%
+
+leibowitz_iron_worker:
+    token: %ironmq_token%
+    project_id: %ironmq_project%

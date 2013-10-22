@@ -171,8 +171,9 @@ class DefaultController extends Controller
                 );
 
                 // Send to background job
-                $celery = new \Celery('localhost', 'guest', 'guest', '/');
-                $celery->PostTask('tasks.processtest', array($msg));
+                $worker = $this->get('leibowitz_iron_worker');
+                $res = $worker->postTask("phantom", $msg);
+
                 // If no site has been defined, use the one used for this request 
                 if(!$site){
                     $site = $data['site'];

@@ -22,6 +22,8 @@ class AppKernel extends Kernel
             new Moschini\PerfToolBundle\MoschiniPerfToolBundle(),
             new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
             new Braincrafted\BootstrapBundle\BraincraftedBootstrapBundle(),
+            new Ek\IronMqBundle\EkIronMqBundle(),
+            new Leibowitz\IronWorkerBundle\LeibowitzIronWorkerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
