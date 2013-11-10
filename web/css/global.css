@@ -38,3 +38,7 @@ rect{
     stroke:black;
     fill:none;
 }
+
+.help-inline {
+    color: red;
+}
