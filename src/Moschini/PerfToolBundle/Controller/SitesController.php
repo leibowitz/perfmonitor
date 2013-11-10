@@ -5,6 +5,7 @@ namespace Moschini\PerfToolBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -69,46 +70,71 @@ class SitesController extends Controller
         $defaultData = array('interval' => 180, 'site' => $site, 'nb' => 10, 'agent' => 'desktop');
 
         $form = $this->createFormBuilder($defaultData)
-            ->add('site', 'text', array(
-                'attr' => array(
-                    'placeholder' => 'Site name',
-                )
+            ->add('site', 'text', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'attr' => array(
+                        'placeholder' => 'Site name',
+                    ),
             ))
-            ->add('urls', 'textarea', array(
-                'attr' => array(
-                    'placeholder' => 'One urls per line',
-                    'rows' => 5,
-                    'class' => 'input-xxlarge',
-                   )
+            ->add('urls', 'textarea', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'attr' => array(
+                        'placeholder' => 'One urls per line',
+                        'rows' => 5,
+                        'class' => 'input-xxlarge',
+                       ),
             ))
             ->add('agent', 'choice', 
-                array('choices' => array(
-                    'desktop' => 'Desktop', 
-                    'mobile' => 'Mobile'), 
-                'expanded' => true,
-                'label' => 'User-Agent'))
-            ->add('nb', 'integer', array(
-                'label' => 'Number of requests',
-                'attr' => array(
-                    'class' => 'input-mini',
-                ),
-                'constraints' => array(
-                    new Range(array('min' => 1, 'max' => 20)),
-                ),
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'choices' => array(
+                        'desktop' => 'Desktop', 
+                        'mobile' => 'Mobile'), 
+                    'expanded' => true,
+                    'label' => 'User-Agent',
+            ))
+            ->add('nb', 'integer', 
+                array(
+                    'required' => true,
+                    'label' => 'Number of requests',
+                    'attr' => array(
+                        'class' => 'input-mini',
+                    ),
+                    'constraints' => array(
+                        new Range(array('min' => 1, 'max' => 20)),
+                    ),
             ))
             ->add('interval', 'choice', 
-                array('choices' => array(
-                    5 => '5 min', 
-                    10 => '10 min', 
-                    30 => '30 min', 
-                    60 => '1 h', 
-                    180 => '3 h', 
-                    360 => '6 h', 
-                    720 => '12 h', 
-                    1440 => '24 h'),
-                     'attr' => array(
-                        'class' => 'input-small'
-            )))
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'choices' => array(
+                        5    => '5 min', 
+                        10   => '10 min', 
+                        30   => '30 min', 
+                        60   => '1 h', 
+                        180  => '3 h', 
+                        360  => '6 h', 
+                        720  => '12 h', 
+                        1440 => '24 h',
+                    ),
+                    'attr' => array(
+                        'class' => 'input-small',
+                    )
+            ))
             ->getForm();
 
         if($request->isMethod('POST'))
@@ -153,40 +179,63 @@ class SitesController extends Controller
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text')
-            ->add('urls', 'textarea', array(
-                'attr' => array(
-                    'rows' => 10,
-                    'class' => 'input-xxlarge',
-                    )
+            ->add('urls', 'textarea', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'attr' => array(
+                        'rows' => 10,
+                        'class' => 'input-xxlarge',
+                    ),
             ))
             ->add('agent', 'choice', 
-                array('choices' => array(
-                    'desktop' => 'Desktop', 
-                    'mobile' => 'Mobile'), 
-                'expanded' => true,
-                'label' => 'User-Agent'))
-            ->add('nb', 'integer', array(
-                'label' => 'Number of requests',
-                'attr' => array(
-                    'class' => 'input-mini',
-                ),
-                'constraints' => array(
-                    new Range(array('min' => 1, 'max' => 20)),
-                ),
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'choices' => array(
+                        'desktop' => 'Desktop', 
+                        'mobile' => 'Mobile'), 
+                    'expanded' => true,
+                    'label' => 'User-Agent',
+            ))
+            ->add('nb', 'integer', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'label' => 'Number of requests',
+                    'attr' => array(
+                        'class' => 'input-mini',
+                    ),
+                    'constraints' => array(
+                        new Range(array('min' => 1, 'max' => 20)),
+                    ),
             ))
             ->add('interval', 'choice', 
-                array('choices' => array(
-                    5 => '5 min', 
-                    10 => '10 min', 
-                    30 => '30 min', 
-                    60 => '1 h', 
-                    180 => '3 h', 
-                    360 => '6 h', 
-                    720 => '12 h', 
-                    1440 => '24 h'),
-                     'attr' => array(
-                        'class' => 'input-small'
-            )))
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'choices' => array(
+                        5    => '5 min', 
+                        10   => '10 min', 
+                        30   => '30 min', 
+                        60   => '1 h', 
+                        180  => '3 h', 
+                        360  => '6 h', 
+                        720  => '12 h', 
+                        1440 => '24 h',
+                    ),
+                    'attr' => array(
+                        'class' => 'input-small',
+                    )
+            ))
             ->getForm();
 
         if($request->isMethod('POST'))

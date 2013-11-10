@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -132,26 +133,50 @@ class DefaultController extends Controller
 
         $form = $this->createFormBuilder($defaultData)
             //->add('type', 'choice', array('choices' => array('har' => 'har', 'loadtime' => 'loadtime')))
-            ->add('site', 'text', array(
-                'attr' => array(
-                    'placeholder' => 'Site name',
-                )
+            ->add('site', 'text', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'attr' => array(
+                        'placeholder' => 'Site name',
+                    ),
             ))
-            ->add('url', 'text', array(
-                'attr' => array(
-                    'placeholder' => 'http://www.google.com',
-                    'class' => 'input-xxlarge',
-                )
+            ->add('url', 'text', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'attr' => array(
+                        'placeholder' => 'http://www.google.com',
+                        'class' => 'input-xxlarge',
+                    ),
             ))
-            ->add('agent', 'choice', array('label' => 'User-Agent', 'choices' => array('desktop' => 'Desktop', 'mobile' => 'Mobile'), 'expanded' => true))
-            ->add('nb', 'integer', array(
-                'label' => 'Number of requests',
-                'attr' => array(
-                    'class' => 'input-mini',
-                ),
-                'constraints' => array(
-                    new Range(array('min' => 1, 'max' => 20)),
-                ),
+            ->add('agent', 'choice', 
+                array(
+                    'required' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                    ),
+                    'label' => 'User-Agent', 
+                    'choices' => array(
+                        'desktop' => 'Desktop', 
+                        'mobile' => 'Mobile',
+                    ), 
+                    'expanded' => true,
+            ))
+            ->add('nb', 'integer', 
+                array(
+                    'required' => true,
+                    'label' => 'Number of requests',
+                    'attr' => array(
+                        'class' => 'input-mini',
+                    ),
+                    'constraints' => array(
+                        new Range(array('min' => 1, 'max' => 20)),
+                    ),
             ))
             ->getForm();
 
