@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 use DbUtils\SitesDb;
 
@@ -16,6 +17,7 @@ class SitesController extends Controller
 {
     /**
      * @Route("/done")
+     * @Cache(public="true",maxage="3600")
      * @Template()
      */
     public function doneAction()
@@ -25,6 +27,7 @@ class SitesController extends Controller
 
 	/**
      * @Route("/")
+     * @Cache(public="true",maxage="3600")
      * @Template()
      */
     public function indexAction(Request $request)
@@ -62,6 +65,7 @@ class SitesController extends Controller
 
     /**
      * @Route("/new")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function addAction(Request $request)
@@ -160,6 +164,7 @@ class SitesController extends Controller
 	
     /**
      * @Route("/edit")
+     * @Cache(public="true",maxage="180")
      * @Template()
      */
     public function editAction(Request $request)
@@ -261,6 +266,7 @@ class SitesController extends Controller
 	
     /**
      * @Route("/managedsites")
+     * @Cache(public="true",maxage="180")
      * @Route("/managedsites/{site}")
      * @Template() 
      */
@@ -283,6 +289,7 @@ class SitesController extends Controller
 	
 	/**
      * @Route("/sites")
+     * @Cache(public="true",maxage="180")
      * @Route("/sites/{site}")
      * @Template()
      */
@@ -303,6 +310,7 @@ class SitesController extends Controller
 
 	/**
      * @Route("/js")
+     * @Cache(public="true",maxage="300")
      * @Template()
      */
     public function jsAction(Request $request)

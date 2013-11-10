@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-// these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 use HarUtils\HarFile;
 use HarUtils\HarTime;
@@ -27,6 +27,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/info")
+     * @Cache(public="true",maxage="7200")
      * @Template()
      */
     public function infoAction(Request $request)
@@ -66,6 +67,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/lookup")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function lookupAction(Request $request)
@@ -87,6 +89,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/index")
+     * @Cache(public="true",maxage="300")
      * @Template()
      */
     public function indexAction(Request $request)
@@ -115,6 +118,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/send")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function sendAction(Request $request)
@@ -211,6 +215,7 @@ class DefaultController extends Controller
     
     /**
      * @Route("/done")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function doneAction()
@@ -220,6 +225,7 @@ class DefaultController extends Controller
     
     /**
      * @Route("/graph")
+     * @Cache(public="true",maxage="3600")
      * @Template()
      */
     public function graphAction(Request $request)
@@ -241,6 +247,7 @@ class DefaultController extends Controller
     
     /**
      * @Route("/time")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function timeAction(Request $request)
@@ -286,6 +293,7 @@ class DefaultController extends Controller
     
     /**
      * @Route("/harviewer/{id}")
+     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function harviewerAction(Request $request, $id)
