@@ -1,10 +1,24 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    <IfModule mod_vhost_alias.c>
-        RewriteBase /
-    </IfModule>
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ app.php [QSA,L]
+
 </IfModule>
+<FilesMatch "\.(jpg|jpeg|png|gif|swf|ico)$">
+    <IfModule mod_headers.c>
+      Header set Cache-Control "max-age=31536000, public"
+      # Header set Expire "access plus 1 year"
+      ExpiresDefault A29030400
+      #Header append Cache-Control "public"
+    </IfModule>
+</FilesMatch>
+<FilesMatch "\.(js|css)$">
+    <IfModule mod_headers.c>
+      Header set Cache-Control "max-age=31536000, public"
+      # Header set Expire "access plus 1 year"
+      ExpiresDefault A29030400
+      #Header append Cache-Control "public"
+    </IfModule>
+</FilesMatch>
