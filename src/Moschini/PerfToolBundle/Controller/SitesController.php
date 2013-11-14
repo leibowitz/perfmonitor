@@ -65,7 +65,6 @@ class SitesController extends Controller
 
     /**
      * @Route("/new")
-     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function addAction(Request $request)
@@ -164,7 +163,6 @@ class SitesController extends Controller
 	
     /**
      * @Route("/edit")
-     * @Cache(public="true",maxage="180")
      * @Template()
      */
     public function editAction(Request $request)

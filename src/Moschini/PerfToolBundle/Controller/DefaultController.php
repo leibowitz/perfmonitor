@@ -118,7 +118,6 @@ class DefaultController extends Controller
 
     /**
      * @Route("/send")
-     * @Cache(public="true",maxage="86400")
      * @Template()
      */
     public function sendAction(Request $request)
