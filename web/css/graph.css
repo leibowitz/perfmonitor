@@ -25,3 +25,7 @@ path{
   shape-rendering: crispEdges;
 }
 
+.histgraph {
+    width: 560px;
+    height: 200px;
+}
