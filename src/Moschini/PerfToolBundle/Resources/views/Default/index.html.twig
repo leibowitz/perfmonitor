@@ -31,6 +31,7 @@
 {% endfor %}
 </tbody>
 </table>
+{{ knp_pagination_render(pagination) }}
 <button type="button" data-toggle="modal" class="btn btn-danger" data-target="#modalConfirmDelete">Delete all</button>
 {% endif %}
 

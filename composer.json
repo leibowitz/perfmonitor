@@ -31,7 +31,8 @@
         "ccampbell/chromephp": "dev-master",
         "sclinternet/scl-socket": "dev-master",
         "sclinternet/scl-whois": "dev-master",
-        "massivescale/celery-php": "dev-php-amqplib"
+        "massivescale/celery-php": "dev-php-amqplib",
+        "knplabs/knp-paginator-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

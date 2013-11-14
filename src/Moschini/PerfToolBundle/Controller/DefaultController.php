@@ -94,10 +94,18 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $requests = SitesDb::getRecentRequests(SitesDb::getRecentRequestsList($request->get('site'), $request->get('url')));
-        
+        $rows = SitesDb::getRecentRequestsList($request->get('site'), $request->get('url'));
+
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $rows,
+            $this->get('request')->query->get('page', 1),
+            10
+        );
+
         return array(
-            'requests' => $requests, 
+            'requests' => SitesDb::getRecentRequests($pagination->getItems()), 
+            'pagination' => $pagination
         );
     }
     
