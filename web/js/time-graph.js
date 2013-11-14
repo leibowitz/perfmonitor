@@ -97,6 +97,9 @@ function showBoxPlot(datas, div_id, date_from, date_to)
         var time = entries[url].key * 1000;
         var date = new Date(time);
         var key = time;
+        if( rangedata[key] === undefined ) {
+            continue;
+        }
         // Set js timestamp and date object 
         rangedata[key].time = time;
         //rangedata[date].date = date;
