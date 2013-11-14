@@ -2,8 +2,6 @@
 {% block title 'Histogram' %}
 
 {% block javascripts %}
-<script src="{{ asset('js/d3.v3.min.js') }}"></script>
-<script src="{{ asset('js/histogram-simple.js') }}"></script>
 <script type="text/javascript">
 {% for url, times in datas %}
     loadHistogramSimple({{ times|json_encode }}, '#div-hist-{{ loop.index }}');
@@ -12,10 +10,6 @@
 </script>
 {% include 'MoschiniPerfToolBundle::menu.html.twig' with {'site': app.request.get('site'), 'route': 'moschini_perftool_default_graph'} %}
 {% render url('moschini_perftool_sites_js', {'site': app.request.get('site'), 'url': app.request.get('url')}) %}
-{% endblock %}
-
-{% block stylesheets %}
-<link href="{{ asset('css/graph.css') }}" type="text/css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}

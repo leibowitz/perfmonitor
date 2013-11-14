@@ -4,22 +4,36 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap-select.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/daterangepicker.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+        {% stylesheets
+            'css/bootstrap.css'
+            'css/bootstrap-select.css'
+            'css/daterangepicker.css'
+            'css/global.css'
+            'css/graph.css'
+            'css/harviewer.css'
+            filter='cssrewrite'
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
         {% block body %}{% endblock %}
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <!--<script>window.jQuery || document.write('<script src="## asset('js/jquery.js') '"><\/script>')</script>-->
-        <script src="{{ asset('js/bootstrap.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/moment.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/daterangepicker.js') }}"></script>
+        {% javascripts
+            'js/jquery.min.js'
+            'bundles/braincraftedbootstrap/js/bootstrap.js'
+            'js/moment.min.js'
+            'js/daterangepicker.js'
+            'js/bootstrap-select.js'
+            'js/d3.v3.min.js'
+            'js/time-graph.js'
+            'js/histogram-simple.js'
+            'js/pie-simple.js'
+        %}
+        <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
         {% block javascripts %}{% endblock %}
-        <script type="text/javascript" src="{{ asset('js/bootstrap-select.js') }}"></script>
         <script type="text/javascript">
         $('.selectpicker').selectpicker();
         </script>
