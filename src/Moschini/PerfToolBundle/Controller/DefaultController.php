@@ -306,6 +306,10 @@ class DefaultController extends Controller
     public function harviewerAction(Request $request, $id)
     {
         $item = SitesDb::getHarItem($id);
+        if(!$item) {
+            throw new \Exception('Unable to find item with id '.$id);
+        }
+
         $har = HarFile::fromJson($item);
         
         list($previous, $next) = SitesDb::getPreviousNext($item);

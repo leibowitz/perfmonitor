@@ -31,6 +31,9 @@ class HarFile
 
     public static function fromJson($string)
     {
+        if(!$string) {
+            throw new \Exception('Impossible to read json data from empty string');
+        }
         $har = new HarFile();
         $har->setContent($string);
         return $har;
@@ -51,7 +54,9 @@ class HarFile
     public function setContent($content)
     {
         if(!$content)
+        {
             throw new \Exception('HarFile exception: Empty content');
+        }
         $this->content = $content;
     }
 
