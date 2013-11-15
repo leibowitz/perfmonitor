@@ -221,7 +221,7 @@ function pdf(x, stdev, mean)
 function draw_mark(svg, x, height, value, color)
 {
     svg.append("line")
-    .attr("style", "stroke:"+color)
+    .attr("style", "stroke:"+color+"; stroke-width: 2px;")
     .attr("x1", x(value))
     .attr("y1", 0)
     .attr("x2", x(value))
