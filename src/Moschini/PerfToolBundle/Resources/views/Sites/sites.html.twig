@@ -15,8 +15,8 @@ Site:
             <ul class="dropdown-menu" id="sites-url">
                <li><a href="{{ path(route, {'site': name}) }}">All</a></li> 
                <li class="divider"><li>
-               {% for url in urls %}
-                   <li><a href="{{ path(route, {'site': name, 'url': url}) }}">{{ url }}</a></li>
+               {% for data in urls %}
+                   <li><a href="{{ path(route, {'site': name, 'url': data._id}) }}">{{ data._id }}</a></li>
                {% endfor %}
             </ul>
             {% endif %}

@@ -345,7 +345,14 @@ class SitesDb
     static public function getUrls($name)
     {
         $db = SitesDb::getDb();
-        return $db->har->distinct('log.entries.request.url', array('site' => $name));
+        $rows = $db->har->aggregate(array( 
+            array( '$match' => array('site' => $name)),
+            array( '$unwind' => '$log.entries' ),
+            array( '$group' => array('_id' => '$log.entries.pageref', 'entries' => array('$first' => '$log.entries.request.url'))),
+            array( '$project' => array('_id' => 0, 'entries' => 1) ),
+            array( '$group' => array('_id' => '$entries') ),
+        ));
+        return $rows['result'];
     }
     
     static public function getManagedSites()
