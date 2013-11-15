@@ -167,8 +167,7 @@ function showBoxPlot(datas, div_id, date_from, date_to)
     var halfbar_width = bar_width/2;
 
     // Create graph div and svg elements
-    var div = d3.select(div_id)
-        .append("div");
+    var div = d3.select(div_id);
     
     var svg = div
         .append("svg")

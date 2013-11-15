@@ -82,8 +82,10 @@ var now = moment.utc().startOf('day');
                </div>
 
 {% for url, times in values %}
-<div id="div-key-{{ loop.index }}">
+<div>
 <h3><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site'), 'url': url}) }}">{{ url }}</a></h3>
+<div class="timegraph" id="div-key-{{ loop.index }}">
+</div>
 </div>
 {% endfor %}
 
