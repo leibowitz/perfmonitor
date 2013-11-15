@@ -95,7 +95,11 @@ bar.append("text")
     //.attr("x", x.rangeBand()/2)
     .attr("x", bar_width/2)
     .attr("text-anchor", "middle")
-    .text(function(d) { return formatCount(d.y); });
+    .text(function(d) { 
+        if(d.y > 0) {
+            return formatCount(d.y);
+        }
+    });
 
 // show ms values or s
 ms = max < 1 ? true:false;
@@ -107,7 +111,11 @@ svg.append("g")
 
 svg.append("g")
     .attr("class", "y axis")
-    .call(yAxis.ticks(5));
+    .call(yAxis.ticks(5).tickFormat(function(d, i){
+        if(i > 0) {
+            return i;
+        }
+    }));
 
 // Draw median, mean and stdev
 stdev = getStandardDeviation(values);
