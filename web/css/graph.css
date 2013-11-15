@@ -9,11 +9,6 @@
   fill: black;
 }
 
-line {
-  stroke: red;
-  stroke-width:1px;
-}
-
 path{
     fill:none;
     stroke:black;
