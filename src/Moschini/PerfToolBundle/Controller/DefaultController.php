@@ -15,7 +15,6 @@ use HarUtils\HarFile;
 use HarUtils\HarTime;
 use HarUtils\Url;
 
-use DbUtils\SitesDb;
 use Domain\Domain;
 use SclWhois\DomainLookup;
 use SclSocket\Socket;
@@ -33,28 +32,29 @@ class DefaultController extends Controller
     public function infoAction(Request $request)
     {
         $url = $request->get('url');
+        $db = $this->get('dbprovider');
         if($url)
         {
             $host = parse_url($url, PHP_URL_HOST);
         
-            $rows = SitesDb::getStatsForUrl($url);
+            $rows = $db->getStatsForUrl($url);
 
         }
         else
         {
             $host = $request->get('host');
             
-            $rows = SitesDb::getStatsForHost($host);
+            $rows = $db->getStatsForHost($host);
         }
 
         $domain = Domain::getRegisteredDomain($host);
 
-        $timings = SitesDb::getAvgValues(SitesDb::sumUp($rows));
+        $timings = $db->getAvgValues($db->sumUp($rows));
         
 
-        $times = SitesDb::getUrlTimes($rows);
+        $times = $db->getUrlTimes($rows);
 
-        $urls = SitesDb::getUrlsFromTimesList($times);
+        $urls = $db->getUrlsFromTimesList($times);
         
         return array(
             'url' => $url, 
@@ -94,7 +94,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $rows = SitesDb::getRecentRequestsList($request->get('site'), $request->get('url'));
+        $db = $this->get('dbprovider');
+        $rows = $db->getRecentRequestsList($request->get('site'), $request->get('url'));
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -104,7 +105,7 @@ class DefaultController extends Controller
         );
 
         return array(
-            'requests' => SitesDb::getRecentRequests($pagination->getItems()), 
+            'requests' => $db->getRecentRequests($pagination->getItems()), 
             'pagination' => $pagination
         );
     }
@@ -119,7 +120,8 @@ class DefaultController extends Controller
             $site = $request->get('site');
             $url = $request->get('url');
 
-            SitesDb::deleteAll($site, $url);
+            $db = $this->get('dbprovider');
+            $db->deleteAll($site, $url);
         }
         return new JsonResponse(array('result' => 'success'));
     }
@@ -132,7 +134,8 @@ class DefaultController extends Controller
     {
         $site = $request->get('site');
         
-        $type = SitesDb::getTypeForSite($site);
+        $db = $this->get('dbprovider');
+        $type = $db->getTypeForSite($site);
 
         $url = $request->get('url');
         $defaultData = array(
@@ -243,7 +246,8 @@ class DefaultController extends Controller
         $from = clone $to;
         $from->modify('-1 week');
         */
-        $datas = SitesDb::getLoadTimesPerUrl($request->get('site'), $request->get('url'));//, $from, $to);
+        $db = $this->get('dbprovider');
+        $datas = $db->getLoadTimesPerUrl($request->get('site'), $request->get('url'));//, $from, $to);
         
         //$to->modify('-1 day');
 
@@ -286,8 +290,9 @@ class DefaultController extends Controller
         $site = $request->get('site');
         $url = $request->get('url');
         
-        $values = SitesDb::getLoadTimeGroupBySites($site, 
-            SitesDb::getLoadTimesAndDatePerUrl($site, $url, $from, $to), 
+        $db = $this->get('dbprovider');
+        $values = $db->getLoadTimeGroupBySites($site, 
+            $db->getLoadTimesAndDatePerUrl($site, $url, $from, $to), 
             $from, 
             $to);
 
@@ -305,19 +310,20 @@ class DefaultController extends Controller
      */
     public function harviewerAction(Request $request, $id)
     {
-        $item = SitesDb::getHarItem($id);
+        $db = $this->get('dbprovider');
+        $item = $db->getHarItem($id);
         if(!$item) {
             throw new \Exception('Unable to find item with id '.$id);
         }
 
         $har = HarFile::fromJson($item);
         
-        list($previous, $next) = SitesDb::getPreviousNext($item);
+        list($previous, $next) = $db->getPreviousNext($item);
 
         return array(
             'har' => $har,
-            'previous' => SitesDb::getObjectId($previous),
-            'next' => SitesDb::getObjectId($next),
+            'previous' => $db->getObjectId($previous),
+            'next' => $db->getObjectId($next),
         );
     }
 }

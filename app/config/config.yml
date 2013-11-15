@@ -119,6 +119,10 @@ old_sound_rabbit_mq:
         upload_picture:
             connection: default
             exchange_options: {name: 'perfmonitor', type: direct, durable: false}
+services:
+    dbprovider:
+        class:        DbUtils\SitesDb
+
 #    consumers:
 #        upload_picture:
 #            connection: default

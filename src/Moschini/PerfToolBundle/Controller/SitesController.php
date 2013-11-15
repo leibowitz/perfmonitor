@@ -11,8 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
-use DbUtils\SitesDb;
-
 class SitesController extends Controller
 {
     /**
@@ -32,7 +30,8 @@ class SitesController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $sites = SitesDb::getManagedSites();
+        $db = $this->get('dbprovider');
+        $sites = $db->getManagedSites();
         $find = array();
         $site = $request->get('site');
 
@@ -41,7 +40,7 @@ class SitesController extends Controller
             $find = array('site' => $site);
         }
 
-        $configs = SitesDb::getSitesConfig($find);
+        $configs = $db->getSitesConfig($find);
 
         return array(
             'current_site' => $site,
@@ -71,6 +70,8 @@ class SitesController extends Controller
     {
         $site = $request->get('site');
         $defaultData = array('interval' => 180, 'site' => $site, 'nb' => 10, 'agent' => 'desktop');
+        
+        $db = $this->get('dbprovider');
 
         $form = $this->createFormBuilder($defaultData)
             ->add('site', 'text', 
@@ -148,7 +149,7 @@ class SitesController extends Controller
                 $data = $form->getData();
                 $data['urls'] = $this->getUrls($data['urls']);
                 
-                if(SitesDb::insertToDb($data))
+                if($db->insertToDb($data))
                 {
                     return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $data['site'])));
                 }
@@ -168,9 +169,10 @@ class SitesController extends Controller
     public function editAction(Request $request)
     {
         $site = $request->get('site');
-        $id = new \MongoId($request->get('id'));
 
-        $config = SitesDb::getSitesConfig(array('_id' => $id));
+        $db = $this->get('dbprovider');
+        $id = $db->getId($request->get('id'));
+        $config = $db->getSitesConfig(array('_id' => $id));
         
         $defaultData = array(
             'interval' => $config['interval'], 
@@ -249,7 +251,7 @@ class SitesController extends Controller
                 $data = $form->getData();
                 $data['urls'] = $this->getUrls($data['urls']);
                 
-                if(SitesDb::updateToDb($id, $data))
+                if($db->updateToDb($id, $data))
                 {
                     return $this->redirect($this->generateUrl('moschini_perftool_sites_index', array('site' => $site)));
                 }
@@ -276,7 +278,8 @@ class SitesController extends Controller
 
         $site = $request->get('site');
 
-        $sites = SitesDb::getManagedSites();
+        $db = $this->get('dbprovider');
+        $sites = $db->getManagedSites();
 
         return array(
             'sites' => $sites, 
@@ -299,8 +302,10 @@ class SitesController extends Controller
 
         $site = $request->get('site');
 
+        $db = $this->get('dbprovider');
+
         return array(
-            'sites' => SitesDb::getSitesAndUrls(), 
+            'sites' => $db->getSitesAndUrls(), 
             'current_site' => $site,
             'route' => $route['_route']
         );
