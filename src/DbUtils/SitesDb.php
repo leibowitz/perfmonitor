@@ -9,6 +9,14 @@ use HarUtils\Url;
 
 class SitesDb
 {
+    private $mongodb_url;
+    private $db;
+
+    public function __construct($mongodburl, $db = 'perfmonitor')
+    {
+        $this->mongodb_url = $mongodburl;
+        $this->db = $db;
+    }
 
     public function getId($id)
     {
@@ -417,10 +425,10 @@ class SitesDb
         return $this->getFilesFromDB($find, $sort, $limit);
     }
 
-    public function getDb($db = 'perfmonitor')
+    public function getDb($db = null)
     {
-        $m = new \MongoClient();
-        return $m->selectDB($db);  
+        $m = new \MongoClient($this->mongodb_url);
+        return $m->selectDB($db ?: $this->db);
     }
 
     public function getFilesFromFilter($site = null, $url = null, $limit = 0)

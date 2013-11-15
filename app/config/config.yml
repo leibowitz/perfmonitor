@@ -122,6 +122,7 @@ old_sound_rabbit_mq:
 services:
     dbprovider:
         class:        DbUtils\SitesDb
+        arguments:    [ %mongodb_url%, %mongodb_database% ]
 
 #    consumers:
 #        upload_picture:
