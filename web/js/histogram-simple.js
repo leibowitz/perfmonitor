@@ -120,9 +120,10 @@ svg.append("g")
 // Draw median, mean and stdev
 stdev = getStandardDeviation(values);
 
-draw_mark(svg, x, height, median, 'orange');
-draw_mark(svg, x, height, mean, 'brown');
-draw_mark(svg, x, height, mean+stdev, 'blue');
+draw_mark(svg, x, height, median, 'darkblue');
+//draw_mark(svg, x, height, mean-stdev, 'brown');
+//draw_mark(svg, x, height, mean, 'blue');
+//draw_mark(svg, x, height, mean+stdev, 'brown');
 
 // Show min, max, stdev
 
@@ -188,7 +189,7 @@ var y = d3.scale.linear()
     .domain([0, 3])
     .range([height, 0]);
 
-var line = d3.svg.line()
+/*var line = d3.svg.line()
     .interpolate("monotone")
     .x(function(d,i) { return x(d); })
     .y(function(d) { return y(pdf(d, stdev, mean)); });
@@ -196,7 +197,7 @@ var line = d3.svg.line()
 svg.append("svg:g")
     .append("svg:path")
     .attr("d", line(values));
-
+*/
 }
 
 function pdf(x, stdev, mean)
