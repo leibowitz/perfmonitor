@@ -118,11 +118,11 @@ draw_mark(svg, x, height, mean+stdev, 'blue');
 
 // Show min, max, stdev
 
-d3.select(div_id).append("div")
+/*d3.select(div_id).append("div")
 .text("min: "+min+", max: "+max)
 .append("div")
 .text("stdev: "+stdev)
-;
+;*/
 
 // Plot line of histogram data
 var line = d3.svg.line()
