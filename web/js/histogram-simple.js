@@ -102,7 +102,7 @@ ms = max < 1 ? true:false;
 svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate("+0+"," + (height) + ")")
-    .call(xAxis.tickFormat(function(d, i){return ms?d*1000:d;}));
+    .call(xAxis.tickFormat(function(d, i){return ms?parseInt(d*1000):d;}));
     //d3.format(',.3f')));
 
 svg.append("g")
