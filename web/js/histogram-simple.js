@@ -125,7 +125,7 @@ draw_mark(svg, x, height, mean+stdev, 'blue');
 ;*/
 
 // Plot line of histogram data
-var line = d3.svg.line()
+/*var line = d3.svg.line()
     .interpolate("monotone")
     .x(function(d,i) { return x(d.x); })
     .y(function(d) { return y(d.y)+0.5; });
@@ -135,7 +135,7 @@ svg.append("svg:g")
     .append("svg:path")
     .attr("transform", "translate("+bar_width/2+",0)")
     .attr("d", line(data));
-
+*/
 
 // Get random values
 /*
