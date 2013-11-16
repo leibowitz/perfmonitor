@@ -21,6 +21,7 @@ Installation
 
 After installing all the dependencies above, make sure all the services are running (MongoDB, Apache/Nginx, PHP, RabbitMQ)
 
+Download [PhantomJS](http://phantomjs.org/download.html) and add the binary to your $PATH
 
 To install python dependencies, use 
 
