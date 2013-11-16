@@ -3469,7 +3469,7 @@ private static $tldTree = array('ac' => array('com' => array(),
 
 public static function getRegisteredDomain($signingDomain, $fallback = TRUE) {
 
-	$signingDomainParts = split('\.', $signingDomain);
+	$signingDomainParts = explode('\.', $signingDomain);
 
 	$result = self::findRegisteredDomain($signingDomainParts, self::$tldTree);
 
