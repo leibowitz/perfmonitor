@@ -31,19 +31,19 @@ Clone the repo or get the zip file
     git clone https://github.com/leibowitz/perfmonitor.git
     cd perfmonitor
 
-# Install composer if you don't have it
+Install composer if you don't have it
 
     curl -sS https://getcomposer.org/installer | php
 
-# Install all PHP dependencies using composer
+Install all PHP dependencies using composer
 
     php composer.phar install
 
-# Install less for generating CSS
+Install less for generating CSS
 
     npm install less
 
-# Generate assets
+Generate assets
 
     php app/console assetic:dump --env=prod
 
