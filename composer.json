@@ -15,7 +15,7 @@
         "symfony/symfony": "2.2.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "1.2.*",
-        "twig/extensions": "dev-master",
+        "twig/extensions": "1.0.*",
         "symfony/assetic-bundle": "2.3.*",
         "symfony/swiftmailer-bundle": "2.2.*",
         "symfony/monolog-bundle": "2.2.*",
@@ -25,14 +25,16 @@
         "jms/security-extra-bundle": "1.4.*",
         "jms/di-extra-bundle": "1.3.*",
         "videlalvaro/php-amqplib": "2.*",
-        "oldsound/rabbitmq-bundle": "dev-master",
-        "twitter/bootstrap": "dev-master",
-        "braincrafted/bootstrap-bundle": "1.2.*",
-        "ccampbell/chromephp": "dev-master",
+        "oldsound/rabbitmq-bundle": "1.2.*",
+        "twitter/bootstrap": "2.3.*",
+        "braincrafted/bootstrap-bundle": "1.3.*",
         "sclinternet/scl-socket": "dev-master",
         "sclinternet/scl-whois": "dev-master",
         "massivescale/celery-php": "dev-php-amqplib",
-        "knplabs/knp-paginator-bundle": "dev-master"
+        "knplabs/knp-paginator-bundle": "2.3.*"
+    },
+    "require-dev": {
+        "ccampbell/chromephp": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
@@ -54,9 +56,6 @@
     "minimum-stability": "alpha",
     "extra": {
         "symfony-app-dir": "app",
-        "symfony-web-dir": "web",
-        "branch-alias": {
-            "dev-master": "2.2-dev"
-        }
+        "symfony-web-dir": "web"
     }
 }
