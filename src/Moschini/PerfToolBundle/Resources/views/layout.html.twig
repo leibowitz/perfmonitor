@@ -3,20 +3,22 @@
 {% block title '' %}
 
 {% block body %}
-    <div class="navbar navbar-static-top">
-        <div class="navbar-inner" id="menu-nav">
-            <ul class="nav">
-                <li><a href="{{ path('moschini_perftool_default_time', {'site': app.request.get('site')}) }}">Monitoring</a></li>
-                <li class="divider-vertical"></li>
-                <li><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}">Histograms</a></li>
-                <li class="divider-vertical"></li>
-                <li><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}">Waterfall</a></li>
-             </ul>
-             <ul class="nav pull-right">
-                <li><a href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}">Manage sites</a></li>
-            </ul>
-        </div>
-    </div>
+    <nav class="navbar navbar-default" role="navigation">
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li><a href="{{ path('moschini_perftool_default_time', {'site': app.request.get('site')}) }}">Monitoring</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="{{ path('moschini_perftool_default_graph', {'site': app.request.get('site')}) }}">Histograms</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="{{ path('moschini_perftool_default_index', {'site': app.request.get('site')}) }}">Waterfall</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ path('moschini_perftool_sites_index', {'site': app.request.get('site')}) }}">Manage sites</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
 
     <div class="container">
 

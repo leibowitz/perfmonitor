@@ -3,7 +3,7 @@
 {% block title 'Requests' %}
 {% block content %}
 
-<a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
+<a class="btn btn-default pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site')}) }}">Create new</a>
 
 {% render url('moschini_perftool_sites_sites', {'site': app.request.get('site')}) %}
 

@@ -9,16 +9,16 @@
 <tr>
 <td width="160">
 {% if previous %}
-<a class="btn" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': previous}) }}">&lt; Older</a>
+<a class="btn btn-default" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': previous}) }}">&lt; Older</a>
 {% endif %}
 {% if next %}
-<a class="btn" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': next}) }}">Newer &gt;</a>
+<a class="btn btn-default" href="{{ path('moschini_perftool_default_harviewer', {'site': app.request.get('site'), 'id': next}) }}">Newer &gt;</a>
 {% endif %}
 </td>
 <td align="left">
 </td>
 <td align="right">
-<a class="btn pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site'), 'url': har.getUrl.getUrl}) }}">Create new</a>
+<a class="btn btn-default pull-right" href="{{ path('moschini_perftool_default_send', {'site': app.request.get('site'), 'url': har.getUrl.getUrl}) }}">Create new</a>
 
 </td>
 </tr>
