@@ -10,7 +10,7 @@ Requirements
 ------------
 
 - MongoDB >= 2.2
-- PHP >= 5.3.2 (and extensions: mongo) 
+- PHP >= 5.3.2 (composer, less and mongo PHP module)
 - Python (and libs: pika, pymongo, celery)
 - PhantomJS >= 1.5
 - RabbitMQ
@@ -19,9 +19,62 @@ Requirements
 Installation
 ------------
 
-Extract the code inside any directory that can be accessed by your webserver. Configure your vhost accordingly to point to the web/ folder. If you need more help please refer to the symfony2 documentation.
+After installing all the dependencies above, make sure all the services are running (MongoDB, Apache/Nginx, PHP, RabbitMQ)
 
-After installing all the required libraries, make sure all the services are running (MongoDB, Apache, PHP, RabbitMQ)
+
+To install python dependencies, use 
+
+    pip install pika pymongo celery
+
+Clone the repo or get the zip file
+
+    git clone https://github.com/leibowitz/perfmonitor.git
+    cd perfmonitor
+
+# Install composer if you don't have it
+
+    curl -sS https://getcomposer.org/installer | php
+
+# Install all PHP dependencies using composer
+
+    php composer.phar install
+
+# Install less for generating CSS
+
+    npm install less
+
+# Generate assets
+
+    php app/console assetic:dump --env=prod
+
+If you have errors about less module not found in npm, try to install the module globally using the -g option (sudo npm install less -g)
+
+Configure your apache or nginx to point to the perfmonitor/web folder. If you need more help please refer to the symfony2 documentation.
+
+Here is an example for apache
+
+    <VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+
+        ServerName perfmonitor
+
+        ErrorLog ${APACHE_LOG_DIR}/perfmonitor_error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/perfmonitor_access.log combined
+
+        # Change this path to where you've downloaded the code
+        DocumentRoot /home/your-directory/perfmonitor/web
+        <Directory "/">
+            Options Indexes MultiViews FollowSymLinks
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+        </Directory>
+    </VirtualHost>
 
 Start the queue processing by running the task.py celery worker from the bin directory:
 
