@@ -6,6 +6,24 @@ About
 
 Web based tool built to monitor the front-end performances of websites.
 
+Demo
+-----
+
+An demo instance is available at http://perfmonitor-leibowitz.rhcloud.com/
+
+Don't use this instance for real tests/demonstration as the data can be erased at any time! You've been warned.
+
+
+Installation with Vagrant (VM)
+----------------
+
+Check the installation guide in the [wiki](https://github.com/leibowitz/perfmonitor/wiki/Getting-Started) about installation with vagrant.
+
+Manual Installation
+------------
+
+You should be able to setup the project on pretty much any box with just a little bit of effort. All you need is listed in the Requirements.
+
 Requirements
 ------------
 
@@ -16,21 +34,46 @@ Requirements
 - RabbitMQ
 - Webserver (apache, nginx)
 
-Installation
-------------
+Installing dependencies
+-----------
 
-After installing all the dependencies above, make sure all the services are running (MongoDB, Apache/Nginx, PHP, RabbitMQ)
+In debian based linux distributions you should be able to use this
+    
+    sudo apt-get install php5 mongodb python rabbitmq-server apache2 libapache2-mod-php5
+
+To install php mongo module, you might need pecl. If you don't have it installed, install it with the php dev package to be able to compile modules
+    
+    sudo apt-get install php5-dev php5-cli php-pear
+    sudo pecl install mongo
+
+Finally enable the mongo module by editing your php config or running this command instead
+
+    sudo php5enmod mongo
+    
+After installing all the dependencies above, make sure all the services are running (MongoDB, Apache/Nginx, PHP, RabbitMQ). They should all be after installing the various packages, but make sure you reload apache2 after installing php and the mongo module.
+
+    sudo service apache2 restart
+    sudo service mongodb restart
+    sudo service rabbitmq-server restart
 
 Download [PhantomJS](http://phantomjs.org/download.html) and add the binary to your $PATH
 
 To install python dependencies, use 
 
     pip install pika pymongo celery
+    
+If pip is not installed install it via apt-get
 
-Clone the repo or get the zip file
+    sudo apt-get install python-pip
+
+Clone the repo using git or get the zip file
 
     git clone https://github.com/leibowitz/perfmonitor.git
     cd perfmonitor
+
+If you don't have git, install it as well
+
+    sudo apt-get install git
 
 Install composer if you don't have it
 
@@ -44,7 +87,10 @@ Install less for generating CSS
 
     npm install less
 
-Generate assets
+Setting-up the project
+-------------
+
+As this project is based on symfony2 and assetic for assets management you will need to generate the assets with this little command. That will generate the combined css and javascript for the project.
 
     php app/console assetic:dump --env=prod
 
@@ -52,8 +98,9 @@ If you have errors about less module not found in npm, try to install the module
 
 Configure your apache or nginx to point to the perfmonitor/web folder. If you need more help please refer to the symfony2 documentation.
 
-Here is an example for apache
+Here is an example of config for apache
 
+    # /etc/apache2/sites-enabled/perfmonitor.conf
     <VirtualHost *:80>
         ServerAdmin webmaster@localhost
 
